@@ -14,6 +14,20 @@ function undo(){if(!history.length)return;const p=current();future.push(clone({n
 function redo(){if(!future.length)return;const p=current();history.push(clone({nodes:p.nodes,edges:p.edges}));restore(future.pop());updateHistoryButtons()}
 function projectOptions(){$('projects').replaceChildren(...projects.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;return o}));$('projects').value=active;$('projectName').textContent=current()?.name||''}
 function openProject(id){if(!projects.some(p=>p.id===id))return;if($('findPanel')&&!$('findPanel').hidden){$('findInput').value='';search='';findMatches=[];refreshFind()}active=id;selected=[];selectedEdge=null;history=[];future=[];projectOptions();render();requestAnimationFrame(fit);persist()}
+function showMyProjects(){
+  const dialog=$('projectsDialog'),list=$('projectsList');
+  list.replaceChildren();
+  for(const p of projects){
+    const button=document.createElement('button');button.type='button';button.className='project-entry';
+    const title=document.createElement('strong');title.textContent=p.name;
+    const meta=document.createElement('small');meta.textContent=`${p.nodes.length} caixa(s) · ${p.edges.length} elo(s)${p.id===active?' · Projeto atual':''}`;
+    button.append(title,meta);
+    button.addEventListener('click',()=>{openProject(p.id);dialog.close();notify('Projeto aberto: '+p.name)});
+    list.append(button);
+  }
+  document.querySelectorAll('.menu').forEach(m=>m.open=false);
+  dialog.showModal();
+}
 function addProject(){const name=prompt('Nome do novo projeto:','Novo mapa mental');if(name===null)return;const p=newMap(name.trim().slice(0,90)||'Novo mapa mental');projects.push(p);openProject(p.id);notify('Projeto criado')}
 function renameProject(){const p=current(),name=prompt('Renomear projeto:',p.name);if(name===null)return;if(!name.trim())return notify('O nome não pode ficar vazio');p.name=name.trim().slice(0,90);projectOptions();scheduleSave()}
 function deleteProject(){if(!confirm('Excluir este projeto e todos os seus nós? Esta ação não poderá ser desfeita.'))return;projects=projects.filter(p=>p.id!==active);if(!projects.length)projects.push(newMap());openProject(projects[0].id)}
@@ -66,7 +80,7 @@ document.querySelectorAll('[data-paint]').forEach(b=>b.addEventListener('click',
 for(const [id,fn] of Object.entries({quickList:()=>createList(),quickEditor:openEditor,quickNode:()=>addNode(),quickChild:()=>addNode('child'),quickSibling:()=>addNode('sibling'),quickEdit:openProperties,quickProperties:openProperties,quickDelete:removeSelected,quickUndo:undo,quickRedo:redo,fitQuick:centerSelectedOrFit,zoomInMenu:()=>zoom(1.2),zoomOutMenu:()=>zoom(1/1.2),fullscreen:()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()}}))$(id).addEventListener('click',fn);
 document.querySelectorAll('.menu').forEach(menu=>menu.addEventListener('toggle',()=>{if(menu.open)document.querySelectorAll('.menu').forEach(other=>{if(other!==menu)other.open=false})}));
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menu'))document.querySelectorAll('.menu').forEach(m=>m.open=false)});
-const actions={newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(1.2),zoomOut:()=>zoom(1/1.2),exportJson,importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),theme:()=>{document.body.classList.toggle('light');localStorage.setItem(THEME,document.body.classList.contains('light')?'light':'dark')}};
+const actions={myProjects:showMyProjects,newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(1.2),zoomOut:()=>zoom(1/1.2),exportJson,importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),theme:()=>{document.body.classList.toggle('light');localStorage.setItem(THEME,document.body.classList.contains('light')?'light':'dark')}};
 for(const[id,fn]of Object.entries(actions))$(id).addEventListener('click',fn);$('projects').addEventListener('change',e=>openProject(e.target.value));
 document.addEventListener('keydown',e=>{const ctrl=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();if(ctrl&&e.shiftKey&&k==='e'){e.preventDefault();openEditor();return}if(ctrl&&e.shiftKey&&k==='l'){e.preventDefault();createList();return}if(ctrl&&k==='f'){e.preventDefault();openFind();return}if($('findPanel').hidden===false){if(e.key==='Escape'){e.preventDefault();closeFind();return}if(e.target===$('findInput')&&['ArrowDown','ArrowUp','Enter'].includes(e.key)){e.preventDefault();navigateFind(e.key);return}}const input=e.target.closest('input,textarea,select,[contenteditable]');if(input||$('helpDialog').open||$('shortcutsDialog').open||$('listDialog').open||!$('floatingEditor').hidden&&$('floatingEditor').contains(document.activeElement))return;if(ctrl&&k==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(ctrl&&k==='y'){e.preventDefault();redo()}else if(e.key==='Insert'){e.preventDefault();addNode()}else if(e.key==='Tab'){e.preventDefault();addNode('child')}else if(e.key==='Enter'){e.preventDefault();addNode('sibling')}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=[];selectedEdge=null;render()}});
 // Editor flutuante independente dos nós: conteúdo local e cópia com formatação.
@@ -79,6 +93,16 @@ function editTextNode(id){const n=getNode(id);if(!n)return;editingTextNode=id;ed
 $('editorNewDraft').addEventListener('click',()=>{if(editArea.innerText.trim()&&!confirm('Criar um novo rascunho? O texto atual será substituído.'))return;editingTextNode=null;editArea.replaceChildren();$('editorMatches').textContent='';saveEditor();openEditor();notify('Novo rascunho')});
 $('editorClose').addEventListener('click',()=>editor.hidden=true);
 $('editorMin').addEventListener('click',()=>editor.classList.toggle('minimized'));
+const editorMax=$('editorMax');
+function toggleEditorMax(){
+  const expanded=editor.classList.toggle('maximized');
+  if(expanded){editor.classList.remove('minimized');editorMax.textContent='❐';editorMax.title='Restaurar tamanho';}
+  else{editorMax.textContent='□';editorMax.title='Maximizar editor';}
+  editorMax.setAttribute('aria-label',editorMax.title);
+  editorMax.setAttribute('aria-pressed',String(expanded));
+}
+editorMax.addEventListener('click',toggleEditorMax);
+$('editorDrag').addEventListener('dblclick',e=>{if(!e.target.closest('button'))toggleEditorMax()});
 $('removeEdge').addEventListener('click',removeSelectedEdge);
 $('cancelEdge').addEventListener('click',()=>{selectedEdge=null;render()});
 function saveEditor(){clearTimeout(editorSave);editorSave=setTimeout(()=>{try{localStorage.setItem(editorKey,editArea.innerHTML);$('editorStatus').textContent='Rascunho salvo'}catch{$('editorStatus').textContent='Sem espaço para salvar'}},350)}
@@ -142,8 +166,8 @@ for(let i=0;i<paraCount;i++){
 if(!blocks.length)return notify('Nenhum texto gerado');editArea.insertAdjacentHTML('beforeend',blocks.join(''));saveEditor();notify('Texto demonstrativo gerado no editor')}
 $('leroGenerate').addEventListener('click',makeLero);
 // Mover a janela sem interferir no conteúdo do editor.
-let moving=null;$('editorDrag').addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;moving={x:e.clientX,y:e.clientY,left:editor.getBoundingClientRect().left,top:editor.getBoundingClientRect().top};$('editorDrag').setPointerCapture(e.pointerId)});
-$('editorDrag').addEventListener('pointermove',e=>{if(!moving)return;editor.style.left=Math.max(0,Math.min(window.innerWidth-120,moving.left+e.clientX-moving.x))+'px';editor.style.top=Math.max(0,Math.min(window.innerHeight-60,moving.top+e.clientY-moving.y))+'px';editor.style.right='auto'});
+let moving=null;$('editorDrag').addEventListener('pointerdown',e=>{if(e.target.closest('button')||editor.classList.contains('maximized'))return;moving={x:e.clientX,y:e.clientY,left:editor.getBoundingClientRect().left,top:editor.getBoundingClientRect().top};$('editorDrag').setPointerCapture(e.pointerId)});
+$('editorDrag').addEventListener('pointermove',e=>{if(!moving||editor.classList.contains('maximized'))return;editor.style.left=Math.max(0,Math.min(window.innerWidth-120,moving.left+e.clientX-moving.x))+'px';editor.style.top=Math.max(0,Math.min(window.innerHeight-60,moving.top+e.clientY-moving.y))+'px';editor.style.right='auto'});
 $('editorDrag').addEventListener('pointerup',()=>moving=null);$('editorDrag').addEventListener('pointercancel',()=>moving=null);
 
 try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.projects)){projects=saved.projects.filter(validProject);active=saved.active}}catch{}if(!projects.length)projects=[newMap()];if(!projects.some(p=>p.id===active))active=projects[0].id;if(localStorage.getItem(THEME)==='dark')document.body.classList.remove('light');openProject(active);window.addEventListener('resize',applyCamera);window.addEventListener('beforeunload',()=>{if(saveTimer){clearTimeout(saveTimer);persist()}});if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

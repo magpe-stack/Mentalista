@@ -87,3 +87,11 @@ Todas as caixas (nós, listas e textos integrados) possuem ações no rodapé pa
 - Textos integrados não permitem seleção acidental no Palco; para selecionar/copiar trechos, abra a caixa no Editor.
 - Nós comuns e listas são desenhados acima das caixas de texto grandes, facilitando sua movimentação.
 - Ação redundante **Limpar texto** removida; **Novo** substitui o rascunho mediante confirmação quando houver texto.
+
+
+## Atualização v12 — Editor maximizado e Meus Projetos
+
+- Na barra de título do Editor, use **□** para maximizar sobre todo o Palco e **❐** para restaurar. O botão **−** minimiza o Editor, preservando o conteúdo. Um duplo clique na barra de título também alterna o tamanho.
+- Em **Arquivo → Meus Projetos**, uma janela apresenta os projetos salvos neste navegador, com quantidade de caixas e elos. Clique em um projeto para abri-lo.
+- Maximizar ocupa a janela/área de visualização do navegador. Para ocupar a tela inteira do laptop, use o modo de tela cheia do navegador (normalmente F11 no Windows) ou o controle de tela cheia do Mentalista.
+- Os projetos continuam armazenados localmente. Exporte JSON regularmente.
