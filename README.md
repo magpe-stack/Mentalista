@@ -119,3 +119,12 @@ A escolha é aplicada imediatamente aos menus, Palco, Editor e Calculadora e per
 ## Mentalista v16 — Temas e calculadora
 
 Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cada uma nos modos claro e escuro, somadas às cinco existentes: 20 combinações. Os códigos hexadecimais são preservados. O botão Calculadora do Editor abre a mesma janela flutuante que o botão no Palco, inclusive acima do Editor maximizado.
+
+
+## Mentalista v17 — Ferramentas do Palco
+
+- **Ponteiro (V):** seleciona caixas individualmente. Arrastar uma área vazia desenha um retângulo de seleção.
+- **Mãozinha (H):** arrasta o Palco sem selecionar caixas. Segure **Espaço** para ativar temporariamente a Mãozinha.
+- **Ctrl + clique:** adiciona ou remove caixas da seleção. **Ctrl + A:** seleciona todas as caixas (fora de campos de edição).
+- Arrastar uma caixa selecionada movimenta o grupo; caixas fixadas não se movem.
+- A busca **Ctrl + F** aparece abaixo da barra de ferramentas à esquerda, sem sobreposição.

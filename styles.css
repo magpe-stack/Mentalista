@@ -99,3 +99,13 @@
 .list-dialog .list-counter{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
 @media(max-width:600px){.calculator-launch{top:130px;left:10px;width:48px;height:48px}.list-dialog-head{padding:12px}.list-dialog-body{padding:12px}.list-fields{grid-template-columns:1fr}.list-dialog .list-actions{padding:9px;gap:5px}.list-dialog .list-actions button{padding:7px}.list-dialog .list-actions button span{display:none}.list-dialog .list-counter{order:2;margin-left:0}.list-dialog .list-actions .list-done{margin-left:auto}}
 @media print{.calculator-launch{display:none!important}}
+
+/* v17 — Ferramentas de interação */
+.interaction-tools{position:absolute;z-index:6;top:90px;left:20px;display:flex;gap:4px;padding:5px;background:var(--panel);border:1px solid var(--border);border-radius:15px;box-shadow:var(--shadow)}
+.interaction-tools button{display:flex;align-items:center;gap:6px;padding:9px 12px;font-weight:600;color:var(--text)}
+.interaction-tools button.active{background:var(--accent);color:white}
+#viewport.mode-pointer{cursor:default}#viewport.mode-pointer:active{cursor:default}
+#viewport.mode-hand,#viewport.mode-hand:active{cursor:grab}#viewport.mode-hand:active{cursor:grabbing}
+.marquee-rect{fill:var(--accent);fill-opacity:.12;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
+.find-panel{top:155px!important;max-height:calc(100dvh - 240px)!important}
+@media(max-width:650px){.interaction-tools{top:86px;left:10px}.interaction-tools button span{display:none}.find-panel{top:148px!important;max-height:calc(100dvh - 225px)!important}}
