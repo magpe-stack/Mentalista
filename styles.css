@@ -43,3 +43,27 @@
 
 /* Calculadora flutuante — tema herdado do Mentalista */
 .calculator[hidden]{display:none!important}.calculator{position:fixed;z-index:80;top:105px;right:25px;width:330px;max-width:calc(100vw - 16px);background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:15px;box-shadow:0 16px 55px #0006;overflow:hidden;display:flex;flex-direction:column}.calculator-head{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--canvas);cursor:move;touch-action:none;user-select:none;font-weight:600}.calculator-head button{cursor:pointer;font-size:18px;padding:2px 10px}.calculator-screen{padding:15px 13px 12px;text-align:right;min-height:125px;display:flex;flex-direction:column;justify-content:end;align-items:stretch}.calculator-history{color:var(--muted);font-size:12px;min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.calculator-display{font-size:39px;font-weight:450;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}.calculator-copy{align-self:flex-end;font-size:12px;color:var(--accent);padding:4px 7px}.calculator-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:5px}.calculator-grid button{background:var(--canvas);border:1px solid var(--border);border-radius:6px;min-height:54px;font-size:19px;touch-action:manipulation}.calculator-grid button:hover{background:color-mix(in srgb,var(--accent) 16%,var(--canvas))}.calculator-grid .calc-equals{background:var(--accent);color:white;border-color:var(--accent)}.calculator-grid .calc-equals:hover{background:#6c42e7}.calculator-message{min-height:21px;padding:2px 10px 5px;font-size:11px;color:var(--muted);text-align:center}.calculator:focus-within{box-shadow:0 16px 55px #0006,0 0 0 1px var(--accent)}@media(max-width:600px){.calculator{top:135px;right:8px;width:min(330px,calc(100vw - 16px))}.calculator-grid button{min-height:47px}}@media print{.calculator{display:none!important}}
+
+/* Mentalista v14 — configurações modulares e temas derivados das cinco paletas fornecidas */
+.settings-dialog{width:min(860px,calc(100vw - 24px));max-width:none;max-height:90dvh;overflow:auto;padding:0;border-radius:18px;}
+.settings-heading{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;padding:24px 26px 12px;border-bottom:1px solid var(--border)}
+.settings-heading h2{margin:0 0 5px;font-size:23px}.settings-heading p,.settings-module-head p,.settings-note{margin:0;color:var(--muted);font-size:13px}
+.settings-heading button{border:1px solid var(--border);flex:none}
+.settings-module{margin:20px 24px;padding:20px;border:1px solid var(--border);border-radius:15px;background:var(--canvas)}
+.settings-module-head h3{margin:0 0 5px;font-size:18px}
+.mode-choice{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:18px 0;border:0;padding:0}
+.mode-choice legend{font-weight:650;margin-bottom:8px}.mode-choice label{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;cursor:pointer}
+.mode-choice input{width:16px;height:16px;margin:0;accent-color:var(--accent)}
+.theme-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.theme-option{display:flex;flex-direction:column;align-items:stretch;gap:11px;text-align:left;background:var(--panel);border:2px solid var(--border);padding:13px;border-radius:12px;min-height:100px}
+.theme-option.is-selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.theme-option strong{font-size:13px}
+.theme-swatches{display:flex;height:38px;border-radius:7px;overflow:hidden;border:1px solid #8883}.theme-swatches i{flex:1}
+.settings-note{margin-top:16px}.settings-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 26px 22px}.settings-bottom span{font-size:12px;color:var(--muted)}
+.settings-bottom button{background:var(--accent);color:var(--accent-ink);font-weight:650;padding:10px 20px}
+/* Remove cores roxas fixas dos estados da interface; nós coloridos continuam independentes. */
+.menu[open]>summary{background:var(--theme-soft);color:var(--text)}
+.calculator-grid .calc-equals,.lero-controls button{color:var(--accent-ink)}
+.calculator-grid .calc-equals:hover{background:var(--accent);filter:brightness(1.08)}
+@media(max-width:600px){.settings-heading{padding:17px}.settings-module{margin:12px;padding:14px}.theme-gallery{grid-template-columns:1fr 1fr}.settings-bottom{padding:12px 17px}.theme-option{min-height:90px;padding:9px}}
+@media(max-width:400px){.theme-gallery{grid-template-columns:1fr}}
+@media print{.settings-dialog{display:none!important}}

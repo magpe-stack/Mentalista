@@ -100,3 +100,10 @@ Todas as caixas (nós, listas e textos integrados) possuem ações no rodapé pa
 ## v13 — Calculadora flutuante
 
 O botão ▦ ao lado do zoom abre uma calculadora independente com operações aritméticas, porcentagem, raiz, quadrado, inverso, mudança de sinal, copiar resultado e teclado numérico. A calculadora pode ser arrastada e fica acima do Editor, inclusive maximizado. O tema claro/escuro é herdado automaticamente do Mentalista. O botão ✕ fecha a calculadora. Não é necessário acesso à internet.
+
+
+## Mentalista v14 — Aparência e Temas
+
+Em **Sistema → Configurações**, abra o módulo **Aparência e Temas**. Escolha uma das cinco paletas (Mentalista Original, Menta, Retrô, Safira ou Linho e Lavanda) e o modo Claro ou Escuro. São dez combinações. As cinco cores originais de cada paleta são mantidas nas variáveis CSS `--color-1` a `--color-5`. Os tons de superfície e texto são derivados para contraste e legibilidade.
+
+A escolha é aplicada imediatamente aos menus, Palco, Editor e Calculadora e persistida no navegador. As cores individuais dos nós não são alteradas. O módulo foi preparado para a inclusão de novas categorias de configurações em versões futuras.

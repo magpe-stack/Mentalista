@@ -1,6 +1,46 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',KEY='mentalista.projects.v1',THEME='mentalista.theme.v1';
 const ui={viewport:$('viewport'),canvas:$('canvas'),scene:$('scene'),nodes:$('nodes'),edges:$('edges')};let projects=[],active='',selected=[],camera={x:0,y:0,z:1},drag=null,history=[],future=[],saveTimer=null,search='',toastTimer,propertyOpen=false,selectedEdge=null;
+
+// v14 — 5 identidades cromáticas × modos claro/escuro, persistidas independentemente dos projetos.
+const APPEARANCE_KEY='mentalista.appearance.v14';
+const PALETTES={
+ original:{name:'Mentalista Original',colors:['#FBF3D0','#EBD08C','#D4AF37','#B8860B','#7C5E10']},
+ menta:{name:'Mentalista Menta',colors:['#E3FDFD','#DAF5EB','#CFEEDB','#C3E3C9','#B9DBB9']},
+ retro:{name:'Mentalista Retrô',colors:['#F6E2B3','#E7A84E','#D96C2C','#3E8E7E','#274C56']},
+ safira:{name:'Mentalista Safira',colors:['#E3F6F5','#A7E0DB','#5FB0C9','#3E6D9C','#2A2F63']},
+ lavanda:{name:'Mentalista Linho e Lavanda',colors:['#F5F1E8','#EADED8','#E7D8DB','#DACEDB','#CDBECE']}
+};
+let appearance={palette:'original',mode:'light'};
+const mixHex=(a,b,t)=>{const n=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const x=n(a),y=n(b);return '#'+x.map((v,i)=>Math.round(v*(1-t)+y[i]*t).toString(16).padStart(2,'0')).join('')};
+const contrastInk=hex=>{const c=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722>.18?'#15202a':'#ffffff'};
+function applyAppearance(){
+ const pal=PALETTES[appearance.palette]||PALETTES.original, dark=appearance.mode==='dark',root=document.documentElement;
+ document.body.classList.toggle('light',!dark);document.body.dataset.theme=appearance.palette;document.body.dataset.mode=appearance.mode;
+ pal.colors.forEach((v,i)=>root.style.setProperty('--color-'+(i+1),v));
+ // A paleta é a referência visual; fundos escuros são derivados para garantir legibilidade.
+ const accent=dark?(appearance.palette==='original'?pal.colors[2]:appearance.palette==='menta'?pal.colors[3]:appearance.palette==='lavanda'?pal.colors[4]:pal.colors[2]):(appearance.palette==='menta'?'#36765f':appearance.palette==='lavanda'?'#705777':pal.colors[4]);
+ const bg=dark?mixHex('#10151c',pal.colors[4],.11):mixHex('#ffffff',pal.colors[0],.45);
+ const panel=dark?mixHex('#1b222c',pal.colors[4],.15):'#ffffff';
+ const canvas=dark?mixHex('#111821',pal.colors[4],.12):mixHex('#ffffff',pal.colors[0],.66);
+ const border=dark?mixHex('#4a5260',pal.colors[3],.17):mixHex('#d8dce1',pal.colors[3],.17);
+ const muted=dark?'#adb7c6':'#626b76';
+ Object.entries({'--bg':bg,'--panel':panel,'--canvas':canvas,'--text':dark?'#f6f7fa':'#202831','--muted':muted,'--border':border,'--accent':accent,'--accent-ink':contrastInk(accent),'--theme-soft':dark?mixHex('#25303a',pal.colors[3],.18):pal.colors[0],'--theme-medium':pal.colors[2]}).forEach(([k,v])=>root.style.setProperty(k,v));
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=panel;
+ document.querySelectorAll('input[name="appearanceMode"]').forEach(r=>r.checked=r.value===appearance.mode);
+ document.querySelectorAll('[data-theme-option]').forEach(b=>{const active=b.dataset.themeOption===appearance.palette;b.setAttribute('aria-checked',String(active));b.classList.toggle('is-selected',active)});
+ const status=$('settingsCurrent');if(status)status.textContent=pal.name+' · '+(dark?'Escuro':'Claro');
+ try{localStorage.setItem(APPEARANCE_KEY,JSON.stringify(appearance));localStorage.setItem(THEME,appearance.mode)}catch{}
+}
+function initializeAppearance(){
+ try{const saved=JSON.parse(localStorage.getItem(APPEARANCE_KEY)||'null');if(saved&&PALETTES[saved.palette]&&['light','dark'].includes(saved.mode))appearance=saved;else if(localStorage.getItem(THEME)==='dark')appearance.mode='dark'}catch{}
+ const gallery=$('themeGallery');gallery.replaceChildren();
+ Object.entries(PALETTES).forEach(([key,pal])=>{const b=document.createElement('button');b.type='button';b.className='theme-option';b.dataset.themeOption=key;b.setAttribute('role','radio');b.setAttribute('aria-label',pal.name);const swatches=document.createElement('span');swatches.className='theme-swatches';pal.colors.forEach(c=>{const span=document.createElement('i');span.style.backgroundColor=c;span.setAttribute('aria-hidden','true');swatches.append(span)});const name=document.createElement('strong');name.textContent=pal.name;b.append(swatches,name);b.addEventListener('click',()=>{appearance.palette=key;applyAppearance()});gallery.append(b)});
+ document.querySelectorAll('input[name="appearanceMode"]').forEach(r=>r.addEventListener('change',()=>{if(r.checked){appearance.mode=r.value;applyAppearance()}}));
+ $('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsDone').addEventListener('click',()=>$('settingsDialog').close());applyAppearance();
+}
+function openSettings(){document.querySelectorAll('.menu').forEach(m=>m.open=false);$('settingsDialog').showModal()}
+
 const uid=()=>globalThis.crypto?.randomUUID?.()||'m'+Date.now().toString(36)+Math.random().toString(36).slice(2);
 const newMap=(name='Meu primeiro mapa')=>{const a=uid();return{id:uid(),name,created:Date.now(),updated:Date.now(),nodes:[{id:a,x:0,y:0,title:'Novo nó',desc:'',color:'slate'}],edges:[]}};
 const current=()=>projects.find(p=>p.id===active),clone=v=>JSON.parse(JSON.stringify(v));
@@ -80,7 +120,7 @@ document.querySelectorAll('[data-paint]').forEach(b=>b.addEventListener('click',
 for(const [id,fn] of Object.entries({quickList:()=>createList(),quickEditor:openEditor,quickNode:()=>addNode(),quickChild:()=>addNode('child'),quickSibling:()=>addNode('sibling'),quickEdit:openProperties,quickProperties:openProperties,quickDelete:removeSelected,quickUndo:undo,quickRedo:redo,fitQuick:centerSelectedOrFit,zoomInMenu:()=>zoom(1.2),zoomOutMenu:()=>zoom(1/1.2),fullscreen:()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()}}))$(id).addEventListener('click',fn);
 document.querySelectorAll('.menu').forEach(menu=>menu.addEventListener('toggle',()=>{if(menu.open)document.querySelectorAll('.menu').forEach(other=>{if(other!==menu)other.open=false})}));
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menu'))document.querySelectorAll('.menu').forEach(m=>m.open=false)});
-const actions={myProjects:showMyProjects,newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(1.2),zoomOut:()=>zoom(1/1.2),exportJson,importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),theme:()=>{document.body.classList.toggle('light');localStorage.setItem(THEME,document.body.classList.contains('light')?'light':'dark')}};
+const actions={myProjects:showMyProjects,newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(1.2),zoomOut:()=>zoom(1/1.2),exportJson,importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),openSettings:openSettings};
 for(const[id,fn]of Object.entries(actions))$(id).addEventListener('click',fn);$('projects').addEventListener('change',e=>openProject(e.target.value));
 document.addEventListener('keydown',e=>{const ctrl=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();if(ctrl&&e.shiftKey&&k==='e'){e.preventDefault();openEditor();return}if(ctrl&&e.shiftKey&&k==='l'){e.preventDefault();createList();return}if(ctrl&&k==='f'){e.preventDefault();openFind();return}if($('findPanel').hidden===false){if(e.key==='Escape'){e.preventDefault();closeFind();return}if(e.target===$('findInput')&&['ArrowDown','ArrowUp','Enter'].includes(e.key)){e.preventDefault();navigateFind(e.key);return}}const input=e.target.closest('input,textarea,select,[contenteditable]');if(input||$('helpDialog').open||$('shortcutsDialog').open||$('listDialog').open||!$('floatingEditor').hidden&&$('floatingEditor').contains(document.activeElement))return;if(ctrl&&k==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(ctrl&&k==='y'){e.preventDefault();redo()}else if(e.key==='Insert'){e.preventDefault();addNode()}else if(e.key==='Tab'){e.preventDefault();addNode('child')}else if(e.key==='Enter'){e.preventDefault();addNode('sibling')}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=[];selectedEdge=null;render()}});
 // Editor flutuante independente dos nós: conteúdo local e cópia com formatação.
@@ -170,7 +210,7 @@ let moving=null;$('editorDrag').addEventListener('pointerdown',e=>{if(e.target.c
 $('editorDrag').addEventListener('pointermove',e=>{if(!moving||editor.classList.contains('maximized'))return;editor.style.left=Math.max(0,Math.min(window.innerWidth-120,moving.left+e.clientX-moving.x))+'px';editor.style.top=Math.max(0,Math.min(window.innerHeight-60,moving.top+e.clientY-moving.y))+'px';editor.style.right='auto'});
 $('editorDrag').addEventListener('pointerup',()=>moving=null);$('editorDrag').addEventListener('pointercancel',()=>moving=null);
 
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.projects)){projects=saved.projects.filter(validProject);active=saved.active}}catch{}if(!projects.length)projects=[newMap()];if(!projects.some(p=>p.id===active))active=projects[0].id;if(localStorage.getItem(THEME)==='dark')document.body.classList.remove('light');openProject(active);window.addEventListener('resize',applyCamera);window.addEventListener('beforeunload',()=>{if(saveTimer){clearTimeout(saveTimer);persist()}});if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.projects)){projects=saved.projects.filter(validProject);active=saved.active}}catch{}if(!projects.length)projects=[newMap()];if(!projects.some(p=>p.id===active))active=projects[0].id;initializeAppearance();openProject(active);window.addEventListener('resize',applyCamera);window.addEventListener('beforeunload',()=>{if(saveTimer){clearTimeout(saveTimer);persist()}});if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 
 
 // Listas rápidas: caixas de primeira classe no mesmo grafo, com conexões normais.
