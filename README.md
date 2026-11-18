@@ -75,3 +75,8 @@ Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcad
 - O gerador intercala títulos entre os parágrafos em vez de agrupá-los no início. Se houver mais títulos que parágrafos, alguns títulos ainda aparecerão consecutivamente.
 - O botão **Excluir seleção** remove apenas o trecho selecionado no editor, sem apagar o restante do texto.
 - **Integrar** cria ou atualiza a caixa de texto, centraliza-a no Palco e fecha a janela do Editor.
+
+
+## Novidades da v10 — Fixar e copiar caixas
+
+Todas as caixas (nós, listas e textos integrados) possuem ações no rodapé para copiar, fixar/desafixar e editar. As listas também permitem alternar o formato. Uma caixa fixada não se move ao arrastar, mas continua editável, conectável e selecionável. O estado de fixação é preservado no projeto e no JSON exportado.
