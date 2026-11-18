@@ -145,3 +145,12 @@ Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cad
 - Botão Propriedades redundante removido da barra; Editar continua abrindo a edição dos nós.
 - Splash cinematográfico de 4 segundos com o logotipo SVG e o nome Mentalista, animado via CSS, com respeito a movimento reduzido.
 - Rolagem interna das caixas de texto integradas: roda do mouse sobre a caixa rola o conteúdo; a barra de rolagem também pode ser arrastada. A roda fora das caixas continua controlando o zoom.
+
+
+## Mentalista v23 — Ajuda e informações do projeto
+
+O menu Ajuda inclui GitHub (repositório e Licença MIT), Manual (orientações rápidas e link para o README completo), Sobre (descrição do app, versão 23 e link do aplicativo) e Atalhos. As janelas podem ser fechadas sem sair do mapa.
+
+- Projeto: https://github.com/magpe-stack/Mentalista
+- Manual completo: https://github.com/magpe-stack/Mentalista/blob/main/README.md
+- Aplicativo: https://magpe-stack.github.io/Mentalista/

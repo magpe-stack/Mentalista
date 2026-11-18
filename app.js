@@ -320,3 +320,7 @@ $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').
 })();
 
 // Espaço alterna permanentemente entre Ponteiro e Mãozinha; keyup não modifica o modo.
+
+// Ajuda institucional — v23
+for(const [buttonId,dialogId] of [['githubHelp','githubDialog'],['aboutHelp','aboutDialog']]){document.getElementById(buttonId)?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById(dialogId)?.showModal()})}
+document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.closeDialog)?.close()));
