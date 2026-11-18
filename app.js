@@ -228,9 +228,9 @@ try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.is
 
 
 // Listas rápidas: caixas de primeira classe no mesmo grafo, com conexões normais.
-let editingList=null,recognizer=null;
-function createList(){const p=current(),r=ui.viewport.getBoundingClientRect();snapshot();const n={id:uid(),x:Math.round((r.width/2-camera.x)/camera.z-100),y:Math.round((r.height/2-camera.y)/camera.z-45),title:'Nova lista',desc:'',color:'slate',kind:'list',items:[],listStyle:'bullet',checked:[],pinned:false};p.nodes.push(n);selected=[n.id];render();scheduleSave();openList(n.id)}
-function openList(id){const n=getNode(id);if(!n||n.kind!=='list')return;editingList=id;$('listTitle').value=n.title;$('listStyle').value=n.listStyle||'bullet';$('listInput').value='';renderListItems();$('listDialog').showModal();$('listInput').focus()}
+let editingList=null,recognizer=null,listSession=null;
+function createList(){const p=current(),r=ui.viewport.getBoundingClientRect();snapshot();const n={id:uid(),x:Math.round((r.width/2-camera.x)/camera.z-100),y:Math.round((r.height/2-camera.y)/camera.z-45),title:'Nova lista',desc:'',color:'slate',kind:'list',items:[],listStyle:'bullet',checked:[],pinned:false};p.nodes.push(n);selected=[n.id];render();scheduleSave();openList(n.id,true)}
+function openList(id,isNew=false){const n=getNode(id);if(!n||n.kind!=='list')return;listSession={id,isNew,original:isNew?null:JSON.parse(JSON.stringify(n))};editingList=id;$('listTitle').value=n.title;$('listStyle').value=n.listStyle||'bullet';$('listInput').value='';renderListItems();$('listDialog').showModal();$('listInput').focus()}
 function renderListItems(){const n=getNode(editingList),box=$('listItems');box.replaceChildren();if(!n)return;(n.items||[]).forEach((item,i)=>{const li=document.createElement('li'),input=document.createElement('input'),del=document.createElement('button');input.value=item;input.maxLength=200;input.setAttribute('aria-label','Tópico '+(i+1));input.addEventListener('change',()=>{const v=input.value.trim();snapshot();if(v)n.items[i]=v;else n.items.splice(i,1);n.checked=(n.checked||[]).filter(v=>v!==i).map(v=>v>i?v-1:v);render();scheduleSave();renderListItems()});del.type='button';del.textContent='×';del.title='Remover tópico';del.setAttribute('aria-label','Remover tópico '+(i+1));del.addEventListener('click',()=>{snapshot();n.items.splice(i,1);n.checked=(n.checked||[]).filter(v=>v!==i).map(v=>v>i?v-1:v);render();scheduleSave();renderListItems();$('listInput').focus()});if((n.listStyle||'bullet')==='check'){const cb=document.createElement('input');cb.type='checkbox';cb.className='topic-check';cb.checked=(n.checked||[]).includes(i);cb.setAttribute('aria-label','Concluir tópico '+(i+1));cb.addEventListener('change',()=>{snapshot();n.checked=n.checked||[];n.checked=cb.checked?[...new Set([...n.checked,i])]:n.checked.filter(v=>v!==i);render();scheduleSave()});li.append(cb)}else{const mark=document.createElement('span');mark.className='topic-marker';mark.textContent=n.listStyle==='number'?(i+1)+'.':'•';li.append(mark)}li.append(input,del);box.append(li)});$('listCounter').textContent=(n.items||[]).length+' de 30 tópicos'}
 function addListItems(text){const n=getNode(editingList);if(!n)return;const values=text.split(/\r?\n/).map(v=>v.trim()).filter(Boolean).map(v=>v.slice(0,200));if(!values.length)return;if(n.items.length>=30)return notify('Limite de 30 tópicos por lista');snapshot();n.items.push(...values.slice(0,30-n.items.length));$('listInput').value='';renderListItems();render();scheduleSave();$('listInput').focus()}
 function listText(n){return n.title+'\n'+(n.items||[]).map((v,i)=>n.listStyle==='number'?`${i+1}. ${v}`:n.listStyle==='check'?`${(n.checked||[]).includes(i)?'☑':'☐'} ${v}`:`• ${v}`).join('\n')}
@@ -248,9 +248,21 @@ $('listClearDone').addEventListener('click',()=>{const n=getNode(editingList);if
 $('listAdd').addEventListener('click',()=>addListItems($('listInput').value));
 $('listInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();addListItems(e.target.value)}});
 $('listTitle').addEventListener('change',e=>{const n=getNode(editingList);if(n&&e.target.value.trim()&&n.title!==e.target.value.trim()){snapshot();n.title=e.target.value.trim();render();scheduleSave()}});
-$('listClose').addEventListener('click',()=>$('listDialog').close());
-$('listExit').addEventListener('click',()=>{if($('listDialog').open)$('listDialog').close()});
-$('listDialog').addEventListener('close',()=>{try{recognizer?.stop()}catch{}editingList=null;ui.viewport.focus()});
+function dismissList(commit=false){
+ const session=listSession;
+ if(!commit&&session){
+  const p=current();
+  if(session.isNew){p.nodes=p.nodes.filter(n=>n.id!==session.id);p.edges=p.edges.filter(e=>e.a!==session.id&&e.b!==session.id);selected=selected.filter(id=>id!==session.id);}
+  else if(session.original){const i=p.nodes.findIndex(n=>n.id===session.id);if(i>=0)p.nodes[i]=session.original;}
+  render();scheduleSave();
+ }
+ listSession=null;
+ if($('listDialog').open)$('listDialog').close();
+}
+$('listClose').addEventListener('click',()=>dismissList(true));
+$('listExit').addEventListener('click',()=>dismissList(false));
+$('listDialog').addEventListener('cancel',e=>{e.preventDefault();dismissList(false)});
+$('listDialog').addEventListener('close',()=>{try{recognizer?.stop()}catch{}if(listSession) dismissList(false);editingList=null;ui.viewport.focus()});
 const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!SpeechAPI){$('listVoice').disabled=true;$('voiceStatus').textContent='Voz indisponível neste navegador. Use o teclado.'}
 $('listVoice').addEventListener('click',()=>{if(!SpeechAPI)return;if(recognizer){recognizer.stop();return}try{const rec=new SpeechAPI();recognizer=rec;rec.lang='pt-BR';rec.interimResults=false;rec.maxAlternatives=1;$('voiceStatus').textContent='Ouvindo… fale um tópico';rec.onresult=e=>{const t=e.results?.[0]?.[0]?.transcript;if(t)addListItems(t)};rec.onerror=e=>{$('voiceStatus').textContent='Voz indisponível: '+e.error};rec.onend=()=>{recognizer=null;if($('voiceStatus').textContent==='Ouvindo… fale um tópico')$('voiceStatus').textContent='Ditado encerrado'};rec.start()}catch{$('voiceStatus').textContent='Não foi possível iniciar o microfone'}});

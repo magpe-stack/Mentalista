@@ -134,3 +134,8 @@ Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cad
 - Ponteiro e Mãozinha em botões circulares com ícones, agrupados em moldura, seguindo o tema ativo.
 - Busca rápida reposicionada abaixo dos controles superiores.
 - Botão X da Lista rápida ligado ao fechamento do diálogo, sem excluir a lista.
+
+
+## Atualização v19
+- Editor: Integrar, Novo e Copiar agora usam apenas ícones, com título e nome acessível.
+- Lista rápida: X e Esc cancelam a criação sem deixar caixa no Palco; Concluir confirma. Ao cancelar a edição de uma lista existente, os dados anteriores são restaurados.

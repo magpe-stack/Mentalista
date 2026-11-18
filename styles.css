@@ -120,3 +120,7 @@
 .list-dialog .list-exit{position:relative;z-index:2;cursor:pointer}
 @media(max-width:650px){.interaction-tools{top:130px;left:66px;gap:4px;padding:4px}.interaction-tools button{width:39px;height:39px;min-width:39px}.interaction-tools button svg{width:21px;height:21px}.find-panel{top:194px!important;left:10px;max-height:calc(100dvh - 210px)!important}}
 @media print{.interaction-tools{display:none!important}}
+
+/* v19: comandos compactos do editor */
+#editorIntegrate,#editorNewDraft,#editorCopy{width:35px;height:34px;display:inline-flex;align-items:center;justify-content:center;padding:6px;vertical-align:middle}
+#editorIntegrate svg,#editorNewDraft svg,#editorCopy svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
