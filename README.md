@@ -80,3 +80,10 @@ Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcad
 ## Novidades da v10 — Fixar e copiar caixas
 
 Todas as caixas (nós, listas e textos integrados) possuem ações no rodapé para copiar, fixar/desafixar e editar. As listas também permitem alternar o formato. Uma caixa fixada não se move ao arrastar, mas continua editável, conectável e selecionável. O estado de fixação é preservado no projeto e no JSON exportado.
+
+
+## Atualização v11
+- Botão **Del** no editor: remove somente a seleção de texto, com preservação do intervalo ao acionar o botão.
+- Textos integrados não permitem seleção acidental no Palco; para selecionar/copiar trechos, abra a caixa no Editor.
+- Nós comuns e listas são desenhados acima das caixas de texto grandes, facilitando sua movimentação.
+- Ação redundante **Limpar texto** removida; **Novo** substitui o rascunho mediante confirmação quando houver texto.

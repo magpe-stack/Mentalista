@@ -19,3 +19,11 @@
 
 /* Mentalista v10: rodapé e fixação de todos os tipos de nó */
 .node-footer-divider{stroke:currentColor;opacity:.22;pointer-events:none}.node .pinned-indicator{font:17px system-ui;pointer-events:none;opacity:.75}.node .list-tool-hit{pointer-events:all!important}.node .list-tool{pointer-events:all;cursor:pointer}.node .list-tool:focus .list-tool-hit{fill:#8b5cf655!important;stroke:#8b5cf6!important}.node .text-node-body{padding-bottom:4px}
+
+/* v11 — texto integrado é leitura visual; edição somente no Editor.
+   Isso impede seleção acidental e mantém nós comuns acima dos textos grandes. */
+#viewport,#canvas,.node,.node foreignObject,.node .text-node-body{-webkit-user-select:none;user-select:none}
+.node .text-node-body{pointer-events:none!important;cursor:move!important}
+.node foreignObject{pointer-events:none!important}
+.node text{pointer-events:none}
+#editorDeleteSelection{min-width:46px;padding:6px 7px;font-weight:700}
