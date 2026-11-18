@@ -109,3 +109,14 @@
 .marquee-rect{fill:var(--accent);fill-opacity:.12;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
 .find-panel{top:155px!important;max-height:calc(100dvh - 240px)!important}
 @media(max-width:650px){.interaction-tools{top:86px;left:10px}.interaction-tools button span{display:none}.find-panel{top:148px!important;max-height:calc(100dvh - 225px)!important}}
+
+/* v18 — controles circulares e busca sem sobreposições */
+.interaction-tools{position:fixed;top:91px;left:94px;z-index:7;display:flex;align-items:center;gap:7px;padding:5px;border:1px solid var(--border);border-radius:999px;background:var(--panel);box-shadow:var(--shadow)}
+.interaction-tools button{width:46px;height:46px;min-width:46px;display:grid;place-items:center;padding:0;border-radius:50%;border:1px solid var(--border);background:color-mix(in srgb,var(--panel) 85%,var(--accent) 15%);color:var(--text);transition:transform .15s,background .15s,box-shadow .15s}
+.interaction-tools button:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--accent) 22%,var(--panel))}
+.interaction-tools button.active{background:var(--accent);color:var(--accent-ink,var(--text));border-color:color-mix(in srgb,var(--accent) 80%,var(--border));box-shadow:0 3px 12px color-mix(in srgb,var(--accent) 30%,transparent)}
+.interaction-tools button svg{display:block;pointer-events:none}
+.find-panel{top:169px!important;left:20px;max-height:calc(100dvh - 190px)!important;z-index:8}
+.list-dialog .list-exit{position:relative;z-index:2;cursor:pointer}
+@media(max-width:650px){.interaction-tools{top:130px;left:66px;gap:4px;padding:4px}.interaction-tools button{width:39px;height:39px;min-width:39px}.interaction-tools button svg{width:21px;height:21px}.find-panel{top:194px!important;left:10px;max-height:calc(100dvh - 210px)!important}}
+@media print{.interaction-tools{display:none!important}}

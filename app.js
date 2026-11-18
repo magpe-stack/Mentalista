@@ -249,6 +249,7 @@ $('listAdd').addEventListener('click',()=>addListItems($('listInput').value));
 $('listInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();addListItems(e.target.value)}});
 $('listTitle').addEventListener('change',e=>{const n=getNode(editingList);if(n&&e.target.value.trim()&&n.title!==e.target.value.trim()){snapshot();n.title=e.target.value.trim();render();scheduleSave()}});
 $('listClose').addEventListener('click',()=>$('listDialog').close());
+$('listExit').addEventListener('click',()=>{if($('listDialog').open)$('listDialog').close()});
 $('listDialog').addEventListener('close',()=>{try{recognizer?.stop()}catch{}editingList=null;ui.viewport.focus()});
 const SpeechAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(!SpeechAPI){$('listVoice').disabled=true;$('voiceStatus').textContent='Voz indisponível neste navegador. Use o teclado.'}

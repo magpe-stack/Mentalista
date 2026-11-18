@@ -128,3 +128,9 @@ Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cad
 - **Ctrl + clique:** adiciona ou remove caixas da seleção. **Ctrl + A:** seleciona todas as caixas (fora de campos de edição).
 - Arrastar uma caixa selecionada movimenta o grupo; caixas fixadas não se movem.
 - A busca **Ctrl + F** aparece abaixo da barra de ferramentas à esquerda, sem sobreposição.
+
+
+## v18 — controles do Palco
+- Ponteiro e Mãozinha em botões circulares com ícones, agrupados em moldura, seguindo o tema ativo.
+- Busca rápida reposicionada abaixo dos controles superiores.
+- Botão X da Lista rápida ligado ao fechamento do diálogo, sem excluir a lista.
