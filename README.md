@@ -50,3 +50,12 @@ Clique em **Lista** na barra inferior para criar uma caixa de lista. Digite um t
 
 ## Listas — v6
 Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcadores, numeração e checklist, fixar/desafixar posição e editar. O editor permite escolher o formato, marcar itens concluídos e limpar os concluídos. O formato e o estado das marcações são armazenados no projeto e exportados no JSON. O botão de copiar utiliza a área de transferência do navegador (com alternativa quando disponível).
+
+
+## Novidades v7 — Elos e Editor
+
+- Clique diretamente na linha de uma conexão para selecioná-la; o botão **Desfazer elo** remove somente a linha, mantendo ambas as caixas. `Delete` também remove o elo selecionado. `Ctrl+Z` restaura a conexão.
+- **Editor** ao lado de **Lista** abre uma janela flutuante e arrastável com título, negrito, itálico, fontes, tamanhos, realce, limpar formatação e copiar. `Ctrl+Shift+E` também abre o editor.
+- A extração de telefones, e-mails e URLs mostra resultados separados, com cópia individual, sem alterar o texto original. Reconhecimento por expressões regulares: alguns formatos incomuns podem não ser identificados.
+- Texto do editor salvo separadamente no armazenamento local do navegador. Não integra os backups JSON de mapas; copie textos importantes para um arquivo externo.
+- A colagem no editor utiliza texto simples para evitar formatação indesejada de sites externos. A cópia tenta preservar a formatação criada no editor quando o navegador permite.
