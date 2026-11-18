@@ -107,3 +107,10 @@ O botão ▦ ao lado do zoom abre uma calculadora independente com operações a
 Em **Sistema → Configurações**, abra o módulo **Aparência e Temas**. Escolha uma das cinco paletas (Mentalista Original, Menta, Retrô, Safira ou Linho e Lavanda) e o modo Claro ou Escuro. São dez combinações. As cinco cores originais de cada paleta são mantidas nas variáveis CSS `--color-1` a `--color-5`. Os tons de superfície e texto são derivados para contraste e legibilidade.
 
 A escolha é aplicada imediatamente aos menus, Palco, Editor e Calculadora e persistida no navegador. As cores individuais dos nós não são alteradas. O módulo foi preparado para a inclusão de novas categorias de configurações em versões futuras.
+
+
+## Atualização v15
+- Lista rápida compacta, sem parágrafos tutoriais, com botão X e ações agrupadas no rodapé.
+- Calculadora em botão circular independente à esquerda do Palco, fora dos controles de zoom.
+- Botão de calculadora no início da barra de ferramentas do Editor.
+- Ambos os acessos abrem a mesma calculadora flutuante, com cores derivadas do tema.

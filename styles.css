@@ -67,3 +67,35 @@
 @media(max-width:600px){.settings-heading{padding:17px}.settings-module{margin:12px;padding:14px}.theme-gallery{grid-template-columns:1fr 1fr}.settings-bottom{padding:12px 17px}.theme-option{min-height:90px;padding:9px}}
 @media(max-width:400px){.theme-gallery{grid-template-columns:1fr}}
 @media print{.settings-dialog{display:none!important}}
+
+/* Mentalista v15 — lista compacta e calculadora independente */
+.calculator-launch{position:fixed;z-index:6;top:91px;left:24px;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--accent-ink,var(--text));background:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 75%,var(--panel));box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent),inset 0 1px 1px #ffffff50;transition:transform .15s,box-shadow .15s;}
+.calculator-launch:hover{transform:translateY(-2px) scale(1.05);background:var(--accent);box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 38%,transparent)}
+.calculator-launch:active{transform:scale(.97)}
+#editorCalculator{font-size:19px;min-width:36px;min-height:32px;line-height:1;padding:5px 8px}
+.list-dialog{width:min(640px,calc(100vw - 24px));max-height:min(88dvh,800px);padding:0!important;overflow:hidden;display:flex;flex-direction:column;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:19px;box-shadow:0 24px 65px #0004}
+.list-dialog:not([open]){display:none!important}
+.list-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 11px;border-bottom:1px solid var(--border)}
+.list-dialog-heading{display:flex;align-items:center;gap:11px}.list-dialog-heading h2{margin:0;font-size:20px}
+.list-dialog .list-exit{width:34px;height:34px;padding:0;border-radius:9px;display:grid;place-items:center;font-size:18px}
+.list-dialog-body{padding:15px 20px 12px;overflow-y:auto;min-height:0}
+.list-fields{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px}
+.list-dialog .list-fields label{margin:0;color:var(--muted);font-size:12px;font-weight:600}
+.list-dialog .list-fields input,.list-dialog .list-fields select{margin-top:5px;color:var(--text);font-size:14px}
+.list-dialog .list-input-label{margin:15px 0 5px;color:var(--muted);font-size:12px}
+.list-dialog .list-entry{gap:9px}.list-dialog .list-entry textarea{min-height:66px;resize:vertical}
+.list-dialog .list-entry button{display:flex;align-items:center;gap:5px;justify-content:center;min-width:105px;background:var(--accent);color:var(--accent-ink,var(--text));font-weight:650}
+.list-dialog .list-entry button span:first-child{font-size:22px;line-height:1}
+.list-dialog .list-items{margin:12px 0 0;padding-left:12px;max-height:32dvh;overflow:auto;list-style:none}
+.list-dialog .list-items:empty{display:none}
+.list-dialog .list-items li{align-items:center;padding:3px 0}
+.list-dialog .list-items input:not([type=checkbox]){padding:7px}
+.list-dialog .list-status{font-size:11px;color:var(--muted);min-height:0;margin-top:6px}
+.list-dialog .list-status:empty{display:none}
+.list-dialog .list-actions{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:12px 18px;border-top:1px solid var(--border);background:var(--panel)}
+.list-dialog .list-actions button{border:1px solid var(--border);background:var(--canvas);padding:8px 11px;border-radius:9px;font-size:12px;white-space:nowrap}
+.list-dialog .list-actions button:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 13%,var(--canvas))}
+.list-dialog .list-actions .list-done{background:var(--accent);color:var(--accent-ink,var(--text));border-color:var(--accent);font-weight:650}
+.list-dialog .list-counter{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+@media(max-width:600px){.calculator-launch{top:130px;left:10px;width:48px;height:48px}.list-dialog-head{padding:12px}.list-dialog-body{padding:12px}.list-fields{grid-template-columns:1fr}.list-dialog .list-actions{padding:9px;gap:5px}.list-dialog .list-actions button{padding:7px}.list-dialog .list-actions button span{display:none}.list-dialog .list-counter{order:2;margin-left:0}.list-dialog .list-actions .list-done{margin-left:auto}}
+@media print{.calculator-launch{display:none!important}}
