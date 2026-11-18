@@ -124,3 +124,29 @@
 /* v19: comandos compactos do editor */
 #editorIntegrate,#editorNewDraft,#editorCopy{width:35px;height:34px;display:inline-flex;align-items:center;justify-content:center;padding:6px;vertical-align:middle}
 #editorIntegrate svg,#editorNewDraft svg,#editorCopy svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+
+/* v20: formulário Editar desacoplado do botão Propriedades */
+#propertyPanel:not([hidden]){position:fixed;z-index:40;bottom:92px;left:50%;transform:translateX(-50%);width:min(340px,calc(100vw - 30px));max-height:65vh;overflow:auto;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:17px;box-shadow:var(--shadow)}
+.node .text-node-body{pointer-events:auto!important;user-select:none!important;-webkit-user-select:none!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;touch-action:pan-y;cursor:default!important}
+.node foreignObject{pointer-events:auto!important}
+/* Abertura cinematográfica: efeitos nativos e sem dependências */
+.cinematic-splash{position:fixed;inset:0;z-index:99999;overflow:hidden;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 48%,#20243e 0%,#0a101e 54%,#03050b 100%);color:#f7f1db;isolation:isolate;opacity:1;transition:opacity .6s ease,visibility .6s ease}
+.cinematic-splash.splash-done{opacity:0;visibility:hidden;pointer-events:none}
+.splash-stars{position:absolute;inset:-50%;background-image:radial-gradient(circle,#fff9 1px,transparent 1.8px),radial-gradient(circle,#dbb96577 1px,transparent 2px);background-size:83px 83px,131px 131px;background-position:0 0,37px 52px;animation:splashStars 4s ease-out both;opacity:.4}
+.splash-halo{position:absolute;width:min(90vw,750px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#d4af3736 0%,#c6a64b0b 38%,transparent 68%);filter:blur(14px);animation:splashHalo 4s ease-in-out both}
+.splash-orbit{position:absolute;width:min(72vw,430px);aspect-ratio:1;border-radius:50%;border:1px solid #d4af374d;box-shadow:0 0 40px #d4af371a,inset 0 0 30px #d4af3711;animation:splashOrbit 4s cubic-bezier(.2,.7,.1,1) both}
+.orbit-two{width:min(85vw,530px);border-style:dashed;border-color:#f3dfac33;animation-direction:reverse}
+.splash-center{z-index:2;text-align:center;display:flex;align-items:center;flex-direction:column;gap:10px}
+.splash-mark{width:160px;height:160px;display:grid;place-items:center;border-radius:40px;background:radial-gradient(circle,#f4da8640,transparent 68%);filter:drop-shadow(0 0 24px #dfb84e88);animation:splashMark 4s cubic-bezier(.18,.7,.1,1) both}
+.splash-mark img{width:138px;height:138px;object-fit:contain}
+.splash-name{font-size:clamp(28px,6vw,64px);font-weight:800;letter-spacing:.22em;padding-left:.22em;background:linear-gradient(110deg,#a98533,#fff5c8,#d4af37,#fff4bf);background-clip:text;-webkit-background-clip:text;color:transparent;text-shadow:0 0 50px #caa54533;animation:splashName 4s ease both}
+.splash-tagline{font-size:clamp(9px,1.4vw,13px);letter-spacing:.38em;color:#c8b77e;animation:splashTag 4s ease both}
+.splash-progress{position:absolute;bottom:12%;width:min(240px,50vw);height:2px;background:#d4af3726;overflow:hidden;border-radius:5px}.splash-progress span{display:block;height:100%;width:100%;background:linear-gradient(90deg,transparent,#f8e9a9,#b8860b);transform-origin:left;animation:splashLoad 4s linear both}
+@keyframes splashStars{from{transform:scale(1.2) rotate(-8deg);opacity:0}35%{opacity:.6}to{transform:scale(1) rotate(4deg);opacity:.2}}
+@keyframes splashHalo{0%{transform:scale(.4);opacity:0}35%{transform:scale(1.1);opacity:1}85%{opacity:1}100%{transform:scale(1.25);opacity:.2}}
+@keyframes splashOrbit{from{transform:rotate(-110deg) scale(.45);opacity:0}30%{opacity:1}to{transform:rotate(90deg) scale(1.15);opacity:.4}}
+@keyframes splashMark{0%{opacity:0;transform:scale(.25) rotate(-25deg);filter:blur(20px)}28%{opacity:1;transform:scale(1.15) rotate(3deg);filter:blur(0)}45%{transform:scale(1) rotate(0)}85%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
+@keyframes splashName{0%,22%{opacity:0;transform:translateY(28px);letter-spacing:.4em}43%{opacity:1;transform:translateY(0);letter-spacing:.22em}82%{opacity:1}100%{opacity:0;transform:translateY(-12px)}}
+@keyframes splashTag{0%,38%{opacity:0;transform:translateY(12px)}56%,83%{opacity:1;transform:translateY(0)}100%{opacity:0}}
+@keyframes splashLoad{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.cinematic-splash *{animation:none!important}.splash-mark,.splash-name,.splash-tagline{opacity:1!important;transform:none!important}}

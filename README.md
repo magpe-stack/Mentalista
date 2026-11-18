@@ -139,3 +139,9 @@ Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cad
 ## Atualização v19
 - Editor: Integrar, Novo e Copiar agora usam apenas ícones, com título e nome acessível.
 - Lista rápida: X e Esc cancelam a criação sem deixar caixa no Palco; Concluir confirma. Ao cancelar a edição de uma lista existente, os dados anteriores são restaurados.
+
+
+## Mentalista v20
+- Botão Propriedades redundante removido da barra; Editar continua abrindo a edição dos nós.
+- Splash cinematográfico de 4 segundos com o logotipo SVG e o nome Mentalista, animado via CSS, com respeito a movimento reduzido.
+- Rolagem interna das caixas de texto integradas: roda do mouse sobre a caixa rola o conteúdo; a barra de rolagem também pode ser arrastada. A roda fora das caixas continua controlando o zoom.
