@@ -216,3 +216,32 @@ $('findNodeMenu').addEventListener('click',openFind);
 $('findNodeConfig').addEventListener('click',openFind);
 $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);$('shortcutsDialog').showModal()});
 })();
+
+// Calculadora independente: não altera os projetos nem interfere no editor.
+(()=>{
+ const el=id=>document.getElementById(id),panel=el('calculator'),display=el('calculatorDisplay'),history=el('calculatorHistory'),message=el('calculatorMessage');
+ let entry='0',stored=null,operator=null,awaiting=false,lastOperand=null,lastOperator=null;
+ const operations={add:(a,b)=>a+b,subtract:(a,b)=>a-b,multiply:(a,b)=>a*b,divide:(a,b)=>b===0?NaN:a/b};
+ const format=n=>{if(!Number.isFinite(n))return 'Erro';if(Object.is(n,-0))n=0;return String(Number(n.toPrecision(12))).replace('.',',')};
+ const number=()=>Number(entry);
+ function show(){display.textContent=entry.replace('.',',');history.textContent=operator!==null?`${format(stored)} ${ {add:'+',subtract:'−',multiply:'×',divide:'÷'}[operator]}`:'';}
+ function result(n){if(!Number.isFinite(n)){entry='Erro';stored=null;operator=null;awaiting=true;message.textContent='Operação inválida';return false;}entry=String(Number(n.toPrecision(12)));awaiting=true;return true;}
+ function key(k){message.textContent='';if(entry==='Erro'&& !['clear','ce'].includes(k)){entry='0';stored=null;operator=null;awaiting=false;}
+ if(/^\d$/.test(k)){if(awaiting){entry=k;awaiting=false;}else if(entry.replace(/[-.]/g,'').length<15)entry=entry==='0'?k:entry==='-0'?'-'+k:entry+k;}
+ else if(k==='decimal'){if(awaiting){entry='0.';awaiting=false;}else if(!entry.includes('.'))entry+='.';}
+ else if(k==='clear'){entry='0';stored=null;operator=null;awaiting=false;lastOperand=null;lastOperator=null;}
+ else if(k==='ce'){entry='0';awaiting=false;}
+ else if(k==='back'){if(awaiting){awaiting=false;}else entry=entry.length<=1||entry.length===2&&entry.startsWith('-')?'0':entry.slice(0,-1);}
+ else if(k==='sign'){if(number()!==0)entry=entry.startsWith('-')?entry.slice(1):'-'+entry;}
+ else if(['percent','reciprocal','square','sqrt'].includes(k)){let n=number();if(k==='percent')n=stored!==null&&['add','subtract'].includes(operator)?stored*n/100:n/100;if(k==='reciprocal')n=1/n;if(k==='square')n=n*n;if(k==='sqrt')n=Math.sqrt(n);result(n);}
+ else if(operations[k]){if(operator!==null&&!awaiting){const n=operations[operator](stored,number());if(!result(n)){show();return;}}stored=number();operator=k;awaiting=true;lastOperator=null;}
+ else if(k==='equals'){if(operator!==null){const operand=awaiting?stored:number(),op=operator,n=operations[op](stored,operand);if(result(n)){history.textContent=`${format(stored)} ${ {add:'+',subtract:'−',multiply:'×',divide:'÷'}[op]} ${format(operand)} =`;lastOperator=op;lastOperand=operand;stored=null;operator=null;display.textContent=entry.replace('.',',');return;}}else if(lastOperator!==null){result(operations[lastOperator](number(),lastOperand));}}
+ show();}
+ panel.querySelectorAll('[data-calc]').forEach(b=>b.addEventListener('click',()=>key(b.dataset.calc)));
+ el('calculatorOpen').addEventListener('click',()=>{panel.hidden=false;panel.style.left='';panel.style.top='';panel.style.right='';panel.querySelector('[data-calc="7"]').focus();});
+ el('calculatorClose').addEventListener('click',()=>{panel.hidden=true;el('calculatorOpen').focus();});
+ el('calculatorCopy').addEventListener('click',async()=>{if(entry==='Erro')return;try{await navigator.clipboard.writeText(entry);message.textContent='Resultado copiado';}catch{const t=document.createElement('textarea');t.value=entry;document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();message.textContent=ok?'Resultado copiado':'Não foi possível copiar';}});
+ panel.addEventListener('keydown',e=>{if(e.target.matches('button')&&['Enter',' '].includes(e.key))return;const keys={'/':'divide','*':'multiply','-':'subtract','+':'add','.':'decimal',',':'decimal','Enter':'equals','=':'equals','Backspace':'back','Escape':'close','%':'percent'};const k=/^\d$/.test(e.key)?e.key:keys[e.key];if(k){e.preventDefault();if(k==='close')el('calculatorClose').click();else key(k);}});
+ const head=el('calculatorDrag');let drag=null;head.addEventListener('pointerdown',e=>{if(e.target.closest('button')||e.button!==0)return;const r=panel.getBoundingClientRect();drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};head.setPointerCapture(e.pointerId);});head.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;panel.style.left=Math.max(0,Math.min(innerWidth-panel.offsetWidth,e.clientX-drag.dx))+'px';panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-drag.dy))+'px';panel.style.right='auto';});const stop=()=>drag=null;head.addEventListener('pointerup',stop);head.addEventListener('pointercancel',stop);
+ show();
+})();
