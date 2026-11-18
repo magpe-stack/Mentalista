@@ -124,7 +124,7 @@ Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cad
 ## Mentalista v17 — Ferramentas do Palco
 
 - **Ponteiro (V):** seleciona caixas individualmente. Arrastar uma área vazia desenha um retângulo de seleção.
-- **Mãozinha (H):** arrasta o Palco sem selecionar caixas. Segure **Espaço** para ativar temporariamente a Mãozinha.
+- **Mãozinha (H):** arrasta o Palco sem selecionar caixas. Pressione **Espaço** uma vez para alternar entre Ponteiro e Mãozinha. O botão ativo é atualizado imediatamente; soltar a tecla não altera a ferramenta.
 - **Ctrl + clique:** adiciona ou remove caixas da seleção. **Ctrl + A:** seleciona todas as caixas (fora de campos de edição).
 - Arrastar uma caixa selecionada movimenta o grupo; caixas fixadas não se movem.
 - A busca **Ctrl + F** aparece abaixo da barra de ferramentas à esquerda, sem sobreposição.
