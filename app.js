@@ -67,7 +67,7 @@ document.addEventListener('keydown',e=>{const ctrl=e.ctrlKey||e.metaKey,k=e.key.
 const editor=$('floatingEditor'),editArea=$('editorText'),editorKey='mentalista.editor.v1';let editorSave;
 function openEditor(){editor.hidden=false;editor.classList.remove('minimized');editArea.focus()}
 let editingTextNode=null;
-function integrateEditor(){const plain=editArea.innerText.trim();if(!plain)return notify('Escreva algum texto antes de integrar');const p=current();if(!p)return;const html=sanitizeEditor(editArea.innerHTML);const title=plain.split(/\n/).map(v=>v.trim()).find(Boolean)?.slice(0,120)||'Texto integrado';snapshot();let n=editingTextNode&&getNode(editingTextNode);if(!n){const r=ui.viewport.getBoundingClientRect();n={id:uid(),kind:'text',x:Math.round((r.width/2-camera.x)/camera.z-180),y:Math.round((r.height/2-camera.y)/camera.z-180),color:'slate',title,desc:'',textHeight:360};p.nodes.push(n)}n.html=html;n.textPlain=plain.slice(0,50000);n.title=title;selected=[n.id];selectedEdge=null;editingTextNode=n.id;render();centerSelectedOrFit();scheduleSave();notify('Texto integrado ao mapa; conecte pelo botão +')}
+function integrateEditor(){const plain=editArea.innerText.trim();if(!plain)return notify('Escreva algum texto antes de integrar');const p=current();if(!p)return;const html=sanitizeEditor(editArea.innerHTML);const title=plain.split(/\n/).map(v=>v.trim()).find(Boolean)?.slice(0,120)||'Texto integrado';snapshot();let n=editingTextNode&&getNode(editingTextNode);if(!n){const r=ui.viewport.getBoundingClientRect();n={id:uid(),kind:'text',x:Math.round((r.width/2-camera.x)/camera.z-180),y:Math.round((r.height/2-camera.y)/camera.z-180),color:'slate',title,desc:'',textHeight:360};p.nodes.push(n)}n.html=html;n.textPlain=plain.slice(0,50000);n.title=title;selected=[n.id];selectedEdge=null;editingTextNode=n.id;render();centerSelectedOrFit();scheduleSave();editor.hidden=true;notify('Texto integrado ao mapa; conecte pelo botão +')}
 $('editorIntegrate').addEventListener('click',integrateEditor);
 function editTextNode(id){const n=getNode(id);if(!n)return;editingTextNode=id;editArea.innerHTML=sanitizeEditor(n.html||'');openEditor();$('editorStatus').textContent='Editando caixa de texto integrada';}
 $('editorNewDraft').addEventListener('click',()=>{editingTextNode=null;editArea.replaceChildren();saveEditor();openEditor();notify('Novo rascunho')});
@@ -87,6 +87,20 @@ editor.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',(
 $('editorFont').addEventListener('change',e=>formatEditor('fontName',e.target.value));
 $('editorSize').addEventListener('change',e=>formatEditor('fontSize',e.target.value));
 $('editorClean').addEventListener('click',()=>formatEditor('removeFormat'));
+// Impede que o clique no botão tire a seleção do conteúdo editável.
+$('editorDeleteSelection').addEventListener('mousedown',e=>e.preventDefault());
+$('editorDeleteSelection').addEventListener('click',()=>{
+  const selection=window.getSelection();
+  if(!selection||selection.isCollapsed||!editArea.contains(selection.commonAncestorContainer)){
+    notify('Selecione primeiro o trecho que deseja excluir');return;
+  }
+  editArea.focus();
+  const range=selection.getRangeAt(0);
+  range.deleteContents();range.collapse(true);
+  selection.removeAllRanges();selection.addRange(range);
+  editArea.dispatchEvent(new Event('input',{bubbles:true}));
+  notify('Trecho selecionado excluído');
+});
 $('editorClear').addEventListener('click',()=>{if(!confirm('Limpar todo o texto do editor?'))return;editArea.replaceChildren();$('editorMatches').textContent='';saveEditor()});
 async function copyText(text){try{await navigator.clipboard.writeText(text);notify('Copiado')}catch{const ta=document.createElement('textarea');ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();notify(ok?'Copiado':'Cópia indisponível')}}
 $('editorCopy').addEventListener('click',async()=>{const plain=editArea.innerText;try{if(navigator.clipboard.write&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([sanitizeEditor(editArea.innerHTML)],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})]);notify('Texto formatado copiado')}else await copyText(plain)}catch{await copyText(plain)}});
@@ -99,7 +113,15 @@ const starts=['No contexto das ideias contemporâneas','Sob uma perspectiva mult
 const mids=['a integração de processos amplia horizontes e fortalece conexões significativas','a articulação de perspectivas favorece resultados consistentes e sustentáveis','o alinhamento entre objetivos e práticas revela oportunidades relevantes','a valorização do conhecimento contribui para decisões mais conscientes','a dinâmica das relações estimula a evolução de métodos e estratégias','a reflexão sobre prioridades impulsiona novas formas de colaboração'];
 const ends=['para o futuro das organizações','em diferentes áreas de atuação','ao longo de todo o processo','com foco na qualidade das experiências','de maneira integrada e progressiva','em benefício de uma visão mais abrangente'];
 let seed=Date.now()>>>0;const pick=a=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return a[seed%a.length]};
-function makeLero(){const words=Math.max(0,Math.min(5000,Number($('leroWords').value)||0)),sentences=Math.max(0,Math.min(200,Number($('leroSentences').value)||0)),headings=Math.max(0,Math.min(30,Number($('leroTitles').value)||0)),paragraphs=Math.max(0,Math.min(50,Number($('leroParagraphs').value)||0));if(!(words+sentences+headings+paragraphs))return notify('Informe uma quantidade para gerar');const blocks=[];for(let i=0;i<headings;i++)blocks.push('<h2>'+pick(['Perspectivas em movimento','Novos caminhos para o amanhã','Conexões e possibilidades','Uma visão integrada','Desafios e oportunidades'])+'</h2>');const count=sentences||Math.max(paragraphs,Math.ceil(words/17));let phrases=[];for(let i=0;i<count;i++)phrases.push(pick(starts)+', '+pick(mids)+' '+pick(ends)+'.');if(words){let tokens=phrases.join(' ').split(/\s+/);while(tokens.length<words)tokens.push(...(pick(starts)+' '+pick(mids)+' '+pick(ends)).split(/\s+/));tokens=tokens.slice(0,words);phrases=tokens.join(' ').replace(/\s+([,.!?])/g,'$1').split(/(?<=[.!?])\s+/)}const paraCount=paragraphs||Math.max(1,Math.ceil(phrases.length/4));for(let i=0;i<paraCount;i++){const start=Math.floor(i*phrases.length/paraCount),end=Math.floor((i+1)*phrases.length/paraCount);if(end>start)blocks.push('<p>'+phrases.slice(start,end).join(' ')+'</p>')}if(!blocks.length)return notify('Nenhum texto gerado');editArea.insertAdjacentHTML('beforeend',blocks.join(''));saveEditor();notify('Texto demonstrativo gerado no editor')}
+function makeLero(){const words=Math.max(0,Math.min(5000,Number($('leroWords').value)||0)),sentences=Math.max(0,Math.min(200,Number($('leroSentences').value)||0)),headings=Math.max(0,Math.min(30,Number($('leroTitles').value)||0)),paragraphs=Math.max(0,Math.min(50,Number($('leroParagraphs').value)||0));if(!(words+sentences+headings+paragraphs))return notify('Informe uma quantidade para gerar');const blocks=[];const count=sentences||Math.max(paragraphs,Math.ceil(words/17));let phrases=[];for(let i=0;i<count;i++)phrases.push(pick(starts)+', '+pick(mids)+' '+pick(ends)+'.');if(words){let tokens=phrases.join(' ').split(/\s+/);while(tokens.length<words)tokens.push(...(pick(starts)+' '+pick(mids)+' '+pick(ends)).split(/\s+/));tokens=tokens.slice(0,words);phrases=tokens.join(' ').replace(/\s+([,.!?])/g,'$1').split(/(?<=[.!?])\s+/)}const paraCount=paragraphs||Math.max(1,Math.ceil(phrases.length/4));const titles=['Perspectivas em movimento','Novos caminhos para o amanhã','Conexões e possibilidades','Uma visão integrada','Desafios e oportunidades'];
+// Distribui os títulos ao longo do texto, antes de parágrafos distintos sempre que possível.
+const titleSlots=new Map();for(let i=0;i<headings;i++){const slot=Math.floor(i*paraCount/Math.max(1,headings));titleSlots.set(slot,(titleSlots.get(slot)||0)+1)}
+for(let i=0;i<paraCount;i++){
+  for(let j=0;j<(titleSlots.get(i)||0);j++)blocks.push('<h2>'+pick(titles)+'</h2>');
+  const start=Math.floor(i*phrases.length/paraCount),end=Math.floor((i+1)*phrases.length/paraCount);
+  if(end>start)blocks.push('<p>'+phrases.slice(start,end).join(' ')+'</p>');
+}
+if(!blocks.length)return notify('Nenhum texto gerado');editArea.insertAdjacentHTML('beforeend',blocks.join(''));saveEditor();notify('Texto demonstrativo gerado no editor')}
 $('leroGenerate').addEventListener('click',makeLero);
 // Mover a janela sem interferir no conteúdo do editor.
 let moving=null;$('editorDrag').addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;moving={x:e.clientX,y:e.clientY,left:editor.getBoundingClientRect().left,top:editor.getBoundingClientRect().top};$('editorDrag').setPointerCapture(e.pointerId)});

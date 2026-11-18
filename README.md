@@ -69,3 +69,9 @@ Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcad
 - **Backup:** caixas de texto e seu HTML fazem parte da exportação JSON do mapa. O rascunho independente continua no armazenamento local.
 
 **Observação:** o gerador prioriza a contagem de palavras quando preenchida, portanto o número final de frases pode variar. As caixas longas têm rolagem interna.
+
+## Versão 9 — Editor
+
+- O gerador intercala títulos entre os parágrafos em vez de agrupá-los no início. Se houver mais títulos que parágrafos, alguns títulos ainda aparecerão consecutivamente.
+- O botão **Excluir seleção** remove apenas o trecho selecionado no editor, sem apagar o restante do texto.
+- **Integrar** cria ou atualiza a caixa de texto, centraliza-a no Palco e fecha a janela do Editor.
