@@ -114,3 +114,8 @@ A escolha é aplicada imediatamente aos menus, Palco, Editor e Calculadora e per
 - Calculadora em botão circular independente à esquerda do Palco, fora dos controles de zoom.
 - Botão de calculadora no início da barra de ferramentas do Editor.
 - Ambos os acessos abrem a mesma calculadora flutuante, com cores derivadas do tema.
+
+
+## Mentalista v16 — Temas e calculadora
+
+Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cada uma nos modos claro e escuro, somadas às cinco existentes: 20 combinações. Os códigos hexadecimais são preservados. O botão Calculadora do Editor abre a mesma janela flutuante que o botão no Palco, inclusive acima do Editor maximizado.

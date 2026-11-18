@@ -2,14 +2,19 @@
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg',KEY='mentalista.projects.v1',THEME='mentalista.theme.v1';
 const ui={viewport:$('viewport'),canvas:$('canvas'),scene:$('scene'),nodes:$('nodes'),edges:$('edges')};let projects=[],active='',selected=[],camera={x:0,y:0,z:1},drag=null,history=[],future=[],saveTimer=null,search='',toastTimer,propertyOpen=false,selectedEdge=null;
 
-// v14 — 5 identidades cromáticas × modos claro/escuro, persistidas independentemente dos projetos.
+// v16 — 10 identidades cromáticas × modos claro/escuro, persistidas independentemente dos projetos.
 const APPEARANCE_KEY='mentalista.appearance.v14';
 const PALETTES={
  original:{name:'Mentalista Original',colors:['#FBF3D0','#EBD08C','#D4AF37','#B8860B','#7C5E10']},
  menta:{name:'Mentalista Menta',colors:['#E3FDFD','#DAF5EB','#CFEEDB','#C3E3C9','#B9DBB9']},
  retro:{name:'Mentalista Retrô',colors:['#F6E2B3','#E7A84E','#D96C2C','#3E8E7E','#274C56']},
  safira:{name:'Mentalista Safira',colors:['#E3F6F5','#A7E0DB','#5FB0C9','#3E6D9C','#2A2F63']},
- lavanda:{name:'Mentalista Linho e Lavanda',colors:['#F5F1E8','#EADED8','#E7D8DB','#DACEDB','#CDBECE']}
+ lavanda:{name:'Mentalista Linho e Lavanda',colors:['#F5F1E8','#EADED8','#E7D8DB','#DACEDB','#CDBECE']},
+ terracota:{name:'Mentalista Terracota',colors:['#F9F5EB','#EA5455','#F07B3F','#2D4059','#002B5B']},
+ neon:{name:'Mentalista Neon',colors:['#FF4E7B','#FA32D1','#C74BFF','#5F37F6','#488CFF']},
+ ferrugem:{name:'Mentalista Ferrugem',colors:['#F3B658','#EC9E3F','#E16D37','#CD502F','#B03228']},
+ cafe:{name:'Mentalista Café com Avelã',colors:['#EDE4D3','#C9B79C','#9C7A54','#6B4F3A','#3E2E22']},
+ indigo:{name:'Mentalista Índigo',colors:['#E7DFF7','#C6B4EE','#A48AE0','#7B5FD1','#4E2FB0']}
 };
 let appearance={palette:'original',mode:'light'};
 const mixHex=(a,b,t)=>{const n=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const x=n(a),y=n(b);return '#'+x.map((v,i)=>Math.round(v*(1-t)+y[i]*t).toString(16).padStart(2,'0')).join('')};
@@ -19,7 +24,7 @@ function applyAppearance(){
  document.body.classList.toggle('light',!dark);document.body.dataset.theme=appearance.palette;document.body.dataset.mode=appearance.mode;
  pal.colors.forEach((v,i)=>root.style.setProperty('--color-'+(i+1),v));
  // A paleta é a referência visual; fundos escuros são derivados para garantir legibilidade.
- const accent=dark?(appearance.palette==='original'?pal.colors[2]:appearance.palette==='menta'?pal.colors[3]:appearance.palette==='lavanda'?pal.colors[4]:pal.colors[2]):(appearance.palette==='menta'?'#36765f':appearance.palette==='lavanda'?'#705777':pal.colors[4]);
+ const accent=dark?(appearance.palette==='original'?pal.colors[2]:appearance.palette==='menta'?pal.colors[3]:appearance.palette==='lavanda'?pal.colors[4]:appearance.palette==='neon'?pal.colors[2]:pal.colors[2]):(appearance.palette==='menta'?'#36765f':appearance.palette==='lavanda'?'#705777':appearance.palette==='neon'?pal.colors[3]:appearance.palette==='ferrugem'?pal.colors[4]:pal.colors[4]);
  const bg=dark?mixHex('#10151c',pal.colors[4],.11):mixHex('#ffffff',pal.colors[0],.45);
  const panel=dark?mixHex('#1b222c',pal.colors[4],.15):'#ffffff';
  const canvas=dark?mixHex('#111821',pal.colors[4],.12):mixHex('#ffffff',pal.colors[0],.66);
@@ -278,7 +283,10 @@ $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').
  else if(k==='equals'){if(operator!==null){const operand=awaiting?stored:number(),op=operator,n=operations[op](stored,operand);if(result(n)){history.textContent=`${format(stored)} ${ {add:'+',subtract:'−',multiply:'×',divide:'÷'}[op]} ${format(operand)} =`;lastOperator=op;lastOperand=operand;stored=null;operator=null;display.textContent=entry.replace('.',',');return;}}else if(lastOperator!==null){result(operations[lastOperator](number(),lastOperand));}}
  show();}
  panel.querySelectorAll('[data-calc]').forEach(b=>b.addEventListener('click',()=>key(b.dataset.calc)));
- el('calculatorOpen').addEventListener('click',()=>{panel.hidden=false;panel.style.left='';panel.style.top='';panel.style.right='';panel.querySelector('[data-calc="7"]').focus();});
+ const openCalculator=()=>{panel.hidden=false;panel.style.left='';panel.style.top='';panel.style.right='';panel.querySelector('[data-calc="7"]').focus();};
+ el('calculatorOpen').addEventListener('click',openCalculator);
+ // O botão do editor usa a mesma instância da calculadora, sobreposta ao editor.
+ el('editorCalculator')?.addEventListener('click',openCalculator);
  el('calculatorClose').addEventListener('click',()=>{panel.hidden=true;el('calculatorOpen').focus();});
  el('calculatorCopy').addEventListener('click',async()=>{if(entry==='Erro')return;try{await navigator.clipboard.writeText(entry);message.textContent='Resultado copiado';}catch{const t=document.createElement('textarea');t.value=entry;document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();message.textContent=ok?'Resultado copiado':'Não foi possível copiar';}});
  panel.addEventListener('keydown',e=>{if(e.target.matches('button')&&['Enter',' '].includes(e.key))return;const keys={'/':'divide','*':'multiply','-':'subtract','+':'add','.':'decimal',',':'decimal','Enter':'equals','=':'equals','Backspace':'back','Escape':'close','%':'percent'};const k=/^\d$/.test(e.key)?e.key:keys[e.key];if(k){e.preventDefault();if(k==='close')el('calculatorClose').click();else key(k);}});
