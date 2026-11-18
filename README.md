@@ -59,3 +59,13 @@ Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcad
 - A extração de telefones, e-mails e URLs mostra resultados separados, com cópia individual, sem alterar o texto original. Reconhecimento por expressões regulares: alguns formatos incomuns podem não ser identificados.
 - Texto do editor salvo separadamente no armazenamento local do navegador. Não integra os backups JSON de mapas; copie textos importantes para um arquivo externo.
 - A colagem no editor utiliza texto simples para evitar formatação indesejada de sites externos. A cópia tenta preservar a formatação criada no editor quando o navegador permite.
+
+
+## Novidades da versão 8
+
+- **Integrar:** no editor flutuante, transforma o texto formatado em uma caixa de texto do mapa, com porta `+` para criar elos. Para atualizar uma caixa integrada, dê duplo clique nela, edite e clique em Integrar novamente. O botão Rascunho inicia um texto independente.
+- **Centralização contextual:** o botão ⤢ centraliza a caixa selecionada e ajusta o zoom para suas dimensões; sem seleção, enquadra todo o mapa.
+- **Lero-lero:** painel no editor com controles de palavras, frases, títulos e parágrafos. Gera texto fictício localmente, sem internet.
+- **Backup:** caixas de texto e seu HTML fazem parte da exportação JSON do mapa. O rascunho independente continua no armazenamento local.
+
+**Observação:** o gerador prioriza a contagem de palavras quando preenchida, portanto o número final de frases pode variar. As caixas longas têm rolagem interna.
