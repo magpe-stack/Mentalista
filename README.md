@@ -154,3 +154,8 @@ O menu Ajuda inclui GitHub (repositório e Licença MIT), Manual (orientações 
 - Projeto: https://github.com/magpe-stack/Mentalista
 - Manual completo: https://github.com/magpe-stack/Mentalista/blob/main/README.md
 - Aplicativo: https://magpe-stack.github.io/Mentalista/
+
+
+## Mapa de Ícones e botões (v24)
+
+Acesse **Ajuda → Mapa de Ícones e botões** para consultar as funções dos controles por categoria. A janela possui busca textual. **Regra de manutenção:** sempre que um botão/ícone for adicionado, alterado ou removido, atualizar o catálogo em `index.html` e esta documentação na mesma versão.

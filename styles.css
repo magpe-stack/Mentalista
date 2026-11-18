@@ -153,3 +153,15 @@
 
 /* Janelas informativas — v23 */
 .info-dialog{width:min(560px,calc(100vw - 32px));max-height:min(82vh,760px);overflow:auto;border:1px solid var(--border, #b8b8b8);border-radius:18px;padding:24px;background:var(--surface,#fff);color:var(--text,#252525);box-shadow:0 24px 80px #0004;line-height:1.6}.info-dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}.info-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.info-heading h2{margin:0}.info-dialog h3{margin:18px 0 5px;font-size:1rem}.info-dialog p{margin:10px 0}.info-dialog a{color:var(--accent,#7252b4);text-decoration:underline;overflow-wrap:anywhere}.info-close{border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer;padding:4px 10px}.about-brand{display:flex;align-items:center;gap:15px;padding:12px 0}.about-brand div{display:flex;flex-direction:column}.about-brand strong{font-size:1.4rem}.about-brand span{opacity:.75}.info-dialog form{text-align:right;margin-top:18px}.info-dialog form button{cursor:pointer}
+
+/* Mapa de ícones e botões — v24 */
+.icon-map-dialog{width:min(780px,calc(100vw - 24px));max-height:90dvh;overflow:auto;}
+.icon-map-dialog .info-heading{position:sticky;top:0;z-index:2;background:var(--surface,#fff);padding:8px 0;}
+.icon-map-search-label{display:block;margin:12px 0 5px;font-weight:600;font-size:.9rem;}
+#iconMapSearch{width:100%;box-sizing:border-box;padding:11px 13px;border-radius:10px;border:1px solid var(--border,#bbb);background:var(--surface,#fff);color:var(--text,#222);font:inherit;}
+.icon-map-section{margin:22px 0;} .icon-map-section h3{margin:0 0 10px;font-size:1.02rem;}
+.icon-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:8px;}
+.icon-map-entry{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border,#ddd);border-radius:11px;font-size:.88rem;line-height:1.45;}
+.icon-map-symbol{display:inline-flex;align-items:center;justify-content:center;flex:0 0 104px;min-height:34px;border-radius:9px;background:var(--surface-2,rgba(120,120,120,.10));font-weight:650;text-align:center;overflow-wrap:anywhere;padding:3px;}
+.icon-map-entry[hidden],.icon-map-section[hidden]{display:none!important;}
+@media(max-width:520px){.icon-map-grid{grid-template-columns:1fr}.icon-map-symbol{flex-basis:94px}}
