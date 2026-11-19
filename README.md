@@ -428,3 +428,14 @@ Os atalhos são declarados em `manifest.webmanifest` (`shortcuts`) e usam URLs r
 **Compatibilidade:** a exibição do menu depende do sistema operacional e navegador. Se os atalhos não aparecerem após a atualização, feche e abra o PWA instalado; em alguns sistemas pode ser necessário reinstalar para atualizar o manifesto. Todos os três comandos permanecem acessíveis pelo menu normal do aplicativo.
 
 **Testes recomendados:** instalar/reinstalar em Chrome Android e Edge/Chrome desktop; abrir cada atalho, verificar que chega à tela correta; cancelar Novo Projeto; verificar que o botão Atualizar não repete a ação; testar abertura offline após o cache v40 ser instalado; conferir projetos antigos e backup JSON.
+
+
+## v41 — Window Controls Overlay (desktop)
+
+A v41 adiciona `display_override: ["window-controls-overlay", "standalone"]` ao manifesto. Em versões compatíveis de Chrome/Edge desktop, **quando o Mentalista estiver instalado e o sistema ativar o modo overlay**, o cabeçalho se ajusta à área segura informada pelo navegador (`titlebar-area-x`, `titlebar-area-y`, `titlebar-area-width` e `titlebar-area-height`). A faixa livre do cabeçalho permite arrastar a janela, enquanto menus, botões e controles permanecem clicáveis. Os botões de minimizar, maximizar e fechar continuam sendo **nativos do sistema**; o Mentalista não os substitui nem desenha botões falsos.
+
+O modo `standalone` continua como alternativa para navegadores sem suporte. A experiência mobile e as funções de mapas não foram alteradas. O suporte efetivo depende do sistema operacional, do navegador e da instalação do PWA.
+
+**Teste no Windows:** publicar a v41; abrir o PWA instalado pelo Edge/Chrome; verificar a barra superior e os botões nativos; testar arrastar pela área vazia, abrir os menus e usar os controles do cabeçalho; redimensionar e maximizar; testar também a página aberta em aba normal e no celular. Caso o modo overlay não seja ativado, a interface permanece no modo standalone normal. Em alguns casos, é necessário reiniciar ou reinstalar o aplicativo para atualizar o manifesto.
+
+**Segurança dos dados:** a v41 não modifica os formatos de projetos, históricos, backups ou configurações.
