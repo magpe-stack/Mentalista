@@ -341,3 +341,9 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .node .pinned-indicator{font:13px Arial,Helvetica,sans-serif!important;opacity:.72;pointer-events:none}
 .node .list-tool-icon{font-size:16px}
 @media print{.node .branch-toggle,.node .pinned-indicator{display:none!important}}
+
+/* v34.9: alinhamento real no rodapé, sem elementos no topo */
+.node text.branch-mini-count{font-family:Arial,Helvetica,sans-serif!important;font-size:7px!important;font-weight:400!important;letter-spacing:0!important;stroke:none!important;fill:#fff!important;pointer-events:none}
+.node .branch-toggle-disc{stroke-width:1!important}
+.node .list-tool-icon{font-size:14px!important}
+@media print{.node .branch-toggle{display:none!important}}

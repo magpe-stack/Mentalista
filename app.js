@@ -303,10 +303,32 @@ for(const n of [...p.nodes].filter(n=>visible.has(n.id)).sort((a,b)=>Number(a.ki
 const footerY=nodeHeight(n)-15;
 const actions=n.kind==='list'?[['copy','⧉','Copiar lista'],['style','☷','Alternar marcadores'],['pin',n.pinned?'▣':'◇',n.pinned?'Desafixar':'Fixar'],['edit','✎','Editar lista']]:n.kind==='text'?[['copy','⧉','Copiar texto'],['pin',n.pinned?'▣':'◇',n.pinned?'Desafixar':'Fixar'],['edit','✎','Editar texto']]:[['copy','⧉','Copiar nó'],['pin',n.pinned?'▣':'◇',n.pinned?'Desafixar':'Fixar'],['edit','✎','Editar nó']];
 if(n.kind==='text'||n.kind==='node'||!n.kind){g.append(el('line',{x1:12,x2:nodeWidth(n)-12,y1:footerY-23,y2:footerY-23,class:'node-footer-divider'}))}
-actions.forEach(([action,symbol,label],i)=>{const x=22+i*36;const b=el('g',{class:'list-tool', 'data-list-action':action,'data-list-id':n.id,role:'button',tabindex:'0','aria-label':label});b.append(el('rect',{x:x-14,y:footerY-17,width:29,height:28,rx:6,class:'list-tool-hit'}));b.append(el('text',{x,y:footerY+2,'text-anchor':'middle',class:'list-tool-icon'},symbol));g.append(b)});
+// Barra inferior: ações à esquerda e indicadores à direita, sempre dentro do nó.
 const descendants=branchDescendants(n.id,p);
-if(descendants.length){const bx=nodeWidth(n)-24,by=18;const b=el('g',{class:'branch-toggle','data-branch-toggle':n.id,role:'button',tabindex:'0','aria-label':(n.collapsed?'Expandir':'Recolher')+' ramificação de '+n.title});b.append(el('circle',{cx:bx,cy:by,r:14,class:'branch-toggle-hit'}));b.append(el('circle',{cx:bx,cy:by,r:5,class:'branch-toggle-disc'}));if(n.collapsed){const count=String(descendants.length);b.querySelector('.branch-toggle-disc').setAttribute('r',count.length>=3?12:11);b.append(el('text',{x:bx,y:by+0.4,class:'branch-mini-count digits-'+Math.min(count.length,4),'text-anchor':'middle','dominant-baseline':'middle','aria-hidden':'true','font-size':count.length>=4?'5':count.length===3?'5.5':count.length===2?'6':'7'},count))}g.append(b);if(n.collapsed){b.setAttribute('aria-label','Expandir ramificação: '+descendants.length+' nós ocultos');b.append(el('title',{},descendants.length+' nós ocultos — clicar para expandir'))}}
-if(n.pinned){g.append(el('text',{x:nodeWidth(n)-18,y:21,'text-anchor':'middle',class:'pinned-indicator'},'▣'))}
+const footerRight=nodeWidth(n)-18;
+const indicatorSpace=descendants.length?32:0;
+const actionMax=footerRight-indicatorSpace-16;
+const actionStep=Math.min(34,Math.max(20,(actionMax-34)/Math.max(1,actions.length-1)));
+actions.forEach(([action,symbol,label],i)=>{
+ const x=20+i*actionStep;
+ const b=el('g',{class:'list-tool','data-list-action':action,'data-list-id':n.id,role:'button',tabindex:'0','aria-label':label});
+ b.append(el('rect',{x:x-11,y:footerY-15,width:23,height:25,rx:5,class:'list-tool-hit'}));
+ b.append(el('text',{x,y:footerY+2,'text-anchor':'middle',class:'list-tool-icon'},symbol));g.append(b)
+});
+if(descendants.length){
+ const bx=footerRight,by=footerY-4;
+ const b=el('g',{class:'branch-toggle','data-branch-toggle':n.id,role:'button',tabindex:'0','aria-label':(n.collapsed?'Expandir':'Recolher')+' ramificação de '+n.title});
+ b.append(el('circle',{cx:bx,cy:by,r:13,class:'branch-toggle-hit'}));
+ b.append(el('circle',{cx:bx,cy:by,r:n.collapsed?10:5,class:'branch-toggle-disc'}));
+ if(n.collapsed){
+  const count=String(descendants.length);
+  b.append(el('text',{x:bx,y:by+0.5,class:'branch-mini-count digits-'+Math.min(count.length,4),'text-anchor':'middle','dominant-baseline':'middle','aria-hidden':'true'},count));
+  b.setAttribute('aria-label','Expandir ramificação: '+descendants.length+' nós ocultos');
+  b.append(el('title',{},descendants.length+' nós ocultos — clicar para expandir'));
+ }else b.append(el('title',{},'Recolher ramificação'));
+ g.append(b);
+}
+// O estado de fixação já é indicado pelo botão Fixar/Desafixar no rodapé.
 const port=el('g',{class:'node-port','data-port':n.id,role:'button','aria-label':'Arrastar para conectar ou criar filho'});port.append(el('circle',{cx:nodeWidth(n),cy:nodeHeight(n)/2,r:15,class:'port-disc'}));port.append(el('text',{x:nodeWidth(n),y:nodeHeight(n)/2+6,'text-anchor':'middle',class:'port-plus'},'+'));g.append(port);ui.nodes.append(g);for(const label of g.querySelectorAll('.stage-content-label'))fitStageLabel(label,nodeWidth(n)-Number(label.getAttribute('x')||14)-13)}
 for(const b of ui.nodes.querySelectorAll('.node[data-id] .stage-scroll-body'))b.scrollTop=scrollOffsets.get(b.closest('.node').dataset.id)||0;
 $('edgeActions').hidden=selectedEdge===null||!p.edges[selectedEdge];$('stats').textContent=`${p.nodes.length} caixas · ${p.edges.length} conexões`;$('toolbar').classList.toggle('has-selection',selected.length>0);$('overview').innerHTML=`<strong>${p.nodes.length}</strong> nós<br><strong>${p.edges.length}</strong> conexões<br><strong>${selected.length}</strong> selecionados`;updateForm();updateHistoryButtons();applyCamera()}
