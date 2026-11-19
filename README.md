@@ -338,3 +338,12 @@ O comando **Prioridade, etiquetas e prazo** permite atribuir prioridade (baixa, 
 - **Minimapa:** mostra a distribuição dos nós e a região visível do Palco. Clique ou arraste no minimapa para navegar. O botão × oculta o minimapa; o botão circular ▣ o reabre. A preferência de exibição é salva no navegador.
 - **Pesquisar e substituir:** abra **Editar → Buscar nós** (ou Ctrl+F), expanda **Pesquisar e substituir**, digite a expressão pesquisada e o texto substituto. Use **Prévia** para conferir a quantidade de ocorrências e **Substituir ocorrências** para confirmar a operação. A substituição é literal, sensível a maiúsculas e acentos, e altera títulos, descrições e itens de listas. Uma substituição pode ser desfeita com Ctrl+Z. O HTML formatado dos nós de texto não é modificado automaticamente, evitando perda de formatação.
 - O minimapa e seus controles não são incluídos na impressão.
+
+
+## Mentalista v37 — Imagens locais e notas recolhíveis
+
+Em **Editar → Edição**, selecione uma caixa e use **Imagem local na caixa** para anexar PNG, JPEG ou WebP. A imagem é reduzida no próprio navegador (lado máximo de 960 px), incorporada ao JSON e apresentada na área rolável do nó. Imagens muito grandes são rejeitadas para proteger o armazenamento local. Para remover, abra novamente a opção e escolha **Remover imagem**.
+
+Use **Nota recolhível** para escrever até 12.000 caracteres de informação complementar. A nota aparece na área rolável da caixa, com cabeçalho **Nota** para expandir ou recolher sem apagar seu conteúdo. O texto e o estado de recolhimento acompanham o projeto e os backups JSON. A alteração pode ser desfeita.
+
+**Atenção:** imagens incorporadas aumentam o tamanho dos arquivos JSON e o espaço utilizado no navegador. Faça backups regulares.
