@@ -314,3 +314,8 @@ O número dentro do círculo de ramificação recolhida usa tipografia fina (pes
 ### v34.7 — Contador legível dentro do círculo
 
 O contador usa fonte sem serifa fina, compacta e reduzida, com regras de CSS específicas que prevalecem sobre a tipografia dos nós. O círculo dos nós recolhidos foi ampliado discretamente para acomodar números de dois ou mais algarismos.
+
+
+### v34.8 — Indicadores alinhados no rodapé das caixas
+
+Os indicadores de ramificação recolhida (contador dentro de um círculo) e de nó fixado foram movidos do canto superior direito para a extremidade direita da barra inferior de ações. Os controles de copiar, fixar e editar ficam alinhados à esquerda, com espaçamento mais compacto, evitando sobreposição com os indicadores. O conteúdo e a área de leitura das caixas permanecem livres. Os indicadores continuam ausentes de impressões e SVG exportados.
