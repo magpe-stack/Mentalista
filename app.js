@@ -787,24 +787,8 @@ $('replaceApply').addEventListener('click',()=>{const plan=replacementPlan();if(
 $('findInput').addEventListener('input',refreshFind);
 $('closeFind').addEventListener('click',closeFind);
 $('findNodeMenu').addEventListener('click',openFind);
-$('findNodeConfig').addEventListener('click',openFind);
+$('findNodeConfig')?.addEventListener('click',openFind);
 $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);$('shortcutsDialog').showModal()});
-})();
-
-// Calculadora gerenciada pelo módulo independente calculator.js.
-
-// Espaço alterna permanentemente entre Ponteiro e Mãozinha; keyup não modifica o modo.
-
-// Ajuda institucional — v23
-for(const [buttonId,dialogId] of [['githubHelp','githubDialog'],['aboutHelp','aboutDialog']]){document.getElementById(buttonId)?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById(dialogId)?.showModal()})}
-document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.closeDialog)?.close()));
-
-// Catálogo de ícones e botões — manter sincronizado com cada alteração de interface.
-const iconMapDialog=document.getElementById('iconMapDialog');
-document.getElementById('iconMapOpen')?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById('iconMapSearch').value='';document.querySelectorAll('.icon-map-entry,.icon-map-section').forEach(el=>el.hidden=false);iconMapDialog.showModal();});
-document.getElementById('iconMapSearch')?.addEventListener('input',e=>{const query=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();let visible=0;document.querySelectorAll('.icon-map-section').forEach(section=>{let count=0;section.querySelectorAll('.icon-map-entry').forEach(entry=>{const value=entry.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();entry.hidden=!value.includes(query);if(!entry.hidden){count++;visible++;}});section.hidden=!count;});document.getElementById('iconMapEmpty').hidden=visible>0;});
-
-
 // v38 — Modelos reutilizáveis e interoperabilidade Markdown (somente texto).
 const TEMPLATE_SETS={
  brainstorm:['Ideia central','Possibilidades','Oportunidades','Desafios','Próximos passos'],
@@ -865,6 +849,23 @@ $('markdownFileInput').addEventListener('change',async e=>{
   projects.push(project);openProject(project.id);notify('Markdown importado como novo projeto');
  }catch(err){notify('Falha ao importar Markdown: '+err.message)}
 });
+
+
+})();
+
+// Calculadora gerenciada pelo módulo independente calculator.js.
+
+// Espaço alterna permanentemente entre Ponteiro e Mãozinha; keyup não modifica o modo.
+
+// Ajuda institucional — v23
+for(const [buttonId,dialogId] of [['githubHelp','githubDialog'],['aboutHelp','aboutDialog']]){document.getElementById(buttonId)?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById(dialogId)?.showModal()})}
+document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.closeDialog)?.close()));
+
+// Catálogo de ícones e botões — manter sincronizado com cada alteração de interface.
+const iconMapDialog=document.getElementById('iconMapDialog');
+document.getElementById('iconMapOpen')?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById('iconMapSearch').value='';document.querySelectorAll('.icon-map-entry,.icon-map-section').forEach(el=>el.hidden=false);iconMapDialog.showModal();});
+document.getElementById('iconMapSearch')?.addEventListener('input',e=>{const query=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();let visible=0;document.querySelectorAll('.icon-map-section').forEach(section=>{let count=0;section.querySelectorAll('.icon-map-entry').forEach(entry=>{const value=entry.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();entry.hidden=!value.includes(query);if(!entry.hidden){count++;visible++;}});section.hidden=!count;});document.getElementById('iconMapEmpty').hidden=visible>0;});
+
 
 // v26: apenas um grupo expandido por menu, preservando os comandos existentes.
 document.querySelectorAll('.menu-group').forEach(group=>group.addEventListener('toggle',()=>{

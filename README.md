@@ -379,3 +379,8 @@ Os botões externos de nota e imagem não têm mais molduras circulares. A lâmp
 Em **Arquivo → Projetos → Novo a partir de modelo**, escolha Brainstorming, Planejamento de projeto, Planejamento de história ou Estudo e pesquisa. Um projeto novo e independente é criado com nós conectados.
 
 Em **Arquivo → Guardar e restaurar**, use **Exportar Markdown (.md)** para obter uma representação textual hierárquica dos títulos, descrições e listas do mapa. **Importar Markdown (.md)** cria um novo projeto a partir de títulos (`#` a `######`) e tópicos, preservando os projetos existentes. O Markdown é um formato textual: não representa fielmente posições, cores, imagens, anexos ou todas as conexões cruzadas. Para backup completo, continue usando o JSON.
+
+
+### v38.1 — Correção dos botões de modelos e Markdown
+
+Corrigida uma referência a um botão de busca removido e movidos os comandos de modelos e Markdown para o escopo do gerenciador de projetos. Os comandos **Novo a partir de modelo**, **Exportar Markdown** e **Importar Markdown** agora compartilham as funções de criação, persistência e download do Mentalista. A importação cria um projeto separado; não substitui os existentes.
