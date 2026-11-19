@@ -357,3 +357,8 @@ As notas e imagens deixam de ocupar o interior dos nós. Um ícone de lâmpada �
 ### v37.2 — Fotografias sem moldura
 
 A imagem anexa é exibida sem cartão, título ou moldura, com largura de referência de 380 px e altura calculada pela proporção original (por exemplo, 380 × 214 em 16:9 e 380 × 676 em 9:16). A imagem permanece ligada ao ícone da câmera por uma linha e pode ser recolhida clicando novamente no ícone. Fotografias anteriormente salvas têm a proporção identificada ao serem carregadas.
+
+
+### v37.3 — Margem da lâmpada
+
+O ícone da lâmpada foi deslocado 12 px à esquerda para afastá-lo da borda da caixa. A linha de ligação do post-it acompanha o novo posicionamento. A câmera e os demais controles não foram alterados.
