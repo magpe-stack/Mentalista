@@ -331,3 +331,8 @@ document.querySelectorAll('[data-close-dialog]').forEach(button=>button.addEvent
 const iconMapDialog=document.getElementById('iconMapDialog');
 document.getElementById('iconMapOpen')?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById('iconMapSearch').value='';document.querySelectorAll('.icon-map-entry,.icon-map-section').forEach(el=>el.hidden=false);iconMapDialog.showModal();});
 document.getElementById('iconMapSearch')?.addEventListener('input',e=>{const query=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();let visible=0;document.querySelectorAll('.icon-map-section').forEach(section=>{let count=0;section.querySelectorAll('.icon-map-entry').forEach(entry=>{const value=entry.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();entry.hidden=!value.includes(query);if(!entry.hidden){count++;visible++;}});section.hidden=!count;});document.getElementById('iconMapEmpty').hidden=visible>0;});
+
+// v26: apenas um grupo expandido por menu, preservando os comandos existentes.
+document.querySelectorAll('.menu-group').forEach(group=>group.addEventListener('toggle',()=>{
+ if(group.open)group.closest('.dropdown')?.querySelectorAll('.menu-group').forEach(other=>{if(other!==group)other.open=false});
+}));

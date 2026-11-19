@@ -166,3 +166,8 @@ Acesse **Ajuda → Mapa de Ícones e botões** para consultar as funções dos c
 - **Círculo cromático:** no menu contextual, ao lado das amostras existentes, permite escolher qualquer cor hexadecimal com o seletor nativo do navegador. A cor fica registrada no mapa e no backup JSON.
 - **Checklists interativos:** em uma caixa Lista configurada como *caixas de marcação*, clique diretamente no quadradinho de cada tópico no Palco para marcar ou desmarcar. Também aceita Enter/Espaço com o quadradinho focado. Cada mudança pode ser desfeita com Ctrl+Z.
 - **Mapa de Ícones e botões:** atualizado com os dois controles.
+
+
+## v26 — Menus hierárquicos
+
+Os menus Arquivo, Editar, Sistema e Ajuda foram organizados em grupos expansíveis com espaçamento compacto. A busca rápida foi removida do menu Sistema e permanece em Editar. O Mapa de Ícones e botões permanece acessível em Ajuda → Referência de controles.
