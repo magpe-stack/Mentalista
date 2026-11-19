@@ -294,17 +294,21 @@ function renderNodeAttachments(g,n){
  const noteWidth=224, photoWidth=380, baseY=12;
  let offsetY=baseY;
  for(const item of items){
-  const iconY=item.type==='note'?27:57;
+  // Ícones independentes, sem círculos ou translações assimétricas.
+  // Mesma coluna e separação vertical constante para ambos os anexos.
+  const iconX=-25, iconY=item.type==='note'?26:58;
   const isOpen=item.type==='note'?!!n.noteOpen:!!n.imageOpen;
-  const icon=el('g',{transform:item.type==='note'?'translate(-12 0)':undefined,class:'node-attachment-icon','data-attachment-toggle':item.type,'data-attachment-node':n.id,role:'button',tabindex:'0','aria-label':item.label,'aria-expanded':String(isOpen)});
-  icon.append(el('circle',{cx:-17,cy:iconY,r:16,class:'node-attachment-icon-disc'}));
-  // SVG vetorial: não depende de fontes de emoji do dispositivo.
+  const icon=el('g',{class:'node-attachment-icon attachment-bare-icon','data-attachment-toggle':item.type,'data-attachment-node':n.id,role:'button',tabindex:'0','aria-label':item.label,'aria-expanded':String(isOpen)});
+  // Área invisível de toque (30×30) — não desenha moldura nem bola.
+  icon.append(el('rect',{x:iconX-15,y:iconY-15,width:30,height:30,rx:5,class:'node-attachment-hit'}));
   if(item.type==='note'){
-   icon.append(el('path',{d:`M -22 ${iconY-4} a6 6 0 1 1 10 0 c-1.3 2-3.3 3.4-3.3 6.2 h-3.6 c0-2.8-2-4.2-3.1-6.2 M -19 ${iconY+4} h5 M -18 ${iconY+7} h3`,transform:`translate(${-17*(1-.72)} ${iconY*(1-.72)}) scale(.72)`,class:'node-attachment-icon-stroke'}));
+   // Lâmpada com 14×19, centrada na coluna dos anexos.
+   icon.append(el('path',{d:`M ${iconX-6} ${iconY-4} a6 6 0 1 1 12 0 c-.3 2.5-3.5 4-3.5 7 h-5 c0-3-3.2-4.5-3.5-7 M ${iconX-3.5} ${iconY+6} h7 M ${iconX-2.5} ${iconY+9} h5`,class:'node-attachment-icon-stroke'}));
   }else{
-   icon.append(el('rect',{x:-24,y:iconY-5,width:14,height:11,rx:2,class:'node-attachment-camera'}));
-   icon.append(el('path',{d:`M -21 ${iconY-7} h6 l2 2`,class:'node-attachment-icon-stroke'}));
-   icon.append(el('circle',{cx:-17,cy:iconY+0.5,r:3,class:'node-attachment-icon-stroke'}));
+   // Câmera de 17×13, alinhada exatamente com a lâmpada.
+   icon.append(el('rect',{x:iconX-8.5,y:iconY-5,width:17,height:12,rx:2,class:'node-attachment-camera'}));
+   icon.append(el('path',{d:`M ${iconX-5} ${iconY-5} l2-3 h6 l2 3`,class:'node-attachment-icon-stroke'}));
+   icon.append(el('circle',{cx:iconX,cy:iconY+1,r:3,class:'node-attachment-icon-stroke'}));
   }
   icon.append(el('title',{},item.label));g.append(icon);
   if(!isOpen)continue;
@@ -314,7 +318,7 @@ function renderNodeAttachments(g,n){
   const popX=-(popWidth+34);
   const height=item.type==='note'?Math.min(218,Math.max(90,52+Math.ceil(n.note.length/34)*17)):Math.round(photoWidth/ratio);
   // Linha entre o ícone e o cartão externo.
-  g.append(el('path',{d:`M ${item.type==='note'?-45:-30} ${iconY} H ${item.type==='note'?-54:-42} V ${contentY+19} H ${popX+popWidth}`,class:'node-attachment-link'}));
+  g.append(el('path',{d:`M ${iconX-9} ${iconY} H ${iconX-20} V ${contentY+19} H ${popX+popWidth}`,class:'node-attachment-link'}));
   const fo=el('foreignObject',{x:popX,y:contentY,width:popWidth,height});
   const card=document.createElement('div');card.setAttribute('xmlns','http://www.w3.org/1999/xhtml');card.className='node-attachment-card '+(item.type==='note'?'node-attachment-postit':'node-attachment-photo');
   if(item.type==='note'){const heading=document.createElement('div');heading.className='node-attachment-card-heading';heading.textContent='Nota';card.append(heading)}

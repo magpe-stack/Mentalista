@@ -394,3 +394,12 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 /* v37.2 — fotografias sem cartão, sem título, na proporção original. */
 .node-attachment-photo{padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;display:block!important;}
 .node-attachment-photo img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;margin:0!important;border-radius:0!important;}
+
+/* v37.5 — ícones de anexos sem círculos, na mesma coluna e sem sobreposição. */
+.node .attachment-bare-icon{cursor:pointer;pointer-events:all}
+.node .attachment-bare-icon .node-attachment-hit{fill:transparent!important;stroke:none!important;pointer-events:all}
+.node .attachment-bare-icon .node-attachment-icon-stroke,
+.node .attachment-bare-icon .node-attachment-camera{stroke-width:1.9!important;stroke-linecap:round;stroke-linejoin:round}
+.node .attachment-bare-icon:hover .node-attachment-icon-stroke,
+.node .attachment-bare-icon:hover .node-attachment-camera{stroke-width:2.4!important}
+.node .attachment-bare-icon:focus-visible .node-attachment-hit{stroke:var(--accent,#8055ff)!important;stroke-width:1!important;stroke-dasharray:2 2}

@@ -367,3 +367,8 @@ O ícone da lâmpada foi deslocado 12 px à esquerda para afastá-lo da borda da
 ### v37.4 — Respiro interno do ícone da lâmpada
 
 O desenho da lâmpada foi reduzido a 72% em relação ao anterior, permanecendo centralizado, enquanto o círculo externo foi aumentado de raio 13 para 16 unidades SVG. Isso cria margem interna real entre a lâmpada e a borda do botão. O ícone de câmera e as funções dos anexos foram preservados.
+
+
+### v37.5 — Lâmpada e câmera sem círculos
+
+Os botões externos de nota e imagem não têm mais molduras circulares. A lâmpada e a câmera ficam alinhadas na mesma coluna à esquerda do nó, com distância vertical fixa e área de toque invisível de 30 × 30 unidades. As linhas continuam ligando os ícones aos anexos abertos. O post-it e a fotografia permanecem externos à caixa.
