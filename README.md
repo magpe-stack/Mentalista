@@ -188,3 +188,8 @@ Em **Sistema → Preferências / Configurações → Palco e Grade**, é possív
 - Restaurar os padrões do Palco (grade visível, intensidade 25%, encaixe desativado).
 
 As preferências são armazenadas localmente e aplicadas a todos os projetos no navegador. O encaixe só atua nos nós arrastados, sem reposicionar automaticamente os demais. O Mapa de Ícones e botões inclui os novos controles.
+
+
+## Mentalista v29 — Personalização das conexões
+
+Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**, **Retas** ou **Ortogonais** e a espessura de **1 a 6 px**. As mudanças aparecem imediatamente no Palco e ficam salvas neste navegador, aplicando-se a todos os projetos. O comando **Restaurar padrões das conexões** volta ao traçado curvo de 2 px. A seleção de elos, exclusão de conexões e exportação SVG respeitam a geometria e a espessura selecionadas. O **Ajuda → Mapa de Ícones e botões** inclui os novos controles.

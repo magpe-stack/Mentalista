@@ -186,3 +186,9 @@
 
 /* v28 — Preferências de grade e alinhamento */
 .stage-pref-row{margin-top:16px}.stage-pref-row>label{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}.stage-pref-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none}.stage-pref-range{display:grid;gap:8px}.stage-pref-range>label{justify-content:space-between}.stage-pref-range input[type=range]{width:100%;accent-color:var(--accent)}.stage-pref-range input:disabled{opacity:.45}.stage-pref-reset{margin-top:20px;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:9px;color:var(--text);cursor:pointer}.stage-pref-reset:hover{border-color:var(--accent)}
+
+/* v29 — Espessura configurável sem alterar destaque de seleção */
+.edge{stroke-width:var(--edge-width,2)}
+.edge.active{stroke-width:calc(var(--edge-width,2) * 1.5)}
+.edge.edge-picked{stroke-width:calc(var(--edge-width,2) * 2)}
+#prefEdgeStyle{display:block;width:100%;max-width:380px;margin-top:7px}
