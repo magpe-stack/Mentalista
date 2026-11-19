@@ -347,3 +347,10 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .node .branch-toggle-disc{stroke-width:1!important}
 .node .list-tool-icon{font-size:14px!important}
 @media print{.node .branch-toggle{display:none!important}}
+
+/* v35 — formulário de metadados responsivo */
+.metadata-dialog{max-width:min(460px,calc(100vw - 24px));width:100%;box-sizing:border-box}
+.metadata-form{display:grid;gap:14px;max-width:100%;min-width:0}
+.metadata-form label{display:grid;gap:6px;min-width:0}
+.metadata-form input,.metadata-form select{width:100%;max-width:100%;box-sizing:border-box;min-width:0}
+.metadata-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}

@@ -328,12 +328,49 @@ if(descendants.length){
  }else b.append(el('title',{},'Recolher ramificação'));
  g.append(b);
 }
+// Metadados discretos: descrição acessível no nó, sem sobrepor conteúdo ou controles.
+if(n.priority&&n.priority!=='none'||n.tags?.length||n.due){
+ const parts=[n.priority&&n.priority!=='none'?'Prioridade '+n.priority:'',n.tags?.length?'Etiquetas: '+n.tags.join(', '):'',n.due?'Prazo: '+n.due.split('-').reverse().join('/'):''].filter(Boolean);
+ g.setAttribute('aria-label','Nó: '+n.title+'. '+parts.join('. '));
+ g.append(el('title',{},parts.join(' · ')));
+}
 // O estado de fixação já é indicado pelo botão Fixar/Desafixar no rodapé.
 const port=el('g',{class:'node-port','data-port':n.id,role:'button','aria-label':'Arrastar para conectar ou criar filho'});port.append(el('circle',{cx:nodeWidth(n),cy:nodeHeight(n)/2,r:15,class:'port-disc'}));port.append(el('text',{x:nodeWidth(n),y:nodeHeight(n)/2+6,'text-anchor':'middle',class:'port-plus'},'+'));g.append(port);ui.nodes.append(g);for(const label of g.querySelectorAll('.stage-content-label'))fitStageLabel(label,nodeWidth(n)-Number(label.getAttribute('x')||14)-13)}
 for(const b of ui.nodes.querySelectorAll('.node[data-id] .stage-scroll-body'))b.scrollTop=scrollOffsets.get(b.closest('.node').dataset.id)||0;
 $('edgeActions').hidden=selectedEdge===null||!p.edges[selectedEdge];$('stats').textContent=`${p.nodes.length} caixas · ${p.edges.length} conexões`;$('toolbar').classList.toggle('has-selection',selected.length>0);$('overview').innerHTML=`<strong>${p.nodes.length}</strong> nós<br><strong>${p.edges.length}</strong> conexões<br><strong>${selected.length}</strong> selecionados`;updateForm();updateHistoryButtons();applyCamera()}
 function updateForm(){const n=selected.length===1?getNode(selected[0]):null;if(!n){setPropertyOpen(false);return;}if(document.activeElement!==$('nodeTitle'))$('nodeTitle').value=n.title;if(document.activeElement!==$('nodeDesc'))$('nodeDesc').value=n.desc||'';$('nodeColor').value=n.color||'violet'}
 function choose(id,multi=false){selectedEdge=null;if(multi){selected=selected.includes(id)?selected.filter(v=>v!==id):[...selected,id]}else selected=[id];render()}
+// v35 — duplicação segura com novos IDs e preservação dos dados originais.
+function duplicateSelection(withBranches=false){
+ const p=current();if(!p||selected.length!==1)return notify('Selecione uma caixa para duplicar');
+ const root=selected[0],ids=withBranches?[root,...branchDescendants(root,p)]:[root];
+ const source=p.nodes.filter(n=>ids.includes(n.id));if(!source.length)return;
+ if(p.nodes.length+source.length>1500)return notify('Limite de caixas atingido');
+ const idsMap=new Map(source.map(n=>[n.id,uid()]));
+ snapshot();const offset=48;
+ const copies=source.map(n=>({...clone(n),id:idsMap.get(n.id),x:n.x+offset,y:n.y+offset,pinned:false}));
+ p.nodes.push(...copies);
+ if(withBranches){for(const edge of [...p.edges])if(idsMap.has(edge.a)&&idsMap.has(edge.b))p.edges.push({...clone(edge),a:idsMap.get(edge.a),b:idsMap.get(edge.b)})}
+ selected=[idsMap.get(root)];selectedEdge=null;render();scheduleSave();notify(withBranches?`${copies.length} caixas duplicadas`:'Caixa duplicada');
+}
+function openNodeMetadata(){
+ if(selected.length!==1)return notify('Selecione uma caixa para editar os detalhes');
+ const n=getNode(selected[0]);if(!n)return;
+ const dialog=$('nodeMetadataDialog');dialog.dataset.nodeId=n.id;
+ $('metaPriority').value=n.priority||'none';$('metaTags').value=(n.tags||[]).join(', ');$('metaDue').value=n.due||'';
+ dialog.showModal();
+}
+function saveNodeMetadata(e){
+ e.preventDefault();const dialog=$('nodeMetadataDialog'),n=getNode(dialog.dataset.nodeId);if(!n){dialog.close();return}
+ const priority=$('metaPriority').value;
+ const tags=[...new Set($('metaTags').value.split(',').map(x=>x.trim().slice(0,32)).filter(Boolean))].slice(0,8);
+ const due=$('metaDue').value;
+ if(due&&!/^\d{4}-\d{2}-\d{2}$/.test(due))return notify('Prazo inválido');
+ snapshot();n.priority=priority;n.tags=tags;n.due=due;dialog.close();render();scheduleSave();notify('Detalhes salvos');
+}
+$('nodeMetadataForm').addEventListener('submit',saveNodeMetadata);
+$('metaCancel').addEventListener('click',()=>$('nodeMetadataDialog').close());
+for(const [id,fn] of [['duplicateNode',()=>duplicateSelection(false)],['duplicateBranch',()=>duplicateSelection(true)],['editNodeMetadata',openNodeMetadata]])$(id).addEventListener('click',fn);
 function addNode(kind='free'){const p=current(),parent=getNode(selected.at(-1));snapshot();const n={id:uid(),x:0,y:0,title:'Novo nó',desc:'',color:'slate'};if(kind==='child'&&parent){n.x=parent.x+300;n.y=parent.y+p.nodes.filter(x=>x.x===parent.x+300).length*90;p.edges.push({a:parent.id,b:n.id})}else if(kind==='sibling'&&parent){const incoming=p.edges.find(e=>e.b===parent.id);const ancestor=incoming&&getNode(incoming.a);n.x=parent.x;n.y=parent.y+100;if(ancestor)p.edges.push({a:ancestor.id,b:n.id})}else{const r=ui.viewport.getBoundingClientRect();n.x=(r.width/2-camera.x)/camera.z-100;n.y=(r.height/2-camera.y)/camera.z-35}p.nodes.push(n);selected=[n.id];render();scheduleSave()}
 function removeSelected(){if(selectedEdge!==null){removeSelectedEdge();return}if(!selected.length)return;const p=current();if(p.nodes.length===selected.length){notify('O mapa precisa manter pelo menos um nó');return}snapshot();p.nodes=p.nodes.filter(n=>!selected.includes(n.id));p.edges=p.edges.filter(e=>!selected.includes(e.a)&&!selected.includes(e.b));selected=[];render();scheduleSave()}
 function removeSelectedEdge(){const p=current();if(selectedEdge===null||!p.edges[selectedEdge])return;snapshot();p.edges.splice(selectedEdge,1);selectedEdge=null;render();scheduleSave();notify('Elo removido; caixas preservadas')}

@@ -324,3 +324,10 @@ Os indicadores de ramificação recolhida (contador dentro de um círculo) e de 
 ### v34.9 — Correção real dos indicadores
 
 A posição dos controles foi corrigida no próprio código SVG: os botões de ação permanecem à esquerda da barra inferior, o contador de ramificações fica à direita e a indicação de fixação duplicada no topo foi removida (o botão de fixar já informa seu estado). O título e a área de leitura não recebem indicadores.
+
+
+## Novidades v35 — Duplicação e detalhes
+
+Em **Editar → Edição**, selecione uma caixa e escolha **Duplicar nó** para copiar somente aquela caixa, ou **Duplicar ramificação** para copiar a caixa e seus descendentes com suas conexões internas. As cópias recebem IDs próprios, são deslocadas no Palco e não ficam fixadas. As operações podem ser desfeitas com Ctrl+Z.
+
+O comando **Prioridade, etiquetas e prazo** permite atribuir prioridade (baixa, média, alta ou urgente), até oito etiquetas e uma data. Os metadados são armazenados no nó e preservados nas exportações JSON e backups; podem ser consultados no título acessível da caixa. O Mapa de Ícones e botões inclui os novos comandos.
