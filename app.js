@@ -366,6 +366,8 @@ $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').
 // Calculadora independente: não altera os projetos nem interfere no editor.
 (()=>{
  const el=id=>document.getElementById(id),panel=el('calculator'),display=el('calculatorDisplay'),history=el('calculatorHistory'),message=el('calculatorMessage');
+ // A calculadora deve ser filha direta do body para não ser recortada por contêineres.
+ if(panel && panel.parentElement!==document.body)document.body.appendChild(panel);
  let entry='0',stored=null,operator=null,awaiting=false,lastOperand=null,lastOperator=null;
  const operations={add:(a,b)=>a+b,subtract:(a,b)=>a-b,multiply:(a,b)=>a*b,divide:(a,b)=>b===0?NaN:a/b};
  const format=n=>{if(!Number.isFinite(n))return 'Erro';if(Object.is(n,-0))n=0;return String(Number(n.toPrecision(12))).replace('.',',')};
@@ -384,11 +386,23 @@ $('shortcuts').addEventListener('click',()=>{document.querySelectorAll('.menu').
  else if(k==='equals'){if(operator!==null){const operand=awaiting?stored:number(),op=operator,n=operations[op](stored,operand);if(result(n)){history.textContent=`${format(stored)} ${ {add:'+',subtract:'−',multiply:'×',divide:'÷'}[op]} ${format(operand)} =`;lastOperator=op;lastOperand=operand;stored=null;operator=null;display.textContent=entry.replace('.',',');return;}}else if(lastOperator!==null){result(operations[lastOperator](number(),lastOperand));}}
  show();}
  panel.querySelectorAll('[data-calc]').forEach(b=>b.addEventListener('click',()=>key(b.dataset.calc)));
- const openCalculator=()=>{panel.hidden=false;panel.removeAttribute('hidden');panel.style.display='flex';panel.style.left='';panel.style.top='';panel.style.right='';panel.style.zIndex='10000';panel.querySelector('[data-calc="7"]')?.focus();};
+ const openCalculator=()=>{
+  if(panel.parentElement!==document.body)document.body.appendChild(panel);
+  panel.hidden=false;panel.removeAttribute('hidden');
+  panel.style.setProperty('display','flex','important');
+  panel.style.setProperty('visibility','visible','important');
+  panel.style.setProperty('opacity','1','important');
+  panel.style.setProperty('position','fixed','important');
+  panel.style.setProperty('z-index','2147483000','important');
+  panel.style.left='auto';panel.style.right='max(8px, 2vw)';
+  panel.style.top='clamp(8px, 12vh, 105px)';
+  panel.style.maxHeight='calc(100dvh - 16px)';
+  panel.querySelector('[data-calc="7"]')?.focus({preventScroll:true});
+ };
  el('calculatorOpen').addEventListener('click',openCalculator);
  // O botão do editor usa a mesma instância da calculadora, sobreposta ao editor.
  el('editorCalculator')?.addEventListener('click',openCalculator);
- el('calculatorClose').addEventListener('click',()=>{panel.hidden=true;panel.style.display='';el('calculatorOpen')?.focus();});
+ el('calculatorClose').addEventListener('click',()=>{panel.hidden=true;panel.style.removeProperty('display');el('calculatorOpen')?.focus();});
  el('calculatorCopy').addEventListener('click',async()=>{if(entry==='Erro')return;try{await navigator.clipboard.writeText(entry);message.textContent='Resultado copiado';}catch{const t=document.createElement('textarea');t.value=entry;document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();message.textContent=ok?'Resultado copiado':'Não foi possível copiar';}});
  panel.addEventListener('keydown',e=>{if(e.target.matches('button')&&['Enter',' '].includes(e.key))return;const keys={'/':'divide','*':'multiply','-':'subtract','+':'add','.':'decimal',',':'decimal','Enter':'equals','=':'equals','Backspace':'back','Escape':'close','%':'percent'};const k=/^\d$/.test(e.key)?e.key:keys[e.key];if(k){e.preventDefault();if(k==='close')el('calculatorClose').click();else key(k);}});
  const head=el('calculatorDrag');let drag=null;head.addEventListener('pointerdown',e=>{if(e.target.closest('button')||e.button!==0)return;const r=panel.getBoundingClientRect();drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};head.setPointerCapture(e.pointerId);});head.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;panel.style.left=Math.max(0,Math.min(innerWidth-panel.offsetWidth,e.clientX-drag.dx))+'px';panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-drag.dy))+'px';panel.style.right='auto';});const stop=()=>drag=null;head.addEventListener('pointerup',stop);head.addEventListener('pointercancel',stop);
@@ -411,10 +425,4 @@ document.querySelectorAll('.menu-group').forEach(group=>group.addEventListener('
  if(group.open)group.closest('.dropdown')?.querySelectorAll('.menu-group').forEach(other=>{if(other!==group)other.open=false});
 }));
 
-// v30.1 — inicialização de segurança para os dois acionadores da calculadora.
-// Não duplica operações: só age se o primeiro manipulador não abriu o painel.
-document.addEventListener('click',event=>{
- const trigger=event.target.closest?.('#calculatorOpen,#editorCalculator');
- if(!trigger)return;
- queueMicrotask(()=>{const panel=document.getElementById('calculator');if(panel?.hidden){panel.hidden=false;panel.removeAttribute('hidden');panel.style.display='flex';panel.style.zIndex='10000';panel.querySelector('[data-calc="7"]')?.focus()}});
-});
+// v30.2: os dois botões utilizam diretamente openCalculator, sem acionadores duplicados.

@@ -208,3 +208,7 @@ Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**,
 - Ícone da calculadora centralizado no botão circular.
 - Preferências de caixas e tipografia reposicionadas dentro do contêiner de Configurações, sem extrapolar a largura.
 - Cache offline atualizado para `mentalista-v30-1`.
+
+
+### Correção v30.2 — Calculadora flutuante
+A janela da calculadora é posicionada diretamente no documento, acima dos contêineres do Palco, para evitar recortes ou ocultação. Ambos os acionadores (barra superior e Editor) abrem a mesma calculadora; o botão de fechar a oculta.

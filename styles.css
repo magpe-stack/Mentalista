@@ -211,3 +211,9 @@
 .settings-dialog .node-pref-row input[type=range]{width:100%;min-width:0;max-width:100%}
 .settings-dialog .node-pref-row output{float:none;display:block}
 @media(max-width:600px){.settings-dialog .node-pref-section{max-width:calc(100% - 24px);margin:12px;padding:14px}}
+
+/* v30.2: calculadora independente de contêineres e responsiva */
+body > #calculator{position:fixed!important;z-index:2147483000!important;max-height:calc(100dvh - 16px);overflow-y:auto;overscroll-behavior:contain;}
+body > #calculator[hidden]{display:none!important;}
+body > #calculator:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;}
+@media(max-height:650px){body > #calculator .calculator-grid button{min-height:36px}body > #calculator .calculator-screen{min-height:80px;padding:7px}}
