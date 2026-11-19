@@ -193,3 +193,11 @@ As preferências são armazenadas localmente e aplicadas a todos os projetos no 
 ## Mentalista v29 — Personalização das conexões
 
 Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**, **Retas** ou **Ortogonais** e a espessura de **1 a 6 px**. As mudanças aparecem imediatamente no Palco e ficam salvas neste navegador, aplicando-se a todos os projetos. O comando **Restaurar padrões das conexões** volta ao traçado curvo de 2 px. A seleção de elos, exclusão de conexões e exportação SVG respeitam a geometria e a espessura selecionadas. O **Ajuda → Mapa de Ícones e botões** inclui os novos controles.
+
+
+## Versão 30 — Caixas, tipografia e barra superior
+
+- Em Sistema → Configurações, ajuste a largura padrão dos nós comuns (160–360 px), fonte, tamanho e espaçamento entre letras. As preferências são armazenadas localmente e podem ser restauradas.
+- A barra superior reúne calculadora, Ponteiro, Mãozinha, zoom, ajuste de tela, modo claro/escuro e tela cheia, com botões circulares.
+- O nome do projeto e o indicador de salvamento aparecem discretamente no rodapé direito do Palco.
+- O Mapa de Ícones e botões inclui os novos controles.
