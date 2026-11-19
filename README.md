@@ -488,3 +488,10 @@ Em **Arquivo**, use **Abrir arquivo local**, **Salvar no arquivo** e **Salvar co
 No menu **Editar → Área de transferência**, use **Copiar caixas** e **Colar caixas** para duplicar caixas selecionadas, incluindo conexões entre elas. O conteúdo estruturado fica disponível nesta sessão do aplicativo, enquanto o texto é enviado à área de transferência do sistema quando autorizado. As caixas coladas recebem novos identificadores e podem ser desfeitas.
 
 **Copiar imagem** suporta imagens PNG anexadas a uma caixa; **Colar imagem** lê PNG da área de transferência para a caixa selecionada, quando o navegador permite. Permissões e suporte variam; não são apagados projetos existentes.
+
+
+## v47 — Resiliência offline
+
+O indicador discreto na tela apresenta a situação declarada da rede e a presença dos arquivos essenciais no cache da versão atual. Em **Sistema → Manutenção → Verificar disponibilidade offline**, é possível conferir a lista de recursos ausentes. **Reparar aplicativo** busca novamente os arquivos essenciais pela rede e os recoloca no cache, sem apagar projetos, anexos, histórico de versões ou preferências. A verificação de arquivos não garante a integridade semântica de projetos; faça backups JSON regularmente. A primeira instalação/atualização precisa de conexão para preencher o cache.
+
+Em **Editar → Área de transferência**, foi removido o texto explicativo abaixo dos botões para manter o menu compacto. As funções continuam disponíveis no Mapa de Ícones e Botões.

@@ -483,3 +483,7 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 
 /* v44 — avisos acessíveis para o File Handling */
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* v47 — status discreto de disponibilidade offline */
+.offline-badge{position:fixed;left:10px;bottom:10px;z-index:1500;max-width:min(250px,60vw);padding:5px 9px;border-radius:9px;background:var(--surface-2,#f5f5f5);color:var(--text,#222);border:1px solid #8887;box-shadow:0 2px 8px #0002;font:600 11px/1.35 system-ui,sans-serif;pointer-events:none;opacity:.88}
+.offline-badge[data-state="ready"]{border-color:#23865f}.offline-badge[data-state="missing"]{border-color:#bd7925}.offline-badge[data-state="unsupported"]{border-color:#9a6571}

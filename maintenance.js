@@ -41,16 +41,23 @@ bind('maintenanceClearCache',async()=>{
  if(!confirm('Remover '+keys.length+' cache(s) de arquivos do Mentalista? Os projetos e o histórico não serão apagados intencionalmente. Para usar offline novamente, abra o app conectado à internet.'))return;
  const result=await Promise.all(keys.map(k=>caches.delete(k)));show(result.every(Boolean)?'Caches do Mentalista removidos. Reabra o aplicativo online para recriar os arquivos offline.':'Alguns caches não puderam ser removidos.');
 });
+bind('maintenanceOffline',async()=>{
+ if(!window.MentalistaOffline){show('Módulo de verificação offline indisponível. Recarregue o aplicativo.');return}
+ const r=await window.MentalistaOffline.check();
+ show('VERIFICAÇÃO OFFLINE\nCache: '+r.cacheName+'\nArquivos verificados: '+r.checked+'\nAusentes ou inválidos: '+r.missing.length+'\nControle do service worker: '+(r.controlled?'ativo':'ainda não ativo')+'\nRede declarada: '+(r.online?'online':'offline')+(r.missing.length?'\n\nArquivos a reparar:\n'+r.missing.join('\n'):'\n\nTodos os arquivos essenciais estão no cache. Isso não garante a integridade dos dados dos projetos.'));
+});
 bind('maintenanceRepair',async()=>{
  if(!navigator.onLine){show('Conecte-se à internet antes de reparar os arquivos do aplicativo.');return}
- const reg=await registration();if(reg)await reg.update();
- if(!('caches'in window)){show('Este navegador não permite reparar o cache via Cache Storage.');return}
- const files=['./','./index.html','./styles.css','./app.js','./calculator.js','./maintenance.js','./manifest.webmanifest','./assets/logo.svg','./assets/icon-192.png','./assets/icon-512.png'];
- const temp='mentalista-repair-temp-v39-1';await caches.delete(temp);const cache=await caches.open(temp);
- try{for(const path of files){const url=new URL(path,appScope());const response=await fetch(url.href,{cache:'reload'});if(!response.ok)throw Error('Falha HTTP '+response.status+' em '+path);await cache.put(url.href,response)}
- const target=await caches.open('mentalista-v39-1');for(const req of await cache.keys()){const res=await cache.match(req);if(res)await target.put(req,res)}
- show('Arquivos essenciais baixados e repostos no cache. Recarregue o aplicativo quando terminar de salvar seu trabalho.');
- }catch(e){show('Reparo incompleto: '+e.message+'\nO cache principal anterior foi preservado até a etapa de cópia.')}finally{await caches.delete(temp)}
+ if(!window.MentalistaOffline||!('caches'in window)){show('Verificação de cache indisponível neste navegador.');return}
+ const {essential,cacheName}=window.MentalistaOffline;
+ const scope=appScope();const staging=cacheName+'-repair-temp';await caches.delete(staging);const temp=await caches.open(staging);
+ try{
+  for(const name of essential){const url=new URL(name,scope).href;const res=await fetch(url,{cache:'reload'});if(!res.ok||res.type==='opaque')throw Error('Arquivo indisponível: '+name+' (HTTP '+res.status+')');await temp.put(url,res)}
+  const target=await caches.open(cacheName);for(const req of await temp.keys()){const res=await temp.match(req);if(res)await target.put(req,res)}
+  const reg=await registration();if(reg)await reg.update();
+  await window.MentalistaOffline.refresh();
+  show('Arquivos essenciais verificados e atualizados no cache '+cacheName+'. Nenhum projeto ou histórico foi apagado. Recarregue a página após guardar seu trabalho.');
+ }catch(e){show('Reparo não concluído: '+e.message+'\nA cópia temporária foi descartada. Seus projetos não foram alterados.')}finally{await caches.delete(staging)}
 });
 bind('maintenanceResetPrefs',async()=>{
  if(!confirm('Restaurar as preferências gerais do Mentalista? Projetos, históricos, rascunhos e backups não serão excluídos. A página será recarregada.'))return;
