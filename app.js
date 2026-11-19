@@ -159,6 +159,70 @@ function updateHistoryButtons(){$('undo').disabled=$('quickUndo').disabled=!hist
 function restore(state){selectedEdge=null;const p=current();if(!p)return;p.nodes=clone(state.nodes);p.edges=clone(state.edges);selected=selected.filter(id=>p.nodes.some(n=>n.id===id));render();scheduleSave()}
 function undo(){if(!history.length)return;const p=current();future.push(clone({nodes:p.nodes,edges:p.edges}));restore(history.pop());updateHistoryButtons()}
 function redo(){if(!future.length)return;const p=current();history.push(clone({nodes:p.nodes,edges:p.edges}));restore(future.pop());updateHistoryButtons()}
+// v33 — organização automática determinística, preservando nós, conexões e fixações.
+function organizeMap(mode){
+ const project=current();if(!project||!project.nodes.length)return notify('Não há caixas para organizar');
+ const nodes=project.nodes, byId=new Map(nodes.map(n=>[n.id,n]));
+ const adj=new Map(nodes.map(n=>[n.id,new Set()]));
+ for(const edge of project.edges){if(adj.has(edge.a)&&adj.has(edge.b)){adj.get(edge.a).add(edge.b);adj.get(edge.b).add(edge.a)}}
+ const order=new Map(nodes.map((n,i)=>[n.id,i]));
+ const visited=new Set(),components=[];
+ // Os componentes são independentes. O primeiro nó é a raiz do seu componente.
+ for(const root of nodes){if(visited.has(root.id))continue;
+  const queue=[root.id],levels=new Map([[root.id,0]]),parents=new Map();visited.add(root.id);
+  for(let k=0;k<queue.length;k++){
+   const id=queue[k],neighbors=[...adj.get(id)].sort((a,b)=>order.get(a)-order.get(b));
+   for(const next of neighbors)if(!visited.has(next)){visited.add(next);levels.set(next,levels.get(id)+1);parents.set(next,id);queue.push(next)}
+  }
+  components.push({queue,levels,parents});
+ }
+ const gapX=76,gapY=42,proposals=new Map();let componentY=0;
+ for(const comp of components){
+  const layers=new Map();for(const id of comp.queue){const level=comp.levels.get(id);if(!layers.has(level))layers.set(level,[]);layers.get(level).push(id)}
+  const maxLevel=Math.max(...layers.keys());
+  // Ordem estável: nós irmãos agrupados pelo ancestral, evitando cruzamentos desnecessários.
+  for(let d=1;d<=maxLevel;d++)layers.get(d).sort((a,b)=>order.get(comp.parents.get(a))-order.get(comp.parents.get(b))||order.get(a)-order.get(b));
+  const rowGap=gapY, widthAt=d=>Math.max(...(layers.get(d)||[]).map(id=>nodeWidth(byId.get(id))),nodePrefs.width);
+  if(mode==='radial'){
+   const root=comp.queue[0],rootNode=byId.get(root),cx=componentY+rootNode.x,cy=componentY+rootNode.y;
+   // Componentes adicionais são separados no eixo horizontal.
+   const baseX=components.indexOf(comp)*1000;
+   proposals.set(root,{x:baseX,y:0});
+   const others=comp.queue.filter(id=>id!==root);
+   const count=others.length;
+   const maxH=Math.max(...comp.queue.map(id=>nodeHeight(byId.get(id))));
+   const maxW=Math.max(...comp.queue.map(id=>nodeWidth(byId.get(id))));
+   const radius=Math.max(250,Math.ceil(count/(2*Math.PI))*(Math.max(maxW,maxH)+gapX));
+   others.forEach((id,i)=>{const angle=-Math.PI/2+2*Math.PI*i/Math.max(1,count),n=byId.get(id);proposals.set(id,{x:Math.round(baseX+radius*Math.cos(angle)),y:Math.round(radius*Math.sin(angle))})});
+   continue;
+  }
+  const horizontal=mode==='tree';
+  const layerCrossSizes=new Map();let largestCross=0;
+  for(const [depth,ids] of layers){const cross=ids.reduce((sum,id)=>sum+(horizontal?nodeHeight(byId.get(id)):nodeWidth(byId.get(id)))+rowGap,-rowGap);layerCrossSizes.set(depth,cross);largestCross=Math.max(largestCross,cross)}
+  let major=0;
+  for(let depth=0;depth<=maxLevel;depth++){
+   const ids=layers.get(depth),cross=layerCrossSizes.get(depth);let minor=(largestCross-cross)/2;
+   for(const id of ids){const n=byId.get(id);proposals.set(id,horizontal?{x:major,y:componentY+minor}:{x:minor,y:componentY+major});minor+=(horizontal?nodeHeight(n):nodeWidth(n))+rowGap}
+   major+=widthAt(depth)+gapX;
+  }
+  componentY+=horizontal?largestCross+240:major+240;
+ }
+ // Nós fixados não mudam. Evitar que nós móveis sejam colocados sobre eles.
+ const occupied=nodes.filter(n=>n.pinned).map(n=>({x:n.x,y:n.y,w:nodeWidth(n),h:nodeHeight(n)}));
+ const intersects=(a,b)=>a.x<b.x+b.w+24&&a.x+a.w+24>b.x&&a.y<b.y+b.h+24&&a.y+a.h+24>b.y;
+ const movable=nodes.filter(n=>!n.pinned);
+ const positions=new Map();
+ for(const n of movable){const p=proposals.get(n.id);if(!p)continue;let rect={x:p.x,y:p.y,w:nodeWidth(n),h:nodeHeight(n)};let attempts=0;
+  while(occupied.some(other=>intersects(rect,other))&&attempts++<500)rect.y+=Math.max(48,rect.h+gapY);
+  occupied.push(rect);positions.set(n.id,rect);
+ }
+ if(!positions.size)return notify('Todos os nós estão fixados');
+ // A operação inteira é uma única etapa de Desfazer.
+ snapshot();for(const [id,pos] of positions){const n=byId.get(id);n.x=Math.round(pos.x);n.y=Math.round(pos.y)}
+ selectedEdge=null;render();scheduleSave();
+ document.querySelectorAll('.menu').forEach(m=>m.open=false);
+ notify('Mapa organizado: '+({tree:'árvore',hierarchy:'hierarquia',radial:'radial'}[mode]||mode));
+}
 function projectOptions(){$('projects').replaceChildren(...projects.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;return o}));$('projects').value=active;$('projectName').textContent=current()?.name||''}
 function openProject(id){if(!projects.some(p=>p.id===id))return;if($('findPanel')&&!$('findPanel').hidden){$('findInput').value='';search='';findMatches=[];refreshFind()}active=id;selected=[];selectedEdge=null;history=[];future=[];projectOptions();render();requestAnimationFrame(fit);persist()}
 function showMyProjects(){
@@ -399,7 +463,7 @@ document.querySelectorAll('[data-paint]').forEach(b=>b.addEventListener('click',
 for(const [id,fn] of Object.entries({quickList:()=>createList(),quickEditor:openEditor,quickNode:()=>addNode(),quickChild:()=>addNode('child'),quickSibling:()=>addNode('sibling'),quickEdit:openProperties,quickDelete:removeSelected,quickUndo:undo,quickRedo:redo,fitQuick:centerSelectedOrFit,zoomInMenu:()=>zoom(zoomFactor(1.2)),zoomOutMenu:()=>zoom(zoomFactor(1/1.2)),fullscreen:()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()}}))$(id).addEventListener('click',fn);
 document.querySelectorAll('.menu').forEach(menu=>menu.addEventListener('toggle',()=>{if(menu.open)document.querySelectorAll('.menu').forEach(other=>{if(other!==menu)other.open=false})}));
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menu'))document.querySelectorAll('.menu').forEach(m=>m.open=false)});
-const actions={myProjects:showMyProjects,newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(zoomFactor(1.2)),zoomOut:()=>zoom(zoomFactor(1/1.2)),exportJson,exportBackup,restoreBackup:()=>$('backupFileInput').click(),importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),openSettings:openSettings};
+const actions={myProjects:showMyProjects,newProject:addProject,renameProject,deleteProject,addNode:()=>addNode(),addList:()=>createList(),addChild:()=>addNode('child'),addSibling:()=>addNode('sibling'),connect,organizeTree:()=>organizeMap('tree'),organizeHierarchy:()=>organizeMap('hierarchy'),organizeRadial:()=>organizeMap('radial'),openEditorMenu:openEditor,removeLinkMenu:removeSelectedEdge,deleteNode:removeSelected,undo,redo,fit,center:()=>{const n=current()?.nodes[0];if(!n)return;const r=ui.viewport.getBoundingClientRect();camera.x=r.width/2-(n.x+nodeWidth(n)/2)*camera.z;camera.y=r.height/2-(n.y+nodeHeight(n)/2)*camera.z;applyCamera()},zoomIn:()=>zoom(zoomFactor(1.2)),zoomOut:()=>zoom(zoomFactor(1/1.2)),exportJson,exportBackup,restoreBackup:()=>$('backupFileInput').click(),importJson:()=>$('fileInput').click(),exportSvg:svgExport,print:printMap,help:()=>$('helpDialog').showModal(),openSettings:openSettings};
 for(const[id,fn]of Object.entries(actions))$(id).addEventListener('click',fn);$('projects').addEventListener('change',e=>openProject(e.target.value));
 document.addEventListener('keydown',e=>{const ctrl=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();if(ctrl&&e.shiftKey&&k==='e'){e.preventDefault();openEditor();return}if(ctrl&&e.shiftKey&&k==='l'){e.preventDefault();createList();return}if(ctrl&&k==='f'){e.preventDefault();openFind();return}if(ctrl&&k==='a'&&!e.target.closest('input,textarea,select,[contenteditable]')&&!document.querySelector('dialog[open]')&&($('floatingEditor').hidden||!$('floatingEditor').contains(document.activeElement))){e.preventDefault();selected=current()?.nodes.map(n=>n.id)||[];selectedEdge=null;render();return}if($('findPanel').hidden===false){if(e.key==='Escape'){e.preventDefault();closeFind();return}if(e.target===$('findInput')&&['ArrowDown','ArrowUp','Enter'].includes(e.key)){e.preventDefault();navigateFind(e.key);return}}const input=e.target.closest('input,textarea,select,[contenteditable]');if(!ctrl&&!e.altKey&&!e.repeat&&k==='v'&&!e.target.closest('input,textarea,select,[contenteditable]')){setInteractionMode('pointer');return}if(!ctrl&&!e.altKey&&!e.repeat&&k==='h'&&!e.target.closest('input,textarea,select,[contenteditable]')){setInteractionMode('hand');return}if(!ctrl&&!e.altKey&&!e.shiftKey&&e.code==='Space'&&!e.target.closest('input,textarea,select,button,a,summary,[role=button],[contenteditable]')&&!document.querySelector('dialog[open]')&&($('floatingEditor').hidden||!$('floatingEditor').contains(document.activeElement))){e.preventDefault();if(!e.repeat)setInteractionMode(interactionMode==='pointer'?'hand':'pointer');return}if(input||$('helpDialog').open||$('shortcutsDialog').open||$('listDialog').open||!$('floatingEditor').hidden&&$('floatingEditor').contains(document.activeElement))return;if(ctrl&&k==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(ctrl&&k==='y'){e.preventDefault();redo()}else if(e.key==='Insert'){e.preventDefault();addNode()}else if(e.key==='Tab'){e.preventDefault();addNode('child')}else if(e.key==='Enter'){e.preventDefault();addNode('sibling')}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=[];selectedEdge=null;render()}});
 // Editor flutuante independente dos nós: conteúdo local e cópia com formatação.

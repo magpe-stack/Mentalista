@@ -266,3 +266,8 @@ O botão circular **+** de cada nó aparece ao passar o mouse sobre a caixa. Em 
 ### v32.5 — Correção do arraste de caixas
 
 O Ponteiro voltou a movimentar nós e listas mesmo quando o arraste começa sobre o texto. A rolagem interna, as caixas de marcação e os botões de conexão permanecem operacionais. Para selecionar texto, use o editor da caixa.
+
+
+### v33 — Organização automática do mapa
+
+Em **Editar → Organizar mapa**, escolha **Em árvore (horizontal)**, **Hierárquico (vertical)** ou **Radial**. A disposição usa as conexões para identificar níveis e componentes. Nós fixados permanecem em suas posições; os outros são distribuídos sem alterar textos, listas, cores ou elos. O comando cria uma única etapa de histórico, permitindo **Ctrl+Z**. A organização radial distribui os nós conectados ao redor da raiz de cada componente. O Mapa de Ícones e botões passa a incluir os três novos comandos de organização.
