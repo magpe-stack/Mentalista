@@ -201,3 +201,10 @@ Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**,
 - A barra superior reúne calculadora, Ponteiro, Mãozinha, zoom, ajuste de tela, modo claro/escuro e tela cheia, com botões circulares.
 - O nome do projeto e o indicador de salvamento aparecem discretamente no rodapé direito do Palco.
 - O Mapa de Ícones e botões inclui os novos controles.
+
+
+### Manutenção v30.1
+- Restaurados os acionadores da calculadora (barra superior e Editor).
+- Ícone da calculadora centralizado no botão circular.
+- Preferências de caixas e tipografia reposicionadas dentro do contêiner de Configurações, sem extrapolar a largura.
+- Cache offline atualizado para `mentalista-v30-1`.
