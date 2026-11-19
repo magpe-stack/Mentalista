@@ -372,3 +372,10 @@ O desenho da lâmpada foi reduzido a 72% em relação ao anterior, permanecendo 
 ### v37.5 — Lâmpada e câmera sem círculos
 
 Os botões externos de nota e imagem não têm mais molduras circulares. A lâmpada e a câmera ficam alinhadas na mesma coluna à esquerda do nó, com distância vertical fixa e área de toque invisível de 30 × 30 unidades. As linhas continuam ligando os ícones aos anexos abertos. O post-it e a fotografia permanecem externos à caixa.
+
+
+## v38 — Modelos reutilizáveis e Markdown
+
+Em **Arquivo → Projetos → Novo a partir de modelo**, escolha Brainstorming, Planejamento de projeto, Planejamento de história ou Estudo e pesquisa. Um projeto novo e independente é criado com nós conectados.
+
+Em **Arquivo → Guardar e restaurar**, use **Exportar Markdown (.md)** para obter uma representação textual hierárquica dos títulos, descrições e listas do mapa. **Importar Markdown (.md)** cria um novo projeto a partir de títulos (`#` a `######`) e tópicos, preservando os projetos existentes. O Markdown é um formato textual: não representa fielmente posições, cores, imagens, anexos ou todas as conexões cruzadas. Para backup completo, continue usando o JSON.

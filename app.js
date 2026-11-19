@@ -804,6 +804,68 @@ const iconMapDialog=document.getElementById('iconMapDialog');
 document.getElementById('iconMapOpen')?.addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);document.getElementById('iconMapSearch').value='';document.querySelectorAll('.icon-map-entry,.icon-map-section').forEach(el=>el.hidden=false);iconMapDialog.showModal();});
 document.getElementById('iconMapSearch')?.addEventListener('input',e=>{const query=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();let visible=0;document.querySelectorAll('.icon-map-section').forEach(section=>{let count=0;section.querySelectorAll('.icon-map-entry').forEach(entry=>{const value=entry.textContent.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();entry.hidden=!value.includes(query);if(!entry.hidden){count++;visible++;}});section.hidden=!count;});document.getElementById('iconMapEmpty').hidden=visible>0;});
 
+
+// v38 — Modelos reutilizáveis e interoperabilidade Markdown (somente texto).
+const TEMPLATE_SETS={
+ brainstorm:['Ideia central','Possibilidades','Oportunidades','Desafios','Próximos passos'],
+ planning:['Projeto','Objetivos','Escopo','Entregas','Prazos','Riscos','Responsáveis'],
+ story:['História','Premissa','Protagonista','Motivação','Conflito','Transformação','Desfecho'],
+ study:['Tema de estudo','Perguntas','Fontes','Conceitos','Exemplos','Conclusões']
+};
+$('newFromTemplate').addEventListener('click',()=>{$('templateDialog').showModal()});
+$('templateCancel').addEventListener('click',()=>$('templateDialog').close());
+$('templateCreate').addEventListener('click',()=>{
+ const titles=TEMPLATE_SETS[$('templateKind').value];if(!titles)return;
+ const name=$('templateProjectName').value.trim().slice(0,90)||titles[0];
+ const project=newMap(name),root=project.nodes[0];root.title=titles[0];root.x=0;root.y=0;
+ for(let i=1;i<titles.length;i++){const node={id:uid(),title:titles[i],desc:'',color:'slate',x:310,y:(i-1)*120};project.nodes.push(node);project.edges.push({a:root.id,b:node.id})}
+ projects.push(project);$('templateDialog').close();openProject(project.id);notify('Projeto criado a partir do modelo');
+});
+function markdownText(v){return String(v||'').replace(/\r/g,'').replace(/\n/g,' ').trim()}
+function exportProjectMarkdown(){
+ const p=current();if(!p)return notify('Nenhum projeto aberto');
+ const byId=new Map(p.nodes.map(n=>[n.id,n])),children=new Map(p.nodes.map(n=>[n.id,[]])),incoming=new Set();
+ for(const e of p.edges){if(byId.has(e.a)&&byId.has(e.b)&&e.a!==e.b){children.get(e.a).push(e.b);incoming.add(e.b)}}
+ const visited=new Set(),lines=['# '+markdownText(p.name),''];
+ const walk=(id,depth)=>{if(visited.has(id))return;visited.add(id);const n=byId.get(id);if(!n)return;
+ lines.push('#'.repeat(Math.min(depth+2,6))+' '+markdownText(n.title||'Sem título'));
+ if(n.desc)lines.push('',markdownText(n.desc));
+ if(n.kind==='list')for(let i=0;i<(n.items||[]).length;i++){const item=markdownText(n.items[i]);lines.push(n.listStyle==='check'?'- ['+((n.checked||[]).includes(i)?'x':' ')+'] '+item:n.listStyle==='number'?(i+1)+'. '+item:'- '+item)}
+ if(n.kind==='text'&&n.textPlain)lines.push('',String(n.textPlain).trim());
+ lines.push('');for(const child of children.get(id)||[])walk(child,depth+1);
+ };
+ for(const n of p.nodes)if(!incoming.has(n.id))walk(n.id,0);
+ for(const n of p.nodes)walk(n.id,0);
+ download(safeName(p.name)+'.md',lines.join('\n'),'text/markdown;charset=utf-8');notify('Markdown exportado (somente texto)');
+}
+$('exportMarkdown').addEventListener('click',exportProjectMarkdown);
+$('importMarkdown').addEventListener('click',()=>$('markdownFileInput').click());
+$('markdownFileInput').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];e.target.value='';if(!file)return;
+ if(file.size>1024*1024)return notify('Markdown muito grande (máximo 1 MB)');
+ try{
+  const source=(await file.text()).replace(/\r\n?/g,'\n');const project=newMap(file.name.replace(/\.(md|markdown)$/i,'').slice(0,90)||'Markdown importado');
+  project.nodes=[];project.edges=[];let stack=[],last=null,firstTitle=true,rootTitle='';
+  for(const raw of source.split('\n')){
+   const line=raw.trim();if(!line)continue;
+   const heading=line.match(/^(#{1,6})\s+(.+)$/);
+   if(heading){const level=heading[1].length,title=heading[2].replace(/\s+#+$/,'').trim();
+    if(firstTitle&&level===1){project.name=title.slice(0,90);firstTitle=false;continue}
+    const parent=[...stack].reverse().find(x=>x.level<level)?.node;
+    const node={id:uid(),x:Math.max(0,level-1)*300,y:project.nodes.length*105,title:title.slice(0,120),desc:'',color:'slate'};
+    project.nodes.push(node);if(parent)project.edges.push({a:parent.id,b:node.id});stack=stack.filter(x=>x.level<level);stack.push({level,node});last=node;
+   }else if(last){const list=line.match(/^(?:[-*+]\s+|\d+[.)]\s+)(?:\[([ xX])\]\s+)?(.+)$/);
+    if(list){if(!Array.isArray(last.items)){last.items=[];last.checked=[];last.listStyle=list[1]!==undefined?'check':/^\d/.test(line)?'number':'bullet';last.kind='list'}
+     if(last.items.length<30){last.items.push(list[2].slice(0,200));if(list[1]&&list[1].toLowerCase()==='x')last.checked.push(last.items.length-1)}
+    }else last.desc=(last.desc?last.desc+'\n':'')+line.slice(0,3000-last.desc.length);
+   }else if(!rootTitle)rootTitle=line.slice(0,120);
+   if(project.nodes.length>500)throw Error('O arquivo excede 500 nós');
+  }
+  if(!project.nodes.length)project.nodes=[{id:uid(),x:0,y:0,title:rootTitle||project.name,desc:'',color:'slate'}];
+  projects.push(project);openProject(project.id);notify('Markdown importado como novo projeto');
+ }catch(err){notify('Falha ao importar Markdown: '+err.message)}
+});
+
 // v26: apenas um grupo expandido por menu, preservando os comandos existentes.
 document.querySelectorAll('.menu-group').forEach(group=>group.addEventListener('toggle',()=>{
  if(group.open)group.closest('.dropdown')?.querySelectorAll('.menu-group').forEach(other=>{if(other!==group)other.open=false});
