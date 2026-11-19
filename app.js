@@ -896,6 +896,63 @@ function exportProjectMarkdown(){
  for(const n of p.nodes)walk(n.id,0);
  download(safeName(p.name)+'.md',lines.join('\n'),'text/markdown;charset=utf-8');notify('Markdown exportado (somente texto)');
 }
+// v42 — Compartilhamento nativo, sem servidor e sem modificar projetos.
+const shareDialog=$('shareDialog'),shareFormat=$('shareFormat'),shareStatus=$('shareStatus');
+function shareMarkdownContent(p){
+ const byId=new Map(p.nodes.map(n=>[n.id,n])),children=new Map(p.nodes.map(n=>[n.id,[]])),incoming=new Set();
+ for(const e of p.edges){if(byId.has(e.a)&&byId.has(e.b)&&e.a!==e.b){children.get(e.a).push(e.b);incoming.add(e.b)}}
+ const visited=new Set(),lines=['# '+markdownText(p.name),''];
+ function walk(id,depth){if(visited.has(id))return;visited.add(id);const n=byId.get(id);if(!n)return;
+ lines.push('#'.repeat(Math.min(depth+2,6))+' '+markdownText(n.title||'Sem título'));
+ if(n.desc)lines.push('',markdownText(n.desc));
+ if(n.kind==='list')for(let i=0;i<(n.items||[]).length;i++){const item=markdownText(n.items[i]);lines.push(n.listStyle==='check'?'- ['+((n.checked||[]).includes(i)?'x':' ')+'] '+item:n.listStyle==='number'?(i+1)+'. '+item:'- '+item)}
+ if(n.kind==='text'&&n.textPlain)lines.push('',String(n.textPlain).trim());
+ lines.push('');for(const child of children.get(id)||[])walk(child,depth+1);
+ }
+ for(const n of p.nodes)if(!incoming.has(n.id))walk(n.id,0);
+ for(const n of p.nodes)walk(n.id,0);
+ return lines.join('\n');
+}
+function shareSvgContent(p){
+ if(!p.nodes.length)throw Error('O mapa está vazio');
+ const xs=p.nodes.map(n=>n.x),ys=p.nodes.map(n=>n.y),minX=Math.min(...xs)-40,minY=Math.min(...ys)-40,maxX=Math.max(...p.nodes.map(n=>n.x+nodeWidth(n)))+40,maxY=Math.max(...p.nodes.map(n=>n.y+nodeHeight(n)))+40;
+ const svg=ui.canvas.cloneNode(true);svg.setAttribute('xmlns',NS);svg.setAttribute('viewBox',`${minX} ${minY} ${maxX-minX} ${maxY-minY}`);svg.setAttribute('width',maxX-minX);svg.setAttribute('height',maxY-minY);
+ svg.querySelector('#scene')?.removeAttribute('transform');svg.querySelector('#gridBg')?.remove();svg.querySelectorAll('.node').forEach(n=>n.classList.remove('selected','match'));svg.querySelectorAll('.list-tool,.node-port,.node-footer-divider,.pinned-indicator,.branch-toggle,.branch-count').forEach(n=>n.remove());
+ const css=`.edge{fill:none;stroke:#7d8aa4;stroke-width:${edgePrefs.width}}.node rect{fill:#4b3d83;stroke:#a391ff;stroke-width:1.5}.node text{fill:#fff;font:600 15px sans-serif}.node .list-line{font:12px sans-serif}.node .sub{fill:#eee;font:11px sans-serif}.node[data-color=blue] rect{fill:#234c79}.node[data-color=green] rect{fill:#225c4d}.node[data-color=orange] rect{fill:#77502b}.node[data-color=rose] rect{fill:#753956}.node[data-color=slate] rect{fill:#ffffff;stroke:#adb5bd}.node[data-color=slate] text{fill:#263143}.node[data-color=yellow] rect{fill:#eab308}`;
+ svg.prepend(el('style',{},css));return new XMLSerializer().serializeToString(svg);
+}
+function sharePayload(){
+ const p=current();if(!p)throw Error('Abra um projeto primeiro');
+ const name=safeName(p.name),format=shareFormat.value;
+ if(format==='json')return {name:name+'.json',mime:'application/json',content:JSON.stringify({format:PROJECT_FORMAT,version:2,exportedAt:new Date().toISOString(),project:clone(p),preferences:exportPreferences()},null,2)};
+ if(format==='markdown')return {name:name+'.md',mime:'text/markdown;charset=utf-8',content:shareMarkdownContent(p)};
+ if(format==='svg')return {name:name+'.svg',mime:'image/svg+xml;charset=utf-8',content:shareSvgContent(p)};
+ if(format==='text')return {text:p.name+'\n'+p.nodes.map(n=>'• '+n.title).join('\n')};
+ return {url:'https://magpe-stack.github.io/Mentalista/',text:'Mentalista — aplicativo de mapas mentais'};
+}
+function shareFallbackLabel(){const v=shareFormat.value;$('shareFallback').textContent=v==='link'||v==='text'?'Copiar texto':'Baixar arquivo'}
+$('shareMap').addEventListener('click',()=>{shareStatus.textContent='Os dados permanecem locais até você escolher um destino.';shareFormat.value='json';shareFallbackLabel();shareDialog.showModal()});
+$('shareClose').addEventListener('click',()=>shareDialog.close());
+shareFormat.addEventListener('change',shareFallbackLabel);
+$('shareNative').addEventListener('click',async()=>{
+ let payload;try{payload=sharePayload()}catch(err){shareStatus.textContent=err.message;return}
+ if(typeof navigator.share!=='function'){shareStatus.textContent='Compartilhamento nativo indisponível neste navegador. Use a opção alternativa.';return}
+ const button=$('shareNative');button.disabled=true;
+ try{
+  if(payload.name){const file=new File([payload.content],payload.name,{type:payload.mime});const data={files:[file],title:current().name};
+   if(typeof navigator.canShare==='function'&&!navigator.canShare({files:[file]})){shareStatus.textContent='Este dispositivo não permite compartilhar arquivos deste tipo. Use Baixar arquivo.';return}
+   await navigator.share(data);
+  }else await navigator.share(payload);
+  shareStatus.textContent='Compartilhamento concluído ou entregue ao aplicativo escolhido.';
+ }catch(err){if(err.name==='AbortError')shareStatus.textContent='Compartilhamento cancelado.';else shareStatus.textContent='Não foi possível compartilhar: '+err.message+'. Use a opção alternativa.'}
+ finally{button.disabled=false}
+});
+$('shareFallback').addEventListener('click',async()=>{
+ try{const payload=sharePayload();if(payload.name){download(payload.name,payload.content,payload.mime);shareStatus.textContent='Download solicitado ao navegador.'}
+ else{const value=payload.url||payload.text;await navigator.clipboard.writeText(value);shareStatus.textContent='Conteúdo copiado para a área de transferência.'}}
+ catch(err){shareStatus.textContent='Falha: '+err.message}
+});
+
 $('exportMarkdown').addEventListener('click',exportProjectMarkdown);
 $('importMarkdown').addEventListener('click',()=>$('markdownFileInput').click());
 $('markdownFileInput').addEventListener('change',async e=>{

@@ -439,3 +439,12 @@ O modo `standalone` continua como alternativa para navegadores sem suporte. A ex
 **Teste no Windows:** publicar a v41; abrir o PWA instalado pelo Edge/Chrome; verificar a barra superior e os botões nativos; testar arrastar pela área vazia, abrir os menus e usar os controles do cabeçalho; redimensionar e maximizar; testar também a página aberta em aba normal e no celular. Caso o modo overlay não seja ativado, a interface permanece no modo standalone normal. Em alguns casos, é necessário reiniciar ou reinstalar o aplicativo para atualizar o manifesto.
 
 **Segurança dos dados:** a v41 não modifica os formatos de projetos, históricos, backups ou configurações.
+
+
+## v42 — Compartilhamento nativo (Web Share API)
+
+Em **Arquivo → Exportar e imprimir → Compartilhar mapa…**, selecione JSON (projeto editável), Markdown (texto estruturado), SVG (imagem vetorial), resumo textual ou link do aplicativo. O Mentalista usa `navigator.share()` quando disponível e `navigator.canShare({files})` para verificar compartilhamento de arquivos. Quando o sistema não aceita o arquivo, a opção **Baixar arquivo** permanece disponível. Para textos e links, a alternativa é **Copiar texto**.
+
+**Privacidade:** o aplicativo não envia automaticamente mapas para servidores. O compartilhamento somente ocorre mediante ação do usuário, que escolhe o destino. Compartilhar o **link** não publica o projeto: o endereço abre o aplicativo, não o mapa local. O JSON inclui o projeto e as preferências exportadas; verifique informações sensíveis antes de compartilhar.
+
+**Compatibilidade:** a Web Share API exige contexto seguro (HTTPS) e suporte do navegador/sistema. Alguns sistemas não aceitam arquivos SVG ou Markdown pelo painel nativo; use o download alternativo. A API não garante envio para todos os aplicativos.
