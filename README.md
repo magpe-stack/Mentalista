@@ -309,3 +309,8 @@ Quando uma ramificação está recolhida, o círculo no canto superior direito m
 ### v34.6 — Contador sutil
 
 O número dentro do círculo de ramificação recolhida usa tipografia fina (peso 400) e dimensões reduzidas, adaptadas à quantidade de algarismos. Continua centralizado e legível, sem ultrapassar as bordas do indicador.
+
+
+### v34.7 — Contador legível dentro do círculo
+
+O contador usa fonte sem serifa fina, compacta e reduzida, com regras de CSS específicas que prevalecem sobre a tipografia dos nós. O círculo dos nós recolhidos foi ampliado discretamente para acomodar números de dois ou mais algarismos.
