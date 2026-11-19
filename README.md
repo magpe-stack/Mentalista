@@ -1,3 +1,13 @@
+## Mentalista v44 — Abertura de arquivos pelo sistema operacional
+
+**Novo:** associação de arquivos `.json`, `.md` e `.markdown` pelo `file_handlers` do manifesto, em plataformas que suportam File Handling API para PWAs instalados. O arquivo recebido é processado por `launchQueue` e encaminhado ao importador já existente, mediante confirmação. **Cada arquivo importado gera um novo projeto**; nenhum projeto atual é substituído. Arquivos JSON de backup geral não são importados automaticamente: use **Restaurar backup geral** no menu.
+
+**Compatibilidade:** a integração com o explorador depende de instalação e suporte do sistema/navegador (principalmente Chromium desktop). Em Android e ambientes sem suporte, use **Arquivo → Importar projeto JSON** ou **Importar Markdown**. Não há associação garantida para duplo clique em todas as plataformas; pode ser necessário escolher o Mentalista em **Abrir com**. Arquivos maiores que 35 MB (JSON) ou 1 MB (Markdown) são recusados.
+
+**Importante:** esta versão **não** implementa File System Access API para salvar de volta no arquivo original; isso está previsto para v45. Continue exportando e realizando backups. A atualização não modifica o formato de armazenamento dos projetos.
+
+---
+
 ## Mentalista v43 — Central de notificações locais
 
 Em **Sistema → Notificações → Central de notificações**, é possível criar lembretes com mensagem, data e hora, excluir lembretes, solicitar permissão para notificações do sistema e testar os avisos. Também há uma opção para lembrar sobre backups a cada sete dias de uso.

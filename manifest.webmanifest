@@ -66,5 +66,20 @@
   "display_override": [
     "window-controls-overlay",
     "standalone"
+  ],
+  "file_handlers": [
+    {
+      "action": "./?file-handler=1",
+      "name": "Projetos Mentalista e Markdown",
+      "accept": {
+        "application/json": [
+          ".json"
+        ],
+        "text/markdown": [
+          ".md",
+          ".markdown"
+        ]
+      }
+    }
   ]
 }
