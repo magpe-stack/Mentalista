@@ -481,3 +481,10 @@ Em **Arquivo → Exportar e imprimir → Compartilhar mapa…**, selecione JSON 
 ## v45 — Acesso direto a arquivos locais
 
 Em **Arquivo**, use **Abrir arquivo local**, **Salvar no arquivo** e **Salvar como**. A abertura por seletor do sistema importa uma **cópia** de um projeto JSON individual, sem substituir projetos. O comando **Salvar como** permite escolher um arquivo local JSON, em navegadores compatíveis com File System Access API. **Salvar no arquivo** exige confirmação para sobrescrever o arquivo autorizado e só reutiliza a associação enquanto o mesmo projeto estiver aberto nesta sessão. Quando a API não está disponível, é oferecido download JSON. Os projetos continuam salvos no navegador, sem depender do arquivo externo. Backups gerais devem ser restaurados pelo comando próprio. O navegador pode solicitar permissões adicionais; cancelar a seleção não altera os projetos.
+
+
+## v46 — Área de transferência avançada
+
+No menu **Editar → Área de transferência**, use **Copiar caixas** e **Colar caixas** para duplicar caixas selecionadas, incluindo conexões entre elas. O conteúdo estruturado fica disponível nesta sessão do aplicativo, enquanto o texto é enviado à área de transferência do sistema quando autorizado. As caixas coladas recebem novos identificadores e podem ser desfeitas.
+
+**Copiar imagem** suporta imagens PNG anexadas a uma caixa; **Colar imagem** lê PNG da área de transferência para a caixa selecionada, quando o navegador permite. Permissões e suporte variam; não são apagados projetos existentes.

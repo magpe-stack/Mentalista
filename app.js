@@ -509,6 +509,19 @@ $('nodeNoteForm').addEventListener('submit',e=>{e.preventDefault();const n=getNo
 
 for(const [id,fn] of [['duplicateNode',()=>duplicateSelection(false)],['duplicateBranch',()=>duplicateSelection(true)],['editNodeMetadata',openNodeMetadata]])$(id).addEventListener('click',fn);
 function addNode(kind='free'){const p=current(),parent=getNode(selected.at(-1));snapshot();const n={id:uid(),x:0,y:0,title:'Novo nó',desc:'',color:'slate'};if(kind==='child'&&parent){n.x=parent.x+300;n.y=parent.y+p.nodes.filter(x=>x.x===parent.x+300).length*90;p.edges.push({a:parent.id,b:n.id})}else if(kind==='sibling'&&parent){const incoming=p.edges.find(e=>e.b===parent.id);const ancestor=incoming&&getNode(incoming.a);n.x=parent.x;n.y=parent.y+100;if(ancestor)p.edges.push({a:ancestor.id,b:n.id})}else{const r=ui.viewport.getBoundingClientRect();n.x=(r.width/2-camera.x)/camera.z-100;n.y=(r.height/2-camera.y)/camera.z-35}p.nodes.push(n);selected=[n.id];render();scheduleSave()}
+// v46: ponte de área de transferência. Mantém alterações no fluxo de histórico do app.
+window.MentalistaClipboard=Object.freeze({
+ selected(){const p=current();return p?{nodes:clone(p.nodes.filter(n=>selected.includes(n.id))),edges:clone(p.edges.filter(e=>selected.includes(e.a)&&selected.includes(e.b)))}:{nodes:[],edges:[]}},
+ paste(payload){const p=current();if(!p||!payload||!Array.isArray(payload.nodes)||!Array.isArray(payload.edges)||!payload.nodes.length||payload.nodes.length>150)return false;
+  const allowed=new Set(['node','list','text']);const ids=new Map();const nodes=[];
+  for(const raw of payload.nodes){if(!raw||typeof raw!=='object'||typeof raw.id!=='string'||!Number.isFinite(raw.x)||!Number.isFinite(raw.y)||typeof raw.title!=='string'||raw.title.length>300||raw.kind&&!allowed.has(raw.kind))return false;
+   const n=clone(raw);const newId=uid();ids.set(raw.id,newId);n.id=newId;n.x=Math.max(-100000,Math.min(100000,n.x+70));n.y=Math.max(-100000,Math.min(100000,n.y+70));nodes.push(n)}
+  const edges=payload.edges.filter(e=>e&&ids.has(e.a)&&ids.has(e.b)).map(e=>({a:ids.get(e.a),b:ids.get(e.b)}));
+  snapshot();p.nodes.push(...nodes);p.edges.push(...edges);selected=nodes.map(n=>n.id);render();scheduleSave();notify(nodes.length+' caixa(s) colada(s)');return true},
+ selectedImage(){const n=selected.length===1?getNode(selected[0]):null;return n&&typeof n.imageData==='string'&&n.imageData.startsWith('data:image/png;base64,')?n.imageData:null},
+ pasteImage(data){const n=selected.length===1?getNode(selected[0]):null;if(!n||typeof data!=='string'||!data.startsWith('data:image/png;base64,')||data.length>9e6)return false;
+  snapshot();n.imageData=data;n.imageAlt='Imagem colada';n.imageRatio=undefined;render();scheduleSave();notify('Imagem adicionada à caixa');return true}
+});
 function removeSelected(){if(selectedEdge!==null){removeSelectedEdge();return}if(!selected.length)return;const p=current();if(p.nodes.length===selected.length){notify('O mapa precisa manter pelo menos um nó');return}snapshot();p.nodes=p.nodes.filter(n=>!selected.includes(n.id));p.edges=p.edges.filter(e=>!selected.includes(e.a)&&!selected.includes(e.b));selected=[];render();scheduleSave()}
 function removeSelectedEdge(){const p=current();if(selectedEdge===null||!p.edges[selectedEdge])return;snapshot();p.edges.splice(selectedEdge,1);selectedEdge=null;render();scheduleSave();notify('Elo removido; caixas preservadas')}
 function connect(){if(selected.length!==2)return notify('Selecione dois nós usando Ctrl + clique');const p=current(),[a,b]=selected;if(a===b)return;snapshot();const i=p.edges.findIndex(e=>(e.a===a&&e.b===b)||(e.a===b&&e.b===a));if(i>=0){p.edges.splice(i,1);notify('Conexão removida')}else{p.edges.push({a,b});notify('Nós conectados')}render();scheduleSave()}
