@@ -464,3 +464,8 @@ Em **Arquivo → Exportar e imprimir → Compartilhar mapa…**, selecione JSON 
 **Privacidade:** o aplicativo não envia automaticamente mapas para servidores. O compartilhamento somente ocorre mediante ação do usuário, que escolhe o destino. Compartilhar o **link** não publica o projeto: o endereço abre o aplicativo, não o mapa local. O JSON inclui o projeto e as preferências exportadas; verifique informações sensíveis antes de compartilhar.
 
 **Compatibilidade:** a Web Share API exige contexto seguro (HTTPS) e suporte do navegador/sistema. Alguns sistemas não aceitam arquivos SVG ou Markdown pelo painel nativo; use o download alternativo. A API não garante envio para todos os aplicativos.
+
+
+## v45 — Acesso direto a arquivos locais
+
+Em **Arquivo**, use **Abrir arquivo local**, **Salvar no arquivo** e **Salvar como**. A abertura por seletor do sistema importa uma **cópia** de um projeto JSON individual, sem substituir projetos. O comando **Salvar como** permite escolher um arquivo local JSON, em navegadores compatíveis com File System Access API. **Salvar no arquivo** exige confirmação para sobrescrever o arquivo autorizado e só reutiliza a associação enquanto o mesmo projeto estiver aberto nesta sessão. Quando a API não está disponível, é oferecido download JSON. Os projetos continuam salvos no navegador, sem depender do arquivo externo. Backups gerais devem ser restaurados pelo comando próprio. O navegador pode solicitar permissões adicionais; cancelar a seleção não altera os projetos.

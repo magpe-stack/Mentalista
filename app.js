@@ -640,6 +640,12 @@ function exportJson(){
  download(safeName(p.name)+'.json',JSON.stringify({format:PROJECT_FORMAT,version:2,exportedAt:new Date().toISOString(),project:clone(p),preferences:exportPreferences()},null,2),'application/json');
  notify('Projeto e configurações exportados');
 }
+// v45: acesso limitado ao projeto ativo para salvar arquivo JSON local.
+window.MentalistaFileBridge=Object.freeze({
+ snapshot(){const p=current();if(!p)throw Error('Nenhum projeto aberto');if(saveTimer){clearTimeout(saveTimer);persist()}return JSON.stringify({format:PROJECT_FORMAT,version:2,exportedAt:new Date().toISOString(),project:clone(p),preferences:exportPreferences()},null,2)},
+ projectId(){return current()?.id||null},projectName(){return current()?.name||'Mentalista'},
+ importFile(file){if(!file||file.size>35e6)throw Error('Arquivo inválido ou maior que 35 MB');const input=$('fileInput');const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;input.dispatchEvent(new Event('change',{bubbles:true}))}
+});
 function exportBackup(){
  if(saveTimer){clearTimeout(saveTimer);persist()}
  const draft=localStorage.getItem('mentalista.editor.v1')||'';
