@@ -495,3 +495,8 @@ No menu **Editar → Área de transferência**, use **Copiar caixas** e **Colar 
 O indicador discreto na tela apresenta a situação declarada da rede e a presença dos arquivos essenciais no cache da versão atual. Em **Sistema → Manutenção → Verificar disponibilidade offline**, é possível conferir a lista de recursos ausentes. **Reparar aplicativo** busca novamente os arquivos essenciais pela rede e os recoloca no cache, sem apagar projetos, anexos, histórico de versões ou preferências. A verificação de arquivos não garante a integridade semântica de projetos; faça backups JSON regularmente. A primeira instalação/atualização precisa de conexão para preencher o cache.
 
 Em **Editar → Área de transferência**, foi removido o texto explicativo abaixo dos botões para manter o menu compacto. As funções continuam disponíveis no Mapa de Ícones e Botões.
+
+
+## Mentalista v48 — Proteção do armazenamento
+
+Em **Sistema → Manutenção**, os comandos **Proteção do armazenamento** e **Solicitar persistência** consultam `navigator.storage.estimate()`, `persisted()` e `persist()`. A solicitação pode ser recusada pelo navegador; não é garantia contra limpeza manual, remoção do PWA ou falha do dispositivo. **Verificar projetos** examina, sem alterar, a estrutura JSON de projetos locais. **Verificar backup JSON** permite selecionar um backup geral e conferir sua estrutura básica sem importá-lo. A verificação não substitui um teste de restauração nem assegura a integridade semântica de cada projeto. Faça backups gerais regulares em local seguro.
