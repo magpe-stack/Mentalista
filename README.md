@@ -171,3 +171,8 @@ Acesse **Ajuda → Mapa de Ícones e botões** para consultar as funções dos c
 ## v26 — Menus hierárquicos
 
 Os menus Arquivo, Editar, Sistema e Ajuda foram organizados em grupos expansíveis com espaçamento compacto. A busca rápida foi removida do menu Sistema e permanece em Editar. O Mapa de Ícones e botões permanece acessível em Ajuda → Referência de controles.
+
+
+## v27 — Nomes limpos nos menus
+
+Em **Editar → Localizar e visualizar**, o comando aparece como **Buscar nós**, sem indicação de teclas. Os atalhos continuam documentados em **Ajuda → Atalhos**.
