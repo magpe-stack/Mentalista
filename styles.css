@@ -217,3 +217,12 @@ body > #calculator{position:fixed!important;z-index:2147483000!important;max-hei
 body > #calculator[hidden]{display:none!important;}
 body > #calculator:not([hidden]){display:flex!important;visibility:visible!important;opacity:1!important;}
 @media(max-height:650px){body > #calculator .calculator-grid button{min-height:36px}body > #calculator .calculator-screen{min-height:80px;padding:7px}}
+
+/* v30.4: janela móvel com teclas clicáveis e posição preservada */
+body > #calculator {position:fixed!important;right:auto;pointer-events:auto!important;touch-action:auto;overflow:hidden;max-height:calc(100dvh - 12px);}
+body > #calculator[hidden]{display:none!important;}
+body > #calculator:not([hidden]){display:flex!important;}
+body > #calculator .calculator-head{cursor:grab;touch-action:none;}
+body > #calculator .calculator-head:active{cursor:grabbing;}
+body > #calculator .calculator-grid{overflow-y:auto;min-height:0;}
+body > #calculator .calculator-grid button{pointer-events:auto!important;position:relative;z-index:1;}

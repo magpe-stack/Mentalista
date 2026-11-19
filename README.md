@@ -216,3 +216,8 @@ A janela da calculadora é posicionada diretamente no documento, acima dos cont�
 
 ### Correção v30.3 — Calculadora
 O acionamento da calculadora passou a contar com inicialização independente do restante do aplicativo. Os botões do Palco e do Editor acionam a mesma janela flutuante.
+
+
+### Correção v30.4 — Calculadora flutuante
+
+A calculadora possui módulo independente (`calculator.js`), abertura pelos botões do Palco e Editor, movimentação por arraste do cabeçalho, posição preservada ao fechar e reabrir e teclas funcionais para operações aritméticas. A documentação dos controles em Ajuda → Mapa de Ícones e botões continua aplicável.
