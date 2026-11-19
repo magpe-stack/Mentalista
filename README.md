@@ -271,3 +271,17 @@ O Ponteiro voltou a movimentar nós e listas mesmo quando o arraste começa sobr
 ### v33 — Organização automática do mapa
 
 Em **Editar → Organizar mapa**, escolha **Em árvore (horizontal)**, **Hierárquico (vertical)** ou **Radial**. A disposição usa as conexões para identificar níveis e componentes. Nós fixados permanecem em suas posições; os outros são distribuídos sem alterar textos, listas, cores ou elos. O comando cria uma única etapa de histórico, permitindo **Ctrl+Z**. A organização radial distribui os nós conectados ao redor da raiz de cada componente. O Mapa de Ícones e botões passa a incluir os três novos comandos de organização.
+
+
+## v34 — Recolher e expandir ramificações
+
+- Passe o mouse sobre um nó que tenha descendentes e clique no pequeno **−** para recolher sua ramificação. O botão muda para **+** para expandi-la novamente. No celular, selecione a caixa.
+- Nós e conexões ficam apenas ocultos no Palco, sem exclusão. O estado `collapsed` é salvo junto com o projeto, inclusive na exportação JSON e backup geral.
+- O comando aceita **Desfazer/Refazer**. O ajuste à tela considera apenas os nós visíveis.
+- Em ciclos e mapas com ligações cruzadas, nós acessíveis por outra ramificação expandida podem permanecer visíveis.
+- Os controles de recolhimento não aparecem na impressão nem no SVG exportado.
+
+
+## v34.1 — Indicador de ramificações
+
+O controle de recolher/expandir é um **ponto discreto** no canto superior direito das caixas com descendentes. Quando o ramo está recolhido, exibe uma pequena **seta (›)** dentro do ponto — nunca um símbolo +, reservado para conectar nós. O indicador permanece visível, não aparece em impressões ou SVG, e o comando preserva os dados.

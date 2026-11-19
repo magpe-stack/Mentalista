@@ -299,3 +299,20 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .node .stage-scroll-body{cursor:grab;}
 .node .stage-scroll-body:active{cursor:grabbing;}
 .node .stage-scroll-body a,.node .stage-scroll-body button{cursor:pointer;}
+
+/* v34: controle de recolhimento; não integra documentos exportados. */
+.node .branch-toggle{cursor:pointer;opacity:0;pointer-events:none;transition:opacity .14s ease}
+.node:hover .branch-toggle,.node:focus-within .branch-toggle,.node.selected .branch-toggle{opacity:1;pointer-events:all}
+.node .branch-toggle-disc{fill:var(--panel,#fff);stroke:var(--accent,#8052cf);stroke-width:2}
+.node .branch-toggle-icon{fill:var(--accent,#8052cf)!important;font-size:17px;font-weight:800;pointer-events:none}
+.node .branch-count{font-size:10px;fill:var(--node-ink,var(--text));pointer-events:none}
+@media(hover:none){.node .branch-toggle{opacity:1;pointer-events:all}}
+@media print{.node .branch-toggle,.node .branch-count{display:none!important}}
+
+/* v34.1 — indicador permanente e discreto, distinto da porta de conexão (+). */
+.node .branch-toggle{opacity:1!important;pointer-events:all!important;cursor:pointer}
+.node .branch-toggle-hit{fill:transparent;stroke:none}
+.node .branch-toggle-disc{fill:var(--accent,#8052cf);stroke:var(--panel,#fff);stroke-width:1.5;transition:r .15s ease}
+.node .branch-toggle-chevron{fill:none;stroke:var(--panel,#fff);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.node .branch-toggle:hover .branch-toggle-disc,.node .branch-toggle:focus .branch-toggle-disc{stroke-width:2.5}
+@media print{.node .branch-toggle,.node .branch-count{display:none!important}}
