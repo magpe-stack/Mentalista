@@ -347,3 +347,13 @@ Em **Editar → Edição**, selecione uma caixa e use **Imagem local na caixa** 
 Use **Nota recolhível** para escrever até 12.000 caracteres de informação complementar. A nota aparece na área rolável da caixa, com cabeçalho **Nota** para expandir ou recolher sem apagar seu conteúdo. O texto e o estado de recolhimento acompanham o projeto e os backups JSON. A alteração pode ser desfeita.
 
 **Atenção:** imagens incorporadas aumentam o tamanho dos arquivos JSON e o espaço utilizado no navegador. Faça backups regulares.
+
+
+### v37.1 — Anexos externos: lâmpada e câmera
+
+As notas e imagens deixam de ocupar o interior dos nós. Um ícone de lâmpada à esquerda indica uma nota; abaixo dele, uma câmera indica uma imagem. Ao clicar, o respectivo conteúdo aparece num cartão externo ligado ao ícone por uma linha. A nota tem aparência de post-it. Clique novamente para recolher. O estado aberto/fechado é guardado no projeto e no JSON. As caixas mantêm a rolagem e o arraste originais.
+
+
+### v37.2 — Fotografias sem moldura
+
+A imagem anexa é exibida sem cartão, título ou moldura, com largura de referência de 380 px e altura calculada pela proporção original (por exemplo, 380 × 214 em 16:9 e 380 × 676 em 9:16). A imagem permanece ligada ao ícone da câmera por uma linha e pode ser recolhida clicando novamente no ícone. Fotografias anteriormente salvas têm a proporção identificada ao serem carregadas.

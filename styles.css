@@ -374,3 +374,23 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .asset-form textarea{resize:vertical}
 .asset-preview{max-width:100%;max-height:250px;object-fit:contain;margin:auto;border-radius:9px}
 @media print{.stage-node-note summary{list-style:none}.stage-node-note summary::-webkit-details-marker{display:none}}
+
+/* v37.1 — anexos fora dos nós: ícones à esquerda e cartões ligados por linhas. */
+.node-attachment-icon{cursor:pointer;pointer-events:all}
+.node-attachment-icon-disc{fill:var(--panel,#fff)!important;stroke:var(--accent,#8055ff)!important;stroke-width:1.5!important;filter:none!important}
+.node-attachment-icon-stroke{fill:none!important;stroke:var(--accent,#8055ff)!important;stroke-width:1.5!important;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.node-attachment-camera{fill:none!important;stroke:var(--accent,#8055ff)!important;stroke-width:1.5!important;pointer-events:none}
+.node-attachment-icon:hover .node-attachment-icon-disc{stroke-width:2.5!important}
+.node-attachment-link{fill:none;stroke:var(--accent,#8055ff);stroke-width:1.6;stroke-dasharray:3 3;pointer-events:none}
+.node-attachment-card{height:100%;width:100%;padding:10px 12px;border:1px solid #c7ac45;border-radius:10px;overflow:auto;box-shadow:0 4px 12px #0002;cursor:auto;scrollbar-width:thin;scrollbar-color:transparent transparent;pointer-events:auto;user-select:text;touch-action:pan-y}
+.node-attachment-card:hover{scrollbar-color:#8886 transparent}
+.node-attachment-postit{background:#fff2a4;color:#393021;font:13px/1.5 system-ui,Arial,sans-serif}
+.node-attachment-photo{background:var(--panel,#fff);color:var(--text,#252a32);border-color:var(--border,#ddd)}
+.node-attachment-card-heading{font:600 12px system-ui,Arial,sans-serif;opacity:.65;margin-bottom:7px}
+.node-attachment-note-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.node-attachment-photo img{display:block;max-width:100%;max-height:calc(100% - 27px);object-fit:contain;margin:auto;border-radius:5px}
+@media print{.node-attachment-icon,.node-attachment-link{display:none!important}.node-attachment-card{box-shadow:none}}
+
+/* v37.2 — fotografias sem cartão, sem título, na proporção original. */
+.node-attachment-photo{padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;display:block!important;}
+.node-attachment-photo img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;margin:0!important;border-radius:0!important;}
