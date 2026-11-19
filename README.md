@@ -256,3 +256,8 @@ Em **Sistema → Configurações → Sistema e segurança**, escolha entre anima
 ### v32.3 — Leitura integral dentro das caixas
 
 Nós comuns, listas e caixas de texto possuem rolagem interna para leitura sem abrir o editor. Barras de rolagem extremamente discretas surgem ao passar o mouse (ou permanecem sutis em telas sensíveis ao toque). As listas preservam os checkboxes clicáveis no Palco; todo o texto permanece no projeto e no JSON.
+
+
+### v32.4 — Botão de conexão discreto
+
+O botão circular **+** de cada nó aparece ao passar o mouse sobre a caixa. Em telas sensíveis ao toque, aparece ao selecionar o nó. Permanece oculto em impressão e exportação SVG; a conexão continua disponível normalmente quando o controle é exibido.

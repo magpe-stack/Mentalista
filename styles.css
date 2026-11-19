@@ -282,3 +282,14 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .node .text-node-body:hover,.node .text-node-body:focus-within{scrollbar-width:thin!important;}
 @media(hover:none){.node .stage-scroll-body{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--node-ink,#7c879b) 22%,transparent) transparent;}}
 @media print{.node .stage-scroll-body{scrollbar-width:none!important;overflow:hidden!important}.node .stage-scroll-body::-webkit-scrollbar{display:none!important}}
+
+/* v32.4 — porta de conexão (+) aparece somente ao interagir com o nó. */
+@media (hover:hover) and (pointer:fine){
+  .node .node-port{opacity:0;pointer-events:none;transition:opacity .13s ease}
+  .node:hover .node-port,.node:focus-within .node-port{opacity:1;pointer-events:all}
+}
+@media (hover:none), (pointer:coarse){
+  .node .node-port{opacity:0;pointer-events:none}
+  .node.selected .node-port,.node:focus-within .node-port{opacity:1;pointer-events:all}
+}
+@media print{.node .node-port{display:none!important;visibility:hidden!important}}
