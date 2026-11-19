@@ -176,3 +176,15 @@ Os menus Arquivo, Editar, Sistema e Ajuda foram organizados em grupos expansíve
 ## v27 — Nomes limpos nos menus
 
 Em **Editar → Localizar e visualizar**, o comando aparece como **Buscar nós**, sem indicação de teclas. Os atalhos continuam documentados em **Ajuda → Atalhos**.
+
+
+## Mentalista v28 — Preferências de grade e encaixe
+
+Em **Sistema → Preferências / Configurações → Palco e Grade**, é possível:
+
+- Mostrar ou ocultar a grade pontilhada do Palco.
+- Ajustar a intensidade da grade de 0% a 100%.
+- Ativar o encaixe de nós à grade de 30 unidades durante o arraste com o Ponteiro.
+- Restaurar os padrões do Palco (grade visível, intensidade 25%, encaixe desativado).
+
+As preferências são armazenadas localmente e aplicadas a todos os projetos no navegador. O encaixe só atua nos nós arrastados, sem reposicionar automaticamente os demais. O Mapa de Ícones e botões inclui os novos controles.

@@ -183,3 +183,6 @@
 .menubar .menu-group-items>select{font-size:12px;padding:5px 7px;margin:2px 0 4px;width:calc(100% - 8px)}
 .menubar .dropdown .menu-note{font-size:11px;line-height:1.35;margin:7px 9px}
 @media(max-width:600px){.menubar .dropdown{top:112px;left:10px;right:10px;max-height:calc(100dvh - 125px);overflow-y:auto;overscroll-behavior:contain}.menu-group>summary{padding:8px 10px}.menubar .menu-group-items>button{padding:6px 8px;min-height:28px}}
+
+/* v28 — Preferências de grade e alinhamento */
+.stage-pref-row{margin-top:16px}.stage-pref-row>label{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}.stage-pref-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none}.stage-pref-range{display:grid;gap:8px}.stage-pref-range>label{justify-content:space-between}.stage-pref-range input[type=range]{width:100%;accent-color:var(--accent)}.stage-pref-range input:disabled{opacity:.45}.stage-pref-reset{margin-top:20px;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:9px;color:var(--text);cursor:pointer}.stage-pref-reset:hover{border-color:var(--accent)}
