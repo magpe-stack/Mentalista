@@ -1,3 +1,15 @@
+## Mentalista v45.1 — Menu Arquivo simplificado
+
+O menu **Arquivo** está dividido em **Projetos**, **JSON** e **Outros formatos**.
+
+- **Projetos:** Novo, Projetos, Modelos, Renomear, Excluir.
+- **JSON:** Guardar (download de cópia), Atualizar (grava no arquivo previamente autorizado para o mesmo projeto; se não houver, solicita novo arquivo), Abrir (importa projeto como novo, sem substituir existentes), Salvar como (escolhe novo arquivo ou baixa JSON), Backup (todos os projetos), Restaurar (backup geral com confirmação), Histórico (versões locais).
+- **Outros formatos:** Markdown → Importar/Exportar; SVG; Compartilhar; Imprimir.
+
+**Atenção:** Guardar e Atualizar são operações diferentes. O navegador pode não oferecer File System Access; nesses casos, o aplicativo usa o seletor convencional ou download. A restauração geral requer confirmação e pode substituir dados locais; mantenha backups seguros.
+
+---
+
 ## Mentalista v44 — Abertura de arquivos pelo sistema operacional
 
 **Novo:** associação de arquivos `.json`, `.md` e `.markdown` pelo `file_handlers` do manifesto, em plataformas que suportam File Handling API para PWAs instalados. O arquivo recebido é processado por `launchQueue` e encaminhado ao importador já existente, mediante confirmação. **Cada arquivo importado gera um novo projeto**; nenhum projeto atual é substituído. Arquivos JSON de backup geral não são importados automaticamente: use **Restaurar backup geral** no menu.
