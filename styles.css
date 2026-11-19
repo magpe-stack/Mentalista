@@ -250,3 +250,6 @@ body.access-reduced-motion *,body.access-reduced-motion *::before,body.access-re
 @media print{
   .node .list-tool,.node .node-port,.node .node-footer-divider,.node .pinned-indicator{display:none!important;visibility:hidden!important}
 }
+
+/* v32.1: labels measured to fit actual SVG width */
+.node .stage-content-label{pointer-events:none}

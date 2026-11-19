@@ -241,3 +241,8 @@ Os botões de ação das caixas (Copiar, Fixar e Editar) são revelados ao passa
 - **Restaurar backup geral**: valida o arquivo e solicita confirmação antes de **substituir todos os projetos e configurações locais**. Faça um backup atual antes de restaurar.
 
 Os arquivos JSON são locais, não dependem de servidor. O backup não inclui o estado temporário de janelas abertas ou a posição da calculadora.
+
+
+### Correção v32.1 — Textos dentro das caixas
+
+Títulos, descrições e itens de listas são ajustados ao espaço disponível usando a largura real do texto SVG, respeitando a tipografia escolhida. Textos extensos são abreviados visualmente com reticências, sem perda de conteúdo no projeto ou na edição.
