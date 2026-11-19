@@ -212,3 +212,7 @@ Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**,
 
 ### Correção v30.2 — Calculadora flutuante
 A janela da calculadora é posicionada diretamente no documento, acima dos contêineres do Palco, para evitar recortes ou ocultação. Ambos os acionadores (barra superior e Editor) abrem a mesma calculadora; o botão de fechar a oculta.
+
+
+### Correção v30.3 — Calculadora
+O acionamento da calculadora passou a contar com inicialização independente do restante do aplicativo. Os botões do Palco e do Editor acionam a mesma janela flutuante.
