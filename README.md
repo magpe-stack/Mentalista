@@ -246,3 +246,8 @@ Os arquivos JSON são locais, não dependem de servidor. O backup não inclui o 
 ### Correção v32.1 — Textos dentro das caixas
 
 Títulos, descrições e itens de listas são ajustados ao espaço disponível usando a largura real do texto SVG, respeitando a tipografia escolhida. Textos extensos são abreviados visualmente com reticências, sem perda de conteúdo no projeto ou na edição.
+
+
+### Mentalista v32.2 — Sistema e segurança
+
+Em **Sistema → Configurações → Sistema e segurança**, escolha entre animações normais, reduzidas, desativadas ou conforme o dispositivo. O indicador de salvamento no rodapé pode ser ocultado sem interromper o salvamento automático. Os lembretes de backup podem ser desativados ou configurados para 1, 7, 15 ou 30 dias; são exibidos apenas com o aplicativo aberto, sem notificações externas. O botão **Fazer backup geral agora** exporta projetos e preferências. A data do último backup é registrada localmente após iniciar o download. As preferências de sistema e segurança também fazem parte dos novos arquivos JSON; backups anteriores continuam compatíveis.

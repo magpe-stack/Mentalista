@@ -29,8 +29,8 @@ const NAV_DEFAULTS={zoomSpeed:100,panSpeed:100,largeControls:false,reducedMotion
 let navPrefs={...NAV_DEFAULTS};
 function applyNavPrefs(){
  document.body.classList.toggle('access-large-controls',navPrefs.largeControls);
- document.body.classList.toggle('access-reduced-motion',navPrefs.reducedMotion);
- for(const [id,key] of [['prefZoomSpeed','zoomSpeed'],['prefPanSpeed','panSpeed'],['prefLargeControls','largeControls'],['prefReducedMotion','reducedMotion']]){
+ // Animações gerenciadas em Sistema e segurança (v32.2).
+ for(const [id,key] of [['prefZoomSpeed','zoomSpeed'],['prefPanSpeed','panSpeed'],['prefLargeControls','largeControls']]){
   const field=$(id);if(field){if(field.type==='checkbox')field.checked=navPrefs[key];else field.value=String(navPrefs[key])}
  }
  for(const [id,key] of [['prefZoomSpeedValue','zoomSpeed'],['prefPanSpeedValue','panSpeed']]){const field=$(id);if(field)field.textContent=navPrefs[key]+'%'}
@@ -41,7 +41,7 @@ function initializeNavPrefs(){
   for(const key of ['largeControls','reducedMotion'])if(typeof saved[key]==='boolean')navPrefs[key]=saved[key];
  }}catch{}
  const update=()=>{try{localStorage.setItem(NAV_PREFS_KEY,JSON.stringify(navPrefs))}catch{notify('Não foi possível salvar as preferências')}applyNavPrefs()};
- for(const [id,key] of [['prefZoomSpeed','zoomSpeed'],['prefPanSpeed','panSpeed'],['prefLargeControls','largeControls'],['prefReducedMotion','reducedMotion']]){
+ for(const [id,key] of [['prefZoomSpeed','zoomSpeed'],['prefPanSpeed','panSpeed'],['prefLargeControls','largeControls']]){
   $(id).addEventListener(key==='zoomSpeed'||key==='panSpeed'?'input':'change',e=>{navPrefs[key]=e.target.type==='checkbox'?e.target.checked:Number(e.target.value);update()});
  }
  $('prefResetNav').addEventListener('click',()=>{navPrefs={...NAV_DEFAULTS};update();notify('Navegação e acessibilidade restauradas')});
@@ -142,7 +142,7 @@ function initializeAppearance(){
  const gallery=$('themeGallery');gallery.replaceChildren();
  Object.entries(PALETTES).forEach(([key,pal])=>{const b=document.createElement('button');b.type='button';b.className='theme-option';b.dataset.themeOption=key;b.setAttribute('role','radio');b.setAttribute('aria-label',pal.name);const swatches=document.createElement('span');swatches.className='theme-swatches';pal.colors.forEach(c=>{const span=document.createElement('i');span.style.backgroundColor=c;span.setAttribute('aria-hidden','true');swatches.append(span)});const name=document.createElement('strong');name.textContent=pal.name;b.append(swatches,name);b.addEventListener('click',()=>{appearance.palette=key;applyAppearance()});gallery.append(b)});
  document.querySelectorAll('input[name="appearanceMode"]').forEach(r=>r.addEventListener('change',()=>{if(r.checked){appearance.mode=r.value;applyAppearance()}}));
- initializeStagePrefs();initializeEdgePrefs();initializeNodePrefs();initializeNavPrefs();$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsDone').addEventListener('click',()=>$('settingsDialog').close());applyAppearance();
+ initializeStagePrefs();initializeEdgePrefs();initializeNodePrefs();initializeNavPrefs();initSecurityPrefs();$('settingsClose').addEventListener('click',()=>$('settingsDialog').close());$('settingsDone').addEventListener('click',()=>$('settingsDialog').close());applyAppearance();
 }
 $('themeQuick').addEventListener('click',()=>{appearance.mode=appearance.mode==='dark'?'light':'dark';applyAppearance()});
 $('fullscreenQuick').addEventListener('click',()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()});
@@ -242,9 +242,58 @@ function edit(prop,value){const n=selected.length===1&&getNode(selected[0]);if(!
 for(const[id,prop]of [['nodeTitle','title'],['nodeDesc','desc']]){$(id).addEventListener('input',e=>edit(prop,e.target.value));$(id).addEventListener('blur',()=>edit._active=false)}$('nodeColor').addEventListener('change',e=>{edit._active=false;edit('color',e.target.value);edit._active=false});
 function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 const safeName=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-|-$/g,'').slice(0,65)||'mentalista';
+// v32.2 — Sistema e segurança: animações, indicador e lembretes locais.
+const SECURITY_KEY='mentalista.security.v32.2';
+const SECURITY_DEFAULTS={animation:'system',backupDays:7,showSave:true,lastBackup:0,lastDismiss:0};
+let securityPrefs={...SECURITY_DEFAULTS};
+function securityEffectiveMotion(){return securityPrefs.animation==='off'||securityPrefs.animation==='reduced'||(securityPrefs.animation==='system'&&window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)}
+function applySecurityPrefs(){
+ document.body.classList.toggle('access-reduced-motion',securityEffectiveMotion());
+ document.body.classList.toggle('access-no-animation',securityPrefs.animation==='off');
+ $('prefAnimationMode').value=securityPrefs.animation;
+ $('prefBackupInterval').value=String(securityPrefs.backupDays);
+ $('prefSaveIndicator').checked=securityPrefs.showSave;
+ $('saveStatus').hidden=!securityPrefs.showSave;
+ $('securitySaveStatus').textContent=securityPrefs.showSave?('Estado atual: '+$('saveStatus').textContent):'O indicador do rodapé está oculto; o salvamento automático continua ativo.';
+ $('securityBackupStatus').textContent=securityPrefs.lastBackup?'Último backup geral registrado: '+new Date(securityPrefs.lastBackup).toLocaleString('pt-BR'):'Último backup geral: ainda não registrado neste navegador.';
+ checkBackupReminder();
+}
+function storeSecurityPrefs(){try{localStorage.setItem(SECURITY_KEY,JSON.stringify(securityPrefs))}catch{notify('Não foi possível guardar as preferências')}applySecurityPrefs()}
+function checkBackupReminder(){
+ const box=$('backupReminder');if(!box)return;
+ const now=Date.now(),days=securityPrefs.backupDays;
+ const reference=securityPrefs.lastBackup||securityPrefs.startedAt||now;
+ const due=days>0&&now-reference>=days*86400000&&now-(securityPrefs.lastDismiss||0)>=86400000;
+ box.hidden=!due;
+ if(due)$('backupReminderText').textContent='Seu último backup geral foi há '+Math.floor((now-reference)/86400000)+' dia(s). Salve uma cópia dos seus mapas e preferências.';
+}
+function markBackupDone(){securityPrefs.lastBackup=Date.now();securityPrefs.lastDismiss=0;storeSecurityPrefs()}
+function initSecurityPrefs(){
+ try{const x=JSON.parse(localStorage.getItem(SECURITY_KEY)||'null');if(x&&typeof x==='object'){
+  if(['system','full','reduced','off'].includes(x.animation))securityPrefs.animation=x.animation;
+  if([0,1,7,15,30].includes(x.backupDays))securityPrefs.backupDays=x.backupDays;
+  if(typeof x.showSave==='boolean')securityPrefs.showSave=x.showSave;
+  for(const key of ['lastBackup','lastDismiss','startedAt'])if(Number.isFinite(x[key])&&x[key]>=0)securityPrefs[key]=x[key];
+ }}catch{}
+ if(!securityPrefs.startedAt)securityPrefs.startedAt=Date.now();
+ $('prefAnimationMode').addEventListener('change',e=>{securityPrefs.animation=e.target.value;storeSecurityPrefs()});
+ $('prefBackupInterval').addEventListener('change',e=>{securityPrefs.backupDays=Number(e.target.value);storeSecurityPrefs()});
+ $('prefSaveIndicator').addEventListener('change',e=>{securityPrefs.showSave=e.target.checked;storeSecurityPrefs()});
+ $('securityBackupNow').addEventListener('click',()=>exportBackup());
+ $('securityReset').addEventListener('click',()=>{const lastBackup=securityPrefs.lastBackup,startedAt=securityPrefs.startedAt;securityPrefs={...SECURITY_DEFAULTS,lastBackup,startedAt};storeSecurityPrefs();notify('Preferências de sistema restauradas')});
+ $('backupReminderAction').addEventListener('click',()=>exportBackup());
+ $('backupReminderDismiss').addEventListener('click',()=>{securityPrefs.lastDismiss=Date.now();storeSecurityPrefs()});
+ window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener?.('change',applySecurityPrefs);
+ window.addEventListener('focus',checkBackupReminder);
+ storeSecurityPrefs();
+}
 // v32: Exportação portátil do projeto e backup completo do ambiente.
 const BACKUP_FORMAT='mentalista-backup',PROJECT_FORMAT='mentalista-map';
-function exportPreferences(){return {appearance:clone(appearance),stage:clone(stagePrefs),edges:clone(edgePrefs),nodes:clone(nodePrefs),navigation:clone(navPrefs)}}
+function exportPreferences(){return {appearance:clone(appearance),stage:clone(stagePrefs),edges:clone(edgePrefs),nodes:clone(nodePrefs),navigation:clone(navPrefs),security:clone(securityPrefs)}}
+function validateSecurityPreferences(x){
+ if(!x||typeof x!=='object'||!['system','full','reduced','off'].includes(x.animation)||![0,1,7,15,30].includes(x.backupDays)||typeof x.showSave!=='boolean')throw Error('Preferências de segurança inválidas');
+ return {animation:x.animation,backupDays:x.backupDays,showSave:x.showSave,lastBackup:Number.isFinite(x.lastBackup)&&x.lastBackup>=0?x.lastBackup:0,lastDismiss:0,startedAt:Number.isFinite(x.startedAt)&&x.startedAt>=0?x.startedAt:Date.now()};
+}
 function validatedPreferences(data){
  if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Preferências inválidas');
  const number=(v,min,max,label)=>{if(typeof v!=='number'||!Number.isFinite(v)||v<min||v>max)throw Error('Preferência inválida: '+label);return v};
@@ -259,19 +308,20 @@ function validatedPreferences(data){
   stage:{showGrid:bool(g.showGrid,'grade'),gridOpacity:number(g.gridOpacity,0,100,'intensidade'),snapToGrid:bool(g.snapToGrid,'encaixe')},
   edges:{style:e.style,width:number(e.width,1,6,'espessura')},
   nodes:{width:number(n.width,160,360,'largura'),font:n.font,fontSize:number(n.fontSize,12,22,'fonte'),spacing:number(n.spacing,0,3,'espaçamento')},
-  navigation:{zoomSpeed:number(v.zoomSpeed,25,200,'zoom'),panSpeed:number(v.panSpeed,25,200,'movimentação'),largeControls:bool(v.largeControls,'controles'),reducedMotion:bool(v.reducedMotion,'animações')}
+  navigation:{zoomSpeed:number(v.zoomSpeed,25,200,'zoom'),panSpeed:number(v.panSpeed,25,200,'movimentação'),largeControls:bool(v.largeControls,'controles'),reducedMotion:bool(v.reducedMotion,'animações')},
+  security:data.security?validateSecurityPreferences(data.security):null
  };
 }
 function restorePreferences(prefs){
  const p=validatedPreferences(prefs);
- appearance=p.appearance;stagePrefs=p.stage;edgePrefs=p.edges;nodePrefs=p.nodes;navPrefs=p.navigation;
+ appearance=p.appearance;stagePrefs=p.stage;edgePrefs=p.edges;nodePrefs=p.nodes;navPrefs=p.navigation;if(p.security)securityPrefs=p.security;
  localStorage.setItem(APPEARANCE_KEY,JSON.stringify(appearance));
  localStorage.setItem(THEME,appearance.mode);
  localStorage.setItem(STAGE_PREFS_KEY,JSON.stringify(stagePrefs));
  localStorage.setItem(EDGE_PREFS_KEY,JSON.stringify(edgePrefs));
  localStorage.setItem(NODE_PREFS_KEY,JSON.stringify(nodePrefs));
  localStorage.setItem(NAV_PREFS_KEY,JSON.stringify(navPrefs));
- applyAppearance();applyStagePrefs();applyEdgePrefs();applyNodePrefs();applyNavPrefs();render();
+ applyAppearance();applyStagePrefs();applyEdgePrefs();applyNodePrefs();applyNavPrefs();storeSecurityPrefs();render();
 }
 function exportJson(){
  const p=current();if(!p)return notify('Nenhum projeto selecionado');
@@ -282,7 +332,7 @@ function exportBackup(){
  if(saveTimer){clearTimeout(saveTimer);persist()}
  const draft=localStorage.getItem('mentalista.editor.v1')||'';
  download('mentalista-backup-geral-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({format:BACKUP_FORMAT,version:1,exportedAt:new Date().toISOString(),projects:clone(projects),active,preferences:exportPreferences(),editorDraft:draft},null,2),'application/json');
- notify('Backup geral exportado');
+ markBackupDone();notify('Backup geral exportado');
 }
 function validProject(p){return p&&typeof p.name==='string'&&p.name.length<=200&&Array.isArray(p.nodes)&&p.nodes.length<=20000&&Array.isArray(p.edges)&&p.edges.length<=50000&&p.nodes.every(n=>typeof n.id==='string'&&typeof n.title==='string'&&typeof n.x==='number'&&Number.isFinite(n.x)&&typeof n.y==='number'&&Number.isFinite(n.y))&&p.edges.every(e=>typeof e.a==='string'&&typeof e.b==='string')}
 function cleanImportedProject(p){

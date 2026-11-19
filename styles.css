@@ -253,3 +253,10 @@ body.access-reduced-motion *,body.access-reduced-motion *::before,body.access-re
 
 /* v32.1: labels measured to fit actual SVG width */
 .node .stage-content-label{pointer-events:none}
+
+/* v32.2 — sistema, acessibilidade e lembretes não intrusivos */
+body.access-no-animation *,body.access-no-animation *::before,body.access-no-animation *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+.backup-reminder{position:fixed;z-index:450;top:74px;left:50%;transform:translateX(-50%);max-width:min(92vw,690px);width:max-content;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--border,#aaa);background:var(--surface,#fff);color:var(--text,#222);box-shadow:0 8px 28px #0003;font-size:13px}
+.backup-reminder[hidden]{display:none!important}.backup-reminder button{flex-shrink:0;border-radius:9px;padding:7px 10px;cursor:pointer}
+@media(max-width:580px){.backup-reminder{width:92vw;flex-wrap:wrap;top:64px}}
+@media print{.backup-reminder{display:none!important}}
