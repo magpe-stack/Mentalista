@@ -331,3 +331,10 @@ A posição dos controles foi corrigida no próprio código SVG: os botões de a
 Em **Editar → Edição**, selecione uma caixa e escolha **Duplicar nó** para copiar somente aquela caixa, ou **Duplicar ramificação** para copiar a caixa e seus descendentes com suas conexões internas. As cópias recebem IDs próprios, são deslocadas no Palco e não ficam fixadas. As operações podem ser desfeitas com Ctrl+Z.
 
 O comando **Prioridade, etiquetas e prazo** permite atribuir prioridade (baixa, média, alta ou urgente), até oito etiquetas e uma data. Os metadados são armazenados no nó e preservados nas exportações JSON e backups; podem ser consultados no título acessível da caixa. O Mapa de Ícones e botões inclui os novos comandos.
+
+
+## Mentalista v36 — Minimapa e pesquisar/substituir
+
+- **Minimapa:** mostra a distribuição dos nós e a região visível do Palco. Clique ou arraste no minimapa para navegar. O botão × oculta o minimapa; o botão circular ▣ o reabre. A preferência de exibição é salva no navegador.
+- **Pesquisar e substituir:** abra **Editar → Buscar nós** (ou Ctrl+F), expanda **Pesquisar e substituir**, digite a expressão pesquisada e o texto substituto. Use **Prévia** para conferir a quantidade de ocorrências e **Substituir ocorrências** para confirmar a operação. A substituição é literal, sensível a maiúsculas e acentos, e altera títulos, descrições e itens de listas. Uma substituição pode ser desfeita com Ctrl+Z. O HTML formatado dos nós de texto não é modificado automaticamente, evitando perda de formatação.
+- O minimapa e seus controles não são incluídos na impressão.
