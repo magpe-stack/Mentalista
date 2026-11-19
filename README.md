@@ -261,3 +261,8 @@ Nós comuns, listas e caixas de texto possuem rolagem interna para leitura sem a
 ### v32.4 — Botão de conexão discreto
 
 O botão circular **+** de cada nó aparece ao passar o mouse sobre a caixa. Em telas sensíveis ao toque, aparece ao selecionar o nó. Permanece oculto em impressão e exportação SVG; a conexão continua disponível normalmente quando o controle é exibido.
+
+
+### v32.5 — Correção do arraste de caixas
+
+O Ponteiro voltou a movimentar nós e listas mesmo quando o arraste começa sobre o texto. A rolagem interna, as caixas de marcação e os botões de conexão permanecem operacionais. Para selecionar texto, use o editor da caixa.

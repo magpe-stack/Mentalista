@@ -293,3 +293,9 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
   .node.selected .node-port,.node:focus-within .node-port{opacity:1;pointer-events:all}
 }
 @media print{.node .node-port{display:none!important;visibility:hidden!important}}
+
+/* v32.5 — arrastar pelo texto da caixa sem selecionar o conteúdo.
+   Barras de rolagem, checkboxes e links mantêm interatividade própria. */
+.node .stage-scroll-body{cursor:grab;}
+.node .stage-scroll-body:active{cursor:grabbing;}
+.node .stage-scroll-body a,.node .stage-scroll-body button{cursor:pointer;}
