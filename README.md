@@ -159,3 +159,10 @@ O menu Ajuda inclui GitHub (repositório e Licença MIT), Manual (orientações 
 ## Mapa de Ícones e botões (v24)
 
 Acesse **Ajuda → Mapa de Ícones e botões** para consultar as funções dos controles por categoria. A janela possui busca textual. **Regra de manutenção:** sempre que um botão/ícone for adicionado, alterado ou removido, atualizar o catálogo em `index.html` e esta documentação na mesma versão.
+
+
+## Novidades v25 — Cores e checklists no Palco
+
+- **Círculo cromático:** no menu contextual, ao lado das amostras existentes, permite escolher qualquer cor hexadecimal com o seletor nativo do navegador. A cor fica registrada no mapa e no backup JSON.
+- **Checklists interativos:** em uma caixa Lista configurada como *caixas de marcação*, clique diretamente no quadradinho de cada tópico no Palco para marcar ou desmarcar. Também aceita Enter/Espaço com o quadradinho focado. Cada mudança pode ser desfeita com Ctrl+Z.
+- **Mapa de Ícones e botões:** atualizado com os dois controles.
