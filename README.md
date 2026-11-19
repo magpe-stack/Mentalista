@@ -231,3 +231,13 @@ Em **Sistema → Configurações → Navegação e acessibilidade**, é possíve
 ### v31.1 — Controles discretos e impressão limpa
 
 Os botões de ação das caixas (Copiar, Fixar e Editar) são revelados ao passar o mouse ou ao focar a caixa pelo teclado. Em telas de toque, aparecem quando a caixa está selecionada. Na impressão e na exportação SVG, os botões de edição, os pontos de conexão e os divisores decorativos são omitidos, preservando o conteúdo e os elos. **Mapa de Ícones e botões:** as funções dos controles permanecem inalteradas; apenas sua visibilidade foi modificada.
+
+
+## Mentalista v32 — Exportação e restauração completas
+
+- **Exportar projeto (JSON)**: gera `mentalista-map` versão 2 com o projeto selecionado e preferências gerais (tema, grade, conexões, tipografia, navegação e acessibilidade).
+- **Importar projeto (JSON)**: aceita versões antigas (`mentalista-map` versão 1) e versão 2. Acrescenta o projeto sem sobrescrever os existentes; se houver preferências no arquivo, pergunta antes de aplicá-las ao navegador.
+- **Backup geral (JSON)**: gera `mentalista-backup` versão 1 com todos os projetos, o projeto ativo, as preferências gerais e o rascunho do Editor.
+- **Restaurar backup geral**: valida o arquivo e solicita confirmação antes de **substituir todos os projetos e configurações locais**. Faça um backup atual antes de restaurar.
+
+Os arquivos JSON são locais, não dependem de servidor. O backup não inclui o estado temporário de janelas abertas ou a posição da calculadora.
