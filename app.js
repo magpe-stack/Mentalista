@@ -153,12 +153,74 @@ const newMap=(name='Meu primeiro mapa')=>{const a=uid();return{id:uid(),name,cre
 const current=()=>projects.find(p=>p.id===active),clone=v=>JSON.parse(JSON.stringify(v));
 function notify(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2500)}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify({projects,active}));$('saveStatus').textContent='Salvo localmente'}catch(e){$('saveStatus').textContent='Erro ao salvar';notify('Armazenamento cheio ou indisponível. Exporte um backup!')}}
-function scheduleSave(){const p=current();if(p)p.updated=Date.now();$('saveStatus').textContent='Salvando…';clearTimeout(saveTimer);saveTimer=setTimeout(persist,220)}
+function scheduleSave(){const p=current();if(p)p.updated=Date.now();$('saveStatus').textContent='Salvando…';clearTimeout(saveTimer);saveTimer=setTimeout(persist,220);queueAutomaticVersion()}
 function snapshot(){const p=current();if(!p)return;history.push(clone({nodes:p.nodes,edges:p.edges}));if(history.length>80)history.shift();future=[];updateHistoryButtons()}
 function updateHistoryButtons(){$('undo').disabled=$('quickUndo').disabled=!history.length;$('redo').disabled=$('quickRedo').disabled=!future.length}
 function restore(state){selectedEdge=null;const p=current();if(!p)return;p.nodes=clone(state.nodes);p.edges=clone(state.edges);selected=selected.filter(id=>p.nodes.some(n=>n.id===id));render();scheduleSave()}
 function undo(){if(!history.length)return;const p=current();future.push(clone({nodes:p.nodes,edges:p.edges}));restore(history.pop());updateHistoryButtons()}
 function redo(){if(!future.length)return;const p=current();history.push(clone({nodes:p.nodes,edges:p.edges}));restore(future.pop());updateHistoryButtons()}
+// v39 — Histórico persistente por projeto. IndexedDB, sem serviços externos.
+const VERSION_DB='mentalista.version-history.v39', VERSION_STORE='versions';
+let versionDbPromise=null,versionAutoTimer=null,versionAutoLast=new Map(),versionBusy=false;
+function openVersionDb(){
+ if(!('indexedDB' in window))return Promise.reject(new Error('IndexedDB indisponível'));
+ if(!versionDbPromise)versionDbPromise=new Promise((resolve,reject)=>{
+  const req=indexedDB.open(VERSION_DB,1);
+  req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(VERSION_STORE)){const st=db.createObjectStore(VERSION_STORE,{keyPath:'id'});st.createIndex('projectId','projectId',{unique:false})}};
+  req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Falha no IndexedDB'));
+ }).catch(e=>{versionDbPromise=null;throw e});
+ return versionDbPromise;
+}
+async function versionList(projectId){const db=await openVersionDb();return new Promise((resolve,reject)=>{const req=db.transaction(VERSION_STORE,'readonly').objectStore(VERSION_STORE).index('projectId').getAll(projectId);req.onsuccess=()=>resolve(req.result.sort((a,b)=>b.time-a.time));req.onerror=()=>reject(req.error)})}
+async function versionPut(record){const db=await openVersionDb();return new Promise((resolve,reject)=>{const req=db.transaction(VERSION_STORE,'readwrite').objectStore(VERSION_STORE).put(record);req.onsuccess=()=>resolve();req.onerror=()=>reject(req.error)})}
+async function versionDelete(id){const db=await openVersionDb();return new Promise((resolve,reject)=>{const req=db.transaction(VERSION_STORE,'readwrite').objectStore(VERSION_STORE).delete(id);req.onsuccess=()=>resolve();req.onerror=()=>reject(req.error)})}
+async function versionPrune(projectId){const rows=await versionList(projectId);let automatic=0;const remove=[];rows.forEach((v,i)=>{if(v.type==='auto')automatic++;if(i>=25||(v.type==='auto'&&automatic>15))remove.push(v.id)});for(const id of remove)await versionDelete(id)}
+async function versionCapture(type='manual',label='',sourceProject=null){
+ const p=sourceProject||current();if(!p||versionBusy)return false;
+ versionBusy=true;
+ try{const data=clone(p),time=Date.now();await versionPut({id:uid(),projectId:p.id,projectName:p.name,time,type,label:(label||'').trim().slice(0,80),nodeCount:data.nodes.length,edgeCount:data.edges.length,data});await versionPrune(p.id);if(type==='auto')versionAutoLast.set(p.id,time);return true}
+ catch(err){console.warn('Histórico de versões:',err);if(type==='manual')notify('Não foi possível guardar a versão. Verifique o espaço disponível.');return false}
+ finally{versionBusy=false}
+}
+function queueAutomaticVersion(){
+ clearTimeout(versionAutoTimer);const p=current();if(!p)return;
+ const projectId=p.id;
+ versionAutoTimer=setTimeout(async()=>{
+  if(current()?.id!==projectId||versionBusy)return;
+  try{const rows=await versionList(projectId);const last=versionAutoLast.get(projectId)||rows.find(v=>v.type==='auto')?.time||0;
+   if(Date.now()-last<10*60*1000)return;
+   await versionCapture('auto','Salvamento automático');
+  }catch(err){console.warn('Histórico automático indisponível:',err)}
+ },90000);
+}
+const versionStatus=t=>{$('versionHistoryStatus').textContent=t};
+async function versionRefresh(){
+ const p=current(),list=$('versionHistoryList');if(!p)return;list.replaceChildren();versionStatus('Carregando versões…');
+ try{const rows=await versionList(p.id);versionStatus(rows.length?`${rows.length} versão(ões) guardada(s) para “${p.name}”.`:'Ainda não há versões guardadas deste projeto.');
+  for(const v of rows){const item=document.createElement('div');item.className='version-history-item';
+   const info=document.createElement('div');info.className='version-history-item-info';
+   const title=document.createElement('strong');title.textContent=v.label||(v.type==='auto'?'Salvamento automático':'Versão manual');
+   const meta=document.createElement('small');meta.textContent=new Date(v.time).toLocaleString('pt-BR')+' · '+v.nodeCount+' nós · '+v.edgeCount+' conexões · '+(v.type==='auto'?'Automática':'Manual');
+   info.append(title,meta);const actions=document.createElement('div');actions.className='version-history-actions';
+   const restoreButton=document.createElement('button');restoreButton.type='button';restoreButton.textContent='Restaurar';restoreButton.addEventListener('click',()=>versionRestore(v));
+   const removeButton=document.createElement('button');removeButton.type='button';removeButton.textContent='Excluir';removeButton.setAttribute('aria-label','Excluir versão '+title.textContent);removeButton.addEventListener('click',async()=>{if(!confirm('Excluir esta versão do histórico?'))return;await versionDelete(v.id);await versionRefresh()});
+   actions.append(restoreButton,removeButton);item.append(info,actions);list.append(item)
+  }
+ }catch(err){versionStatus('Histórico indisponível neste navegador. Verifique se o armazenamento está habilitado.')}}
+async function versionRestore(v){
+ const p=current();if(!p||p.id!==v.projectId)return;
+ if(!confirm('Restaurar a versão de '+new Date(v.time).toLocaleString('pt-BR')+'? O estado atual será guardado antes da restauração.'))return;
+ const safe=await versionCapture('manual','Antes da restauração de '+new Date(v.time).toLocaleString('pt-BR'));
+ if(!safe){notify('Restauração cancelada: não foi possível proteger o estado atual.');return}
+ const data=clone(v.data);if(!validProject(data)){notify('Esta versão contém dados inválidos.');return}
+ const index=projects.findIndex(x=>x.id===p.id);if(index<0)return;
+ data.id=p.id;data.name=p.name;data.updated=Date.now();projects[index]=data;
+ selected=[];selectedEdge=null;history=[];future=[];updateHistoryButtons();render();persist();await versionRefresh();notify('Versão restaurada. Estado anterior preservado no histórico.');
+}
+$('versionHistoryOpen').addEventListener('click',()=>{document.querySelectorAll('.menu').forEach(m=>m.open=false);$('versionHistoryDialog').showModal();versionRefresh()});
+$('versionHistoryClose').addEventListener('click',()=>$('versionHistoryDialog').close());
+$('versionHistorySave').addEventListener('click',async()=>{const label=$('versionHistoryName').value.trim();if(await versionCapture('manual',label||'Versão manual')){$('versionHistoryName').value='';await versionRefresh();notify('Versão guardada localmente')}});
+$('versionHistoryClear').addEventListener('click',async()=>{const p=current();if(!p||!confirm('Excluir todas as versões deste projeto? Isso não apaga o mapa atual, mas não poderá ser desfeito.'))return;for(const v of await versionList(p.id))await versionDelete(v.id);versionAutoLast.delete(p.id);await versionRefresh();notify('Histórico do projeto limpo')});
 // v33 — organização automática determinística, preservando nós, conexões e fixações.
 function organizeMap(mode){
  const project=current();if(!project||!project.nodes.length)return notify('Não há caixas para organizar');

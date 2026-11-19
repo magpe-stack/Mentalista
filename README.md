@@ -384,3 +384,18 @@ Em **Arquivo → Guardar e restaurar**, use **Exportar Markdown (.md)** para obt
 ### v38.1 — Correção dos botões de modelos e Markdown
 
 Corrigida uma referência a um botão de busca removido e movidos os comandos de modelos e Markdown para o escopo do gerenciador de projetos. Os comandos **Novo a partir de modelo**, **Exportar Markdown** e **Importar Markdown** agora compartilham as funções de criação, persistência e download do Mentalista. A importação cria um projeto separado; não substitui os existentes.
+
+
+## Mentalista v39 — Histórico de versões e restauração de estados
+
+Acesse **Arquivo → Guardar e restaurar → Histórico de versões**. O histórico é individual para cada projeto e fica armazenado no **IndexedDB** do navegador, separadamente dos arquivos JSON. Você pode:
+
+- Criar pontos manuais com nomes personalizados.
+- Consultar versões com data, horário, quantidade de nós e conexões.
+- Restaurar uma versão antiga, com confirmação e salvamento obrigatório do estado atual antes da operação.
+- Excluir versões isoladas ou limpar o histórico do projeto.
+- Contar com capturas automáticas após alterações e 90 segundos de inatividade, respeitando intervalo mínimo de dez minutos entre capturas automáticas.
+
+O histórico mantém até **25 versões por projeto**, das quais no máximo **15 automáticas**. A restauração preserva o projeto atual no histórico, mas substitui o estado corrente do mapa (não os outros projetos). O histórico não é incluído nos backups JSON e poderá desaparecer se os dados do navegador forem apagados. **Continue fazendo backups gerais JSON regularmente.**
+
+No **Mapa de Ícones e botões**, o comando Histórico de versões identifica esta função. A restauração é local, não depende de servidores e não cria contas.
