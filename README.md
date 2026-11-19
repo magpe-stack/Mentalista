@@ -289,3 +289,23 @@ O controle de recolher/expandir é um **ponto discreto** no canto superior direi
 
 ### v34.2 — Contador de ramificações
 O contador de nós ocultos foi reduzido e movido para a faixa superior da caixa, evitando sobreposição ao título. O ponto/seta de recolhimento continua no canto superior direito e os indicadores não são impressos.
+
+
+### v34.3 — Indicador de ramificações sem sobreposição
+
+O contador textual de nós ocultos foi retirado do interior da caixa para não interferir no título. A seta discreta permanece no canto superior direito; ao passar o mouse sobre ela, uma dica informa quantos nós estão ocultos. O botão também tem descrição acessível para leitores de tela.
+
+
+### v34.4 — Contador mínimo de ramificações
+
+Ao recolher uma ramificação, um número de apenas 7 px aparece acima do ponto/seta no canto superior direito da caixa, indicando quantos nós foram ocultados. Não há texto «ocultos» dentro da caixa. A informação completa permanece disponível na dica de acessibilidade do botão. O indicador é excluído de impressão e exportação SVG.
+
+
+### v34.5 — Contador dentro do indicador
+
+Quando uma ramificação está recolhida, o círculo no canto superior direito mostra apenas a quantidade de nós ocultos, centralizada e com tamanho de fonte adaptável para um, dois ou mais algarismos. A seta foi removida. A quantidade completa continua acessível pelo título e rótulo do controle. O indicador não é impresso nem exportado para SVG.
+
+
+### v34.6 — Contador sutil
+
+O número dentro do círculo de ramificação recolhida usa tipografia fina (peso 400) e dimensões reduzidas, adaptadas à quantidade de algarismos. Continua centralizado e legível, sem ultrapassar as bordas do indicador.
