@@ -786,7 +786,19 @@ let moving=null;$('editorDrag').addEventListener('pointerdown',e=>{if(e.target.c
 $('editorDrag').addEventListener('pointermove',e=>{if(!moving||editor.classList.contains('maximized'))return;editor.style.left=Math.max(0,Math.min(window.innerWidth-120,moving.left+e.clientX-moving.x))+'px';editor.style.top=Math.max(0,Math.min(window.innerHeight-60,moving.top+e.clientY-moving.y))+'px';editor.style.right='auto'});
 $('editorDrag').addEventListener('pointerup',()=>moving=null);$('editorDrag').addEventListener('pointercancel',()=>moving=null);
 
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.projects)){projects=saved.projects.filter(validProject);active=saved.active}}catch{}if(!projects.length)projects=[newMap()];if(!projects.some(p=>p.id===active))active=projects[0].id;initializeAppearance();openProject(active);window.addEventListener('resize',applyCamera);window.addEventListener('beforeunload',()=>{if(saveTimer){clearTimeout(saveTimer);persist()}});if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.projects)){projects=saved.projects.filter(validProject);active=saved.active}}catch{}if(!projects.length)projects=[newMap()];if(!projects.some(p=>p.id===active))active=projects[0].id;initializeAppearance();openProject(active);
+// v40: atalhos do manifesto. Executar somente após a inicialização dos projetos.
+// A URL é consumida para evitar repetir ações ao atualizar a página.
+const shortcutAction=new URLSearchParams(location.search).get('shortcut');
+if(['new','projects','search'].includes(shortcutAction)){
+ try{const url=new URL(location.href);url.searchParams.delete('shortcut');history.replaceState(history.state,'',url.pathname+url.search+url.hash)}catch{}
+ requestAnimationFrame(()=>{
+  if(shortcutAction==='new')addProject();
+  else if(shortcutAction==='projects')showMyProjects();
+  else openFind();
+ });
+}
+window.addEventListener('resize',applyCamera);window.addEventListener('beforeunload',()=>{if(saveTimer){clearTimeout(saveTimer);persist()}});if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 
 
 // Listas rápidas: caixas de primeira classe no mesmo grafo, com conexões normais.

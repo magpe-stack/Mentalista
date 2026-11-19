@@ -413,3 +413,18 @@ No **Mapa de Ícones e botões**, o comando Histórico de versões identifica es
 - **Restaurar configurações padrão:** remove apenas chaves de preferências conhecidas, com confirmação; preserva projetos, histórico e rascunhos. Recarrega o aplicativo para aplicar padrões.
 
 **Atenção:** navegador, sistema operacional e disponibilidade de rede podem limitar algumas operações. Faça backup geral antes de manutenção.
+
+
+## v40 — Atalhos do aplicativo (App Shortcuts)
+
+Quando o Mentalista está instalado como PWA em um navegador/sistema compatível, pressione e segure o ícone (Android) ou abra seu menu de contexto (desktop) para acessar:
+
+- **Novo Projeto:** abre o Mentalista e solicita o nome de um novo projeto. Cancelar não cria nada.
+- **Meus Projetos:** abre diretamente a janela com os projetos salvos neste navegador.
+- **Buscar Nós:** abre a busca no projeto atual, com o campo pronto para digitação.
+
+Os atalhos são declarados em `manifest.webmanifest` (`shortcuts`) e usam URLs relativas ao escopo (`?shortcut=new`, `?shortcut=projects`, `?shortcut=search`), compatíveis com a publicação em subdiretórios do GitHub Pages. `app.js` interpreta o parâmetro **depois** de inicializar os dados locais e o remove da barra de endereço para evitar repetição após atualizar a página. Os atalhos não apagam nem alteram os projetos existentes, exceto quando o usuário confirma a criação de um novo projeto.
+
+**Compatibilidade:** a exibição do menu depende do sistema operacional e navegador. Se os atalhos não aparecerem após a atualização, feche e abra o PWA instalado; em alguns sistemas pode ser necessário reinstalar para atualizar o manifesto. Todos os três comandos permanecem acessíveis pelo menu normal do aplicativo.
+
+**Testes recomendados:** instalar/reinstalar em Chrome Android e Edge/Chrome desktop; abrir cada atalho, verificar que chega à tela correta; cancelar Novo Projeto; verificar que o botão Atualizar não repete a ação; testar abertura offline após o cache v40 ser instalado; conferir projetos antigos e backup JSON.
