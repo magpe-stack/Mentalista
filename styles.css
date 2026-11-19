@@ -226,3 +226,14 @@ body > #calculator .calculator-head{cursor:grab;touch-action:none;}
 body > #calculator .calculator-head:active{cursor:grabbing;}
 body > #calculator .calculator-grid{overflow-y:auto;min-height:0;}
 body > #calculator .calculator-grid button{pointer-events:auto!important;position:relative;z-index:1;}
+
+/* v31 — Navegação e acessibilidade */
+.settings-dialog .settings-module{min-width:0;max-width:calc(100% - 48px);box-sizing:border-box;overflow:hidden}
+.settings-dialog .settings-module .stage-pref-row{min-width:0;max-width:100%}
+.settings-dialog .settings-module input[type=range]{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+body.access-large-controls .top button,body.access-large-controls .top summary,body.access-large-controls .toolbar button,body.access-large-controls .menu-group>summary{min-height:48px;min-width:48px}
+body.access-large-controls .interaction-tools button{width:54px;height:54px;min-width:54px}
+body.access-large-controls .toolbar button{padding-inline:10px}
+body.access-reduced-motion *,body.access-reduced-motion *::before,body.access-reduced-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media(max-width:600px){.settings-dialog .settings-module{max-width:calc(100% - 24px)}}
