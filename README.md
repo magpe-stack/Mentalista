@@ -285,3 +285,7 @@ Em **Editar → Organizar mapa**, escolha **Em árvore (horizontal)**, **Hierár
 ## v34.1 — Indicador de ramificações
 
 O controle de recolher/expandir é um **ponto discreto** no canto superior direito das caixas com descendentes. Quando o ramo está recolhido, exibe uma pequena **seta (›)** dentro do ponto — nunca um símbolo +, reservado para conectar nós. O indicador permanece visível, não aparece em impressões ou SVG, e o comando preserva os dados.
+
+
+### v34.2 — Contador de ramificações
+O contador de nós ocultos foi reduzido e movido para a faixa superior da caixa, evitando sobreposição ao título. O ponto/seta de recolhimento continua no canto superior direito e os indicadores não são impressos.
