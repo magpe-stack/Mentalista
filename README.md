@@ -399,3 +399,17 @@ Acesse **Arquivo → Guardar e restaurar → Histórico de versões**. O histór
 O histórico mantém até **25 versões por projeto**, das quais no máximo **15 automáticas**. A restauração preserva o projeto atual no histórico, mas substitui o estado corrente do mapa (não os outros projetos). O histórico não é incluído nos backups JSON e poderá desaparecer se os dados do navegador forem apagados. **Continue fazendo backups gerais JSON regularmente.**
 
 No **Mapa de Ícones e botões**, o comando Histórico de versões identifica esta função. A restauração é local, não depende de servidores e não cria contas.
+
+
+## v39.1 — Sistema → Manutenção
+
+- **Instalar:** usa o evento de instalação disponibilizado pelo navegador, quando presente; caso contrário explica como instalar pelo menu do navegador.
+- **Desinstalar:** apresenta instruções, pois o JavaScript não pode desinstalar o PWA diretamente.
+- **Verificar atualizações:** solicita atualização ao service worker registrado.
+- **Diagnóstico:** consulta recursos locais sem modificar dados.
+- **Armazenamento:** mostra estimativas da API Storage e tamanho aproximado dos dados do Mentalista.
+- **Limpar cache:** remove exclusivamente caches pertencentes ao Mentalista, com confirmação. Não exclui intencionalmente localStorage nem IndexedDB.
+- **Reparar aplicativo:** solicita atualização do service worker e baixa novamente arquivos essenciais para um cache temporário, promovido somente após download completo.
+- **Restaurar configurações padrão:** remove apenas chaves de preferências conhecidas, com confirmação; preserva projetos, histórico e rascunhos. Recarrega o aplicativo para aplicar padrões.
+
+**Atenção:** navegador, sistema operacional e disponibilidade de rede podem limitar algumas operações. Faça backup geral antes de manutenção.

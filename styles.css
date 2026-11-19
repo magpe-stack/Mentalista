@@ -422,3 +422,15 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 .version-history-footer{border-top:1px solid var(--border);padding-top:10px}.version-history-footer span{font-size:.73rem;color:var(--muted)}
 #versionHistoryStatus{font-size:.8rem;color:var(--muted);margin:0}
 @media(max-width:540px){.version-history-item,.version-history-footer{align-items:flex-start;flex-direction:column}.version-history-create-row{flex-wrap:wrap}.version-history-create-row input{flex-basis:100%}}
+
+/* v39.1 — Manutenção */
+.maintenance-dialog{border:1px solid var(--border,#ddd);border-radius:16px;max-width:min(680px,94vw);width:100%;max-height:88dvh;overflow:auto;background:var(--surface,#fff);color:var(--text,#243047);padding:22px;box-shadow:0 22px 80px #0004}
+.maintenance-dialog::backdrop{background:#0008}
+.maintenance-head{display:flex;align-items:start;justify-content:space-between;gap:14px;border-bottom:1px solid #9994;padding-bottom:12px}
+.maintenance-head h2{margin:0 0 5px;font-size:1.25rem}.maintenance-head p{margin:0;color:var(--muted,#667085)}
+.maintenance-head button{border:1px solid #9995;border-radius:50%;background:transparent;color:inherit;min-width:34px;min-height:34px}
+.maintenance-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;margin:18px 0}
+.maintenance-actions button{min-height:45px;text-align:left;padding:10px 13px;border:1px solid #8885;border-radius:10px;background:var(--surface-2,#f7f4eb);color:inherit;cursor:pointer}
+.maintenance-actions button:hover,.maintenance-actions button:focus-visible{outline:2px solid var(--accent,#87651a);outline-offset:1px}
+.maintenance-result{white-space:pre-wrap;overflow-wrap:anywhere;max-height:35dvh;overflow:auto;padding:14px;border-radius:10px;border:1px solid #9995;line-height:1.55;font-size:.92rem}
+.maintenance-warning{font-size:.85rem;color:var(--muted,#667085)}
