@@ -297,10 +297,10 @@ function renderNodeAttachments(g,n){
   const iconY=item.type==='note'?27:57;
   const isOpen=item.type==='note'?!!n.noteOpen:!!n.imageOpen;
   const icon=el('g',{transform:item.type==='note'?'translate(-12 0)':undefined,class:'node-attachment-icon','data-attachment-toggle':item.type,'data-attachment-node':n.id,role:'button',tabindex:'0','aria-label':item.label,'aria-expanded':String(isOpen)});
-  icon.append(el('circle',{cx:-17,cy:iconY,r:13,class:'node-attachment-icon-disc'}));
+  icon.append(el('circle',{cx:-17,cy:iconY,r:16,class:'node-attachment-icon-disc'}));
   // SVG vetorial: não depende de fontes de emoji do dispositivo.
   if(item.type==='note'){
-   icon.append(el('path',{d:`M -22 ${iconY-4} a6 6 0 1 1 10 0 c-1.3 2-3.3 3.4-3.3 6.2 h-3.6 c0-2.8-2-4.2-3.1-6.2 M -19 ${iconY+4} h5 M -18 ${iconY+7} h3`,class:'node-attachment-icon-stroke'}));
+   icon.append(el('path',{d:`M -22 ${iconY-4} a6 6 0 1 1 10 0 c-1.3 2-3.3 3.4-3.3 6.2 h-3.6 c0-2.8-2-4.2-3.1-6.2 M -19 ${iconY+4} h5 M -18 ${iconY+7} h3`,transform:`translate(${-17*(1-.72)} ${iconY*(1-.72)}) scale(.72)`,class:'node-attachment-icon-stroke'}));
   }else{
    icon.append(el('rect',{x:-24,y:iconY-5,width:14,height:11,rx:2,class:'node-attachment-camera'}));
    icon.append(el('path',{d:`M -21 ${iconY-7} h6 l2 2`,class:'node-attachment-icon-stroke'}));
@@ -314,7 +314,7 @@ function renderNodeAttachments(g,n){
   const popX=-(popWidth+34);
   const height=item.type==='note'?Math.min(218,Math.max(90,52+Math.ceil(n.note.length/34)*17)):Math.round(photoWidth/ratio);
   // Linha entre o ícone e o cartão externo.
-  g.append(el('path',{d:`M ${item.type==='note'?-42:-30} ${iconY} H ${item.type==='note'?-54:-42} V ${contentY+19} H ${popX+popWidth}`,class:'node-attachment-link'}));
+  g.append(el('path',{d:`M ${item.type==='note'?-45:-30} ${iconY} H ${item.type==='note'?-54:-42} V ${contentY+19} H ${popX+popWidth}`,class:'node-attachment-link'}));
   const fo=el('foreignObject',{x:popX,y:contentY,width:popWidth,height});
   const card=document.createElement('div');card.setAttribute('xmlns','http://www.w3.org/1999/xhtml');card.className='node-attachment-card '+(item.type==='note'?'node-attachment-postit':'node-attachment-photo');
   if(item.type==='note'){const heading=document.createElement('div');heading.className='node-attachment-card-heading';heading.textContent='Nota';card.append(heading)}

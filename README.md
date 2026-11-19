@@ -362,3 +362,8 @@ A imagem anexa é exibida sem cartão, título ou moldura, com largura de refer�
 ### v37.3 — Margem da lâmpada
 
 O ícone da lâmpada foi deslocado 12 px à esquerda para afastá-lo da borda da caixa. A linha de ligação do post-it acompanha o novo posicionamento. A câmera e os demais controles não foram alterados.
+
+
+### v37.4 — Respiro interno do ícone da lâmpada
+
+O desenho da lâmpada foi reduzido a 72% em relação ao anterior, permanecendo centralizado, enquanto o círculo externo foi aumentado de raio 13 para 16 unidades SVG. Isso cria margem interna real entre a lâmpada e a borda do botão. O ícone de câmera e as funções dos anexos foram preservados.
