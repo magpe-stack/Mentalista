@@ -1,3 +1,9 @@
+## Mentalista v43 — Central de notificações locais
+
+Em **Sistema → Notificações → Central de notificações**, é possível criar lembretes com mensagem, data e hora, excluir lembretes, solicitar permissão para notificações do sistema e testar os avisos. Também há uma opção para lembrar sobre backups a cada sete dias de uso.
+
+**Limitação essencial:** os lembretes são verificados enquanto o aplicativo está aberto, inclusive ao voltar à aba. Não há Web Push, servidor ou agendamento garantido quando o PWA está fechado. Se a permissão de notificações não estiver disponível, o aviso aparece dentro do aplicativo. Os lembretes ficam no `localStorage` do navegador, separados dos projetos.
+
 # Mentalista v2 — Estúdio de mapas mentais
 
 PWA desktop-first, offline-first, sem bibliotecas externas.
