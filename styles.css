@@ -237,3 +237,16 @@ body.access-large-controls .toolbar button{padding-inline:10px}
 body.access-reduced-motion *,body.access-reduced-motion *::before,body.access-reduced-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media(max-width:600px){.settings-dialog .settings-module{max-width:calc(100% - 24px)}}
+
+/* v31.1 — ações dos nós aparecem sob demanda; impressão limpa. */
+@media (hover:hover) and (pointer:fine){
+  .node .list-tool{opacity:0;pointer-events:none;transition:opacity .13s ease}
+  .node:hover .list-tool,.node:focus-within .list-tool{opacity:1;pointer-events:all}
+}
+@media (hover:none), (pointer:coarse){
+  .node .list-tool{opacity:0;pointer-events:none}
+  .node.selected .list-tool,.node:focus-within .list-tool{opacity:1;pointer-events:all}
+}
+@media print{
+  .node .list-tool,.node .node-port,.node .node-footer-divider,.node .pinned-indicator{display:none!important;visibility:hidden!important}
+}

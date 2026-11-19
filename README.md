@@ -226,3 +226,8 @@ A calculadora possui módulo independente (`calculator.js`), abertura pelos bot�
 ### Mentalista v31 — Navegação e acessibilidade
 
 Em **Sistema → Configurações → Navegação e acessibilidade**, é possível ajustar a sensibilidade do zoom (25–200%), a sensibilidade do deslocamento pela Mãozinha (25–200%), ampliar os controles principais e reduzir as animações. As preferências são armazenadas no navegador e valem para todos os projetos; o botão **Restaurar padrões de navegação e acessibilidade** retorna a 100% e desativa as duas opções. O **Mapa de Ícones e botões** foi atualizado para documentar os cinco controles. O ajuste automático à tela e o arraste de nós não são afetados pelas sensibilidades de navegação.
+
+
+### v31.1 — Controles discretos e impressão limpa
+
+Os botões de ação das caixas (Copiar, Fixar e Editar) são revelados ao passar o mouse ou ao focar a caixa pelo teclado. Em telas de toque, aparecem quando a caixa está selecionada. Na impressão e na exportação SVG, os botões de edição, os pontos de conexão e os divisores decorativos são omitidos, preservando o conteúdo e os elos. **Mapa de Ícones e botões:** as funções dos controles permanecem inalteradas; apenas sua visibilidade foi modificada.
