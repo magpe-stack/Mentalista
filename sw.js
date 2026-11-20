@@ -1,6 +1,6 @@
-/* Mentalista v48 — offline-first, escopo restrito ao aplicativo */
-const CACHE='mentalista-v48';
-const FILES=["./", "./index.html", "./styles.css", "./app.js", "./calculator.js", "./maintenance.js", "./notifications.js", "./file-handling.js", "./file-access.js", "./clipboard.js", "./offline.js", "./storage-protection.js", "./manifest.webmanifest", "./assets/logo.svg", "./assets/icon-192.png", "./assets/icon-512.png"];
+/* Mentalista v48.1 — offline-first, escopo restrito ao aplicativo */
+const CACHE='mentalista-v48-1';
+const FILES=["./", "./index.html", "./styles.css", "./app.js", "./calculator.js", "./maintenance.js", "./notifications.js", "./file-handling.js", "./file-access.js", "./clipboard.js", "./offline.js", "./storage-protection.js", "./view-menu.js", "./manifest.webmanifest", "./assets/logo.svg", "./assets/icon-192.png", "./assets/icon-512.png"];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mentalista-v')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',event=>{

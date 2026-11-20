@@ -500,3 +500,10 @@ Em **Editar → Área de transferência**, foi removido o texto explicativo abai
 ## Mentalista v48 — Proteção do armazenamento
 
 Em **Sistema → Manutenção**, os comandos **Proteção do armazenamento** e **Solicitar persistência** consultam `navigator.storage.estimate()`, `persisted()` e `persist()`. A solicitação pode ser recusada pelo navegador; não é garantia contra limpeza manual, remoção do PWA ou falha do dispositivo. **Verificar projetos** examina, sem alterar, a estrutura JSON de projetos locais. **Verificar backup JSON** permite selecionar um backup geral e conferir sua estrutura básica sem importá-lo. A verificação não substitui um teste de restauração nem assegura a integridade semântica de cada projeto. Faça backups gerais regulares em local seguro.
+
+
+## v48.1 — Menu Exibir
+
+O menu **Exibir**, imediatamente à direita de **Editar**, reúne **Visualização** (zoom e tela cheia), **Organizar mapa** (árvore, hierárquico, radial), **Navegação** (busca, minimapa, ajustar e centralizar), **Aparência** (alternar tema claro/escuro e personalização) e **Ferramentas de navegação** (ponteiro e mãozinha).
+
+Os comandos existentes foram realocados, mantendo os mesmos identificadores e manipuladores de eventos; o menu Sistema continua dedicado às configurações, notificações e manutenção. Nenhuma mudança foi feita no formato dos projetos.
