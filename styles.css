@@ -487,3 +487,18 @@ body.access-no-animation *,body.access-no-animation *::before,body.access-no-ani
 /* v47 — status discreto de disponibilidade offline */
 .offline-badge{position:fixed;left:10px;bottom:10px;z-index:1500;max-width:min(250px,60vw);padding:5px 9px;border-radius:9px;background:var(--surface-2,#f5f5f5);color:var(--text,#222);border:1px solid #8887;box-shadow:0 2px 8px #0002;font:600 11px/1.35 system-ui,sans-serif;pointer-events:none;opacity:.88}
 .offline-badge[data-state="ready"]{border-color:#23865f}.offline-badge[data-state="missing"]{border-color:#bd7925}.offline-badge[data-state="unsupported"]{border-color:#9a6571}
+
+/* v49.1 — Correção de contraste na troca de tema.
+   As caixas neutras mudam de fundo conforme o tema; a tinta dos seus
+   conteúdos HTML (foreignObject) deve acompanhar essa mudança. */
+body.light .node[data-color="slate"]{--node-ink:#273142}
+body:not(.light) .node[data-color="slate"]{--node-ink:#f2f5ff}
+.node[data-color="slate"] .stage-plain-body,
+.node[data-color="slate"] .stage-scroll-title,
+.node[data-color="slate"] .stage-scroll-desc,
+.node[data-color="slate"] .stage-scroll-item,
+.node[data-color="slate"] .stage-scroll-mark,
+.node[data-color="slate"] .text-node-body{color:var(--node-ink)!important}
+.node[data-color="slate"] .stage-check-box,
+.node[data-color="slate"] .stage-check-tick{stroke:var(--node-ink)!important}
+body:not(.light) .node[data-color="slate"] .list-line{fill:var(--node-ink)!important}

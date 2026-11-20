@@ -607,3 +607,8 @@ A relação abaixo foi obtida dos botões e submenus presentes na interface da v
 
 **Referência de controles:** Atalhos, Mapa de Ícones e botões.
 
+
+
+## Correção v49.1 — contraste dos nós
+
+A alternância claro/escuro agora atualiza a cor do conteúdo das caixas neutras, incluindo títulos, descrições, checklists e textos integrados. Não modifica os dados ou as cores escolhidas dos projetos.
