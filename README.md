@@ -507,3 +507,27 @@ Em **Sistema → Manutenção**, os comandos **Proteção do armazenamento** e *
 O menu **Exibir**, imediatamente à direita de **Editar**, reúne **Visualização** (zoom e tela cheia), **Organizar mapa** (árvore, hierárquico, radial), **Navegação** (busca, minimapa, ajustar e centralizar), **Aparência** (alternar tema claro/escuro e personalização) e **Ferramentas de navegação** (ponteiro e mãozinha).
 
 Os comandos existentes foram realocados, mantendo os mesmos identificadores e manipuladores de eventos; o menu Sistema continua dedicado às configurações, notificações e manutenção. Nenhuma mudança foi feita no formato dos projetos.
+
+
+## Mentalista v49 — Consolidação e estabilidade
+
+Esta versão consolida as funções das versões v40–v48.1 sem alterar os formatos de dados dos projetos.
+
+### Atualização offline
+
+A navegação do service worker usa **rede primeiro**, com retorno ao HTML armazenado no cache quando não houver conexão. Os demais arquivos continuam com cache primeiro. Isso evita manter indefinidamente uma página inicial desatualizada enquanto houver internet. A instalação pré-carrega os arquivos essenciais e a ativação remove caches antigos do Mentalista.
+
+### Checklist de regressão manual
+
+1. Abrir o PWA conectado e desconectado; confirmar que projetos locais continuam disponíveis.
+2. Criar projeto, nó e conexão; recarregar e verificar persistência.
+3. Testar Arquivo → JSON (Guardar, Atualizar, Abrir, Salvar como, Backup e Restaurar) usando arquivos descartáveis.
+4. Testar Arquivo → Outros formatos (Markdown, SVG, Compartilhar e Imprimir).
+5. Testar Editar (desfazer/refazer, notas, imagens, área de transferência).
+6. Testar Exibir (zoom, layouts, minimapa, claro/escuro e tela cheia).
+7. Testar Sistema (notificações, manutenção, persistência e integridade).
+8. Verificar acessibilidade por teclado, menus em telas pequenas e comportamento de diálogos.
+9. Instalar no Chrome Android e no Edge desktop para verificar atalhos e integrações específicas.
+10. Antes de limpar dados do navegador, exportar backup geral JSON e verificar a restauração em ambiente separado.
+
+**Limitações:** a verificação de sintaxe e integridade do pacote não substitui os testes manuais em navegadores reais. A persistência local não substitui backups.
