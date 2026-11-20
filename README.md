@@ -1,533 +1,609 @@
-## Mentalista v45.1 — Menu Arquivo simplificado
+# Mentalista v49 — Manual completo do software
 
-O menu **Arquivo** está dividido em **Projetos**, **JSON** e **Outros formatos**.
+**Edição:** 19 de novembro de 2026  
+**Aplicação:** Mentalista — Estúdio de mapas mentais  
+**Plataforma:** Progressive Web App (PWA), HTML/CSS/JavaScript sem bibliotecas externas obrigatórias  
+**Site:** https://magpe-stack.github.io/Mentalista/  
+**Código-fonte:** https://github.com/magpe-stack/Mentalista  
 
-- **Projetos:** Novo, Projetos, Modelos, Renomear, Excluir.
-- **JSON:** Guardar (download de cópia), Atualizar (grava no arquivo previamente autorizado para o mesmo projeto; se não houver, solicita novo arquivo), Abrir (importa projeto como novo, sem substituir existentes), Salvar como (escolhe novo arquivo ou baixa JSON), Backup (todos os projetos), Restaurar (backup geral com confirmação), Histórico (versões locais).
-- **Outros formatos:** Markdown → Importar/Exportar; SVG; Compartilhar; Imprimir.
+> **Leia primeiro:** os projetos são guardados principalmente no navegador, e o histórico no IndexedDB. Faça backups JSON regularmente. Instalação, acesso direto a arquivos, notificações e compartilhamento dependem de permissões e compatibilidade. Este manual descreve os recursos presentes no código da versão 49; não substitui testes práticos em cada navegador.
 
-**Atenção:** Guardar e Atualizar são operações diferentes. O navegador pode não oferecer File System Access; nesses casos, o aplicativo usa o seletor convencional ou download. A restauração geral requer confirmação e pode substituir dados locais; mantenha backups seguros.
+## Apresentação
 
----
+O Mentalista é uma ferramenta de organização visual do conhecimento. Seu espaço de trabalho é um Palco amplo, onde caixas representam ideias e conexões indicam relações. O aplicativo combina mapas mentais, listas, checklists, notas, imagens e textos formatados em projetos locais. É especialmente útil para escritores, estudantes, pesquisadores, profissionais que planejam atividades e qualquer pessoa que precise transformar informações dispersas em uma estrutura compreensível.
 
-## Mentalista v44 — Abertura de arquivos pelo sistema operacional
+O programa foi concebido como PWA: pode ser aberto pelo navegador ou instalado como aplicativo em plataformas compatíveis. O trabalho principal não depende de login ou de um serviço de nuvem. O funcionamento offline depende de os arquivos estáticos terem sido armazenados corretamente. Os projetos podem ser exportados para JSON, e outros formatos oferecem maneiras diferentes de visualizar, compartilhar ou imprimir conteúdos.
 
-**Novo:** associação de arquivos `.json`, `.md` e `.markdown` pelo `file_handlers` do manifesto, em plataformas que suportam File Handling API para PWAs instalados. O arquivo recebido é processado por `launchQueue` e encaminhado ao importador já existente, mediante confirmação. **Cada arquivo importado gera um novo projeto**; nenhum projeto atual é substituído. Arquivos JSON de backup geral não são importados automaticamente: use **Restaurar backup geral** no menu.
+Este documento apresenta os conceitos, o funcionamento dos menus, os procedimentos mais frequentes, os cuidados com dados e as limitações das APIs do navegador. Não confunda recursos de armazenamento local com sincronização em nuvem, nem notificações locais com Web Push. Ao longo do texto, os exemplos são procedimentos sugeridos; algumas opções podem não aparecer em todos os navegadores.
 
-**Compatibilidade:** a integração com o explorador depende de instalação e suporte do sistema/navegador (principalmente Chromium desktop). Em Android e ambientes sem suporte, use **Arquivo → Importar projeto JSON** ou **Importar Markdown**. Não há associação garantida para duplo clique em todas as plataformas; pode ser necessário escolher o Mentalista em **Abrir com**. Arquivos maiores que 35 MB (JSON) ou 1 MB (Markdown) são recusados.
+## Índice
 
-**Importante:** esta versão **não** implementa File System Access API para salvar de volta no arquivo original; isso está previsto para v45. Continue exportando e realizando backups. A atualização não modifica o formato de armazenamento dos projetos.
+1. [Primeiros passos e conceitos](#primeiros-passos-e-conceitos)
+2. [Interface geral e menus](#interface-geral-e-menus)
+3. [Projetos: Novo, Projetos, Modelos, Renomear e Excluir](#projetos-novo-projetos-modelos-renomear-e-excluir)
+4. [Criação, edição e seleção de nós](#criacao-edicao-e-selecao-de-nos)
+5. [Conexões, elos e relações](#conexoes-elos-e-relacoes)
+6. [Movimentação, fixação e duplicação](#movimentacao-fixacao-e-duplicacao)
+7. [Listas rápidas e checklists](#listas-rapidas-e-checklists)
+8. [Editor flutuante e textos formatados](#editor-flutuante-e-textos-formatados)
+9. [Lero-lero e extração de informações](#lero-lero-e-extracao-de-informacoes)
+10. [Notas externas e anexos de imagem](#notas-externas-e-anexos-de-imagem)
+11. [Prioridade, etiquetas e prazos](#prioridade-etiquetas-e-prazos)
+12. [Modelos prontos](#modelos-prontos)
+13. [Organização automática e ramificações](#organizacao-automatica-e-ramificacoes)
+14. [Zoom, ponteiro, mãozinha e minimapa](#zoom-ponteiro-maozinha-e-minimapa)
+15. [Busca e substituição](#busca-e-substituicao)
+16. [Aparência e configurações](#aparencia-e-configuracoes)
+17. [Calculadora flutuante](#calculadora-flutuante)
+18. [Arquivo: JSON e operações seguras](#arquivo-json-e-operacoes-seguras)
+19. [Importação, Markdown, SVG e impressão](#importacao-markdown-svg-e-impressao)
+20. [Compartilhamento nativo](#compartilhamento-nativo)
+21. [Abertura pelo explorador e salvamento direto](#abertura-pelo-explorador-e-salvamento-direto)
+22. [Área de transferência e imagens PNG](#area-de-transferencia-e-imagens-png)
+23. [Histórico de versões e recuperação](#historico-de-versoes-e-recuperacao)
+24. [Notificações locais e lembretes](#notificacoes-locais-e-lembretes)
+25. [Instalação, atalhos e janelas do sistema](#instalacao-atalhos-e-janelas-do-sistema)
+26. [Offline, cache e atualização](#offline-cache-e-atualizacao)
+27. [Armazenamento, integridade e backup](#armazenamento-integridade-e-backup)
+28. [Manutenção e reparação](#manutencao-e-reparacao)
+29. [Acessibilidade e teclado](#acessibilidade-e-teclado)
+30. [Problemas frequentes e soluções](#problemas-frequentes-e-solucoes)
+31. [Fluxos de trabalho recomendados](#fluxos-de-trabalho-recomendados)
+32. [Privacidade, limites e boas práticas](#privacidade-limites-e-boas-praticas)
+33. [Referência rápida de comandos e suporte](#referencia-rapida-de-comandos-e-suporte)
 
----
+## 1. Primeiros passos e conceitos
 
-## Mentalista v43 — Central de notificações locais
+### O que é e quando utilizar
 
-Em **Sistema → Notificações → Central de notificações**, é possível criar lembretes com mensagem, data e hora, excluir lembretes, solicitar permissão para notificações do sistema e testar os avisos. Também há uma opção para lembrar sobre backups a cada sete dias de uso.
+Um projeto é um mapa independente, armazenado no navegador. Um nó é uma caixa de conteúdo; um elo é a conexão visual entre duas caixas. O Palco é a área onde os nós ficam posicionados. A seleção determina sobre qual caixa os comandos atuam.
 
-**Limitação essencial:** os lembretes são verificados enquanto o aplicativo está aberto, inclusive ao voltar à aba. Não há Web Push, servidor ou agendamento garantido quando o PWA está fechado. Se a permissão de notificações não estiver disponível, o aviso aparece dentro do aplicativo. Os lembretes ficam no `localStorage` do navegador, separados dos projetos.
+### Como utilizar, passo a passo
 
-# Mentalista v2 — Estúdio de mapas mentais
+Abra o Mentalista, escolha Arquivo → Projetos → Novo e dê um nome identificável. Clique em Novo nó ou use Insert para criar a primeira ideia. Dê nomes curtos às caixas, crie filhos para subdivisões e organize o mapa quando ele crescer. Salve uma cópia JSON ao terminar a sessão. O salvamento local é automático, mas não substitui uma cópia externa.
 
-PWA desktop-first, offline-first, sem bibliotecas externas.
+### Cuidados e observações
 
-## Interface
+Evite abrir dois separadores do mesmo navegador para editar simultaneamente o mesmo projeto; alterações concorrentes podem produzir resultados inesperados. Não trate o fechamento do navegador como equivalente a um backup.
 
-Palco livre de painéis laterais, com menus **Arquivo**, **Editar**, **Propriedades**, **Configurações** e **Ajuda**. A barra inferior mostra **Nó / Desfazer / Refazer** e, ao selecionar um nó, apresenta **Filho / Irmão / Editar / Cores / Excluir**.
+## 2. Interface geral e menus
 
-## Uso
+### O que é e quando utilizar
 
-- Clique num nó para selecioná-lo e exibir as ações contextuais.
-- Arraste nós para mover, arraste o fundo para navegar, use a roda do mouse para zoom.
-- Para editar o texto, dê duplo clique no nó ou use **Editar** na barra contextual.
-- Para criar conexões arbitrárias, selecione dois nós com Ctrl+clique e use **Editar → Conectar/desconectar nós**.
-- O projeto novo começa com um único nó. A exclusão do último nó é bloqueada.
-- Insert: novo nó; Tab: filho; Enter: irmão; Delete: excluir; Ctrl+Z: desfazer; Ctrl+Y: refazer; Escape: limpar seleção.
+A barra superior contém Arquivo, Editar, Exibir, Sistema e Ajuda. Os comandos são agrupados por finalidade para não misturar administração de projetos, criação de conteúdo, visualização e manutenção. A barra de ferramentas contém recursos contextuais; alguns só aparecem quando uma caixa está selecionada.
 
-## Arquivos e dados
+### Como utilizar, passo a passo
 
-Os projetos ficam em `localStorage` do navegador. **Arquivo → Exportar JSON** cria um backup portátil; **Importar JSON** restaura uma cópia sem sobrescrever o projeto existente. Também há exportação SVG e impressão.
+Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou exclua caixas e abra o Editor. Em Exibir controle zoom, organização, navegação e aparência. Em Sistema configure o aplicativo, consulte notificações e execute manutenção. Em Ajuda abra o manual, a referência de atalhos, o mapa de controles e as informações da versão.
 
-## Instalação
+### Cuidados e observações
 
-Publique o conteúdo desta pasta na raiz do repositório GitHub Pages. O service worker funciona em HTTPS e armazena os recursos estáticos para uso offline após a primeira visita online.
+Se um botão parecer ausente, confira se há uma seleção ativa, se um submenu está recolhido e se o tamanho da tela ocultou ferramentas contextuais. Os menus podem ser fechados clicando fora deles.
 
-## Atualização
+## 3. Projetos: Novo, Projetos, Modelos, Renomear e Excluir
 
-Mantém compatibilidade com os projetos salvos pela v1 (`mentalista.projects.v1`). Um projeto já existente não é apagado ou substituído pela atualização. Para começar com um nó, crie um novo projeto em **Arquivo → Novo projeto**.
+### O que é e quando utilizar
 
+Os projetos são independentes: cada um possui seu conjunto de nós, elos e informações. O seletor de projetos mostra os mapas guardados no navegador atual. Modelos criam mapas novos, em vez de modificar um projeto existente.
 
-## Versão 3
-Cada nó possui uma porta +: arraste até outro nó para conectar, ou solte no palco para criar um filho conectado. Somente cliques sobre caixas selecionam nós. O editor de propriedades fica na barra contextual, após as cores; o menu superior Propriedades foi removido.
+### Como utilizar, passo a passo
 
+Use Novo para iniciar em branco; Projetos para alternar entre mapas; Modelos para partir de uma estrutura pronta; Renomear para atualizar a identificação; Excluir somente depois de verificar se existe uma cópia JSON recuperável. Escolha nomes descritivos, por exemplo “Livro — personagens” e “Livro — enredo”, para evitar confusão.
 
-## Mentalista v4 — Busca rápida e atalhos
+### Cuidados e observações
 
-Pressione **Ctrl+F** (ou **Cmd+F** no macOS) para abrir a busca de nós. Digite parte do título ou descrição; a busca ignora diferenças de acentos e letras maiúsculas. Clique em um resultado ou navegue com as setas e Enter para selecionar o nó e centralizar o Palco. Pressione Esc para fechar a busca. A busca é local e não envia dados a servidores.
+Excluir um projeto é diferente de remover uma caixa. Antes de exclusões importantes, use Guardar ou Backup. Os dados do navegador são específicos do perfil, do domínio e do dispositivo.
 
-No menu **Ajuda → Atalhos**, consulte a lista de comandos do editor e dos controles de navegação. Também é possível abrir a busca em **Editar → Buscar nós** ou **Configurações → Busca rápida**.
+## 4. Criação, edição e seleção de nós
 
+### O que é e quando utilizar
 
-## v5 — Listas rápidas
+Cada nó representa uma ideia, assunto ou atividade. O nó inicial é a origem natural do mapa, mas o aplicativo permite conexões entre caixas existentes. Selecionar um nó habilita comandos de filho, irmão, propriedades, anexos e exclusão.
 
-Clique em **Lista** na barra inferior para criar uma caixa de lista. Digite um tópico e pressione Enter para adicioná-lo; Shift+Enter permite escrever várias linhas e o botão Adicionar inclui todos os tópicos. Edite ou remova itens diretamente na janela da lista. Um duplo clique na caixa abre o editor. Cada lista suporta até 30 tópicos e pode ser conectada a nós comuns ou outras listas usando o botão +. É possível construir mapas só com listas.
+### Como utilizar, passo a passo
 
-**Voz:** o botão Ditar tópico usa a API nativa SpeechRecognition apenas quando disponível. O reconhecimento pode depender de serviços externos, permissão do microfone e conexão à internet. O aplicativo permanece utilizável offline por texto.
+Use Insert para um novo nó, Tab para um filho e Enter para um irmão, desde que o foco esteja no Palco e não em um campo de texto. Dê duplo clique na caixa para editar propriedades quando o contexto permitir. Use Ctrl+clique para selecionar mais de uma caixa e Ctrl+A para selecionar todas. Arraste uma caixa selecionada para reposicioná-la.
 
-**Atalho:** Ctrl+Shift+L cria uma nova lista. A busca Ctrl+F também encontra o conteúdo dos tópicos. Backups JSON preservam as listas e seus elos.
+### Cuidados e observações
 
+A exclusão pode remover conexões associadas. Confira a seleção antes de usar Delete. Para recuperar alterações recentes, use Desfazer; para estados antigos ou após fechar o aplicativo, consulte Histórico de versões.
 
-## Listas — v6
-Cada caixa Lista apresenta um rodapé com ações: copiar, alternar entre marcadores, numeração e checklist, fixar/desafixar posição e editar. O editor permite escolher o formato, marcar itens concluídos e limpar os concluídos. O formato e o estado das marcações são armazenados no projeto e exportados no JSON. O botão de copiar utiliza a área de transferência do navegador (com alternativa quando disponível).
+## 5. Conexões, elos e relações
 
+### O que é e quando utilizar
 
-## Novidades v7 — Elos e Editor
+Os elos tornam explícitas as relações entre conceitos. Podem ligar caixas comuns, listas e outros conteúdos. A aparência das linhas é personalizável nas configurações; o vínculo lógico é preservado no projeto JSON.
 
-- Clique diretamente na linha de uma conexão para selecioná-la; o botão **Desfazer elo** remove somente a linha, mantendo ambas as caixas. `Delete` também remove o elo selecionado. `Ctrl+Z` restaura a conexão.
-- **Editor** ao lado de **Lista** abre uma janela flutuante e arrastável com título, negrito, itálico, fontes, tamanhos, realce, limpar formatação e copiar. `Ctrl+Shift+E` também abre o editor.
-- A extração de telefones, e-mails e URLs mostra resultados separados, com cópia individual, sem alterar o texto original. Reconhecimento por expressões regulares: alguns formatos incomuns podem não ser identificados.
-- Texto do editor salvo separadamente no armazenamento local do navegador. Não integra os backups JSON de mapas; copie textos importantes para um arquivo externo.
-- A colagem no editor utiliza texto simples para evitar formatação indesejada de sites externos. A cópia tenta preservar a formatação criada no editor quando o navegador permite.
+### Como utilizar, passo a passo
 
+Para conectar, arraste a porta “+” de uma caixa até outra. Para selecionar um elo, clique na linha. Use o comando de remoção do elo selecionado para desfazer apenas a relação, sem apagar as caixas. Ajuste formato, espessura e cores das conexões nas preferências correspondentes.
 
-## Novidades da versão 8
+### Cuidados e observações
 
-- **Integrar:** no editor flutuante, transforma o texto formatado em uma caixa de texto do mapa, com porta `+` para criar elos. Para atualizar uma caixa integrada, dê duplo clique nela, edite e clique em Integrar novamente. O botão Rascunho inicia um texto independente.
-- **Centralização contextual:** o botão ⤢ centraliza a caixa selecionada e ajusta o zoom para suas dimensões; sem seleção, enquadra todo o mapa.
-- **Lero-lero:** painel no editor com controles de palavras, frases, títulos e parágrafos. Gera texto fictício localmente, sem internet.
-- **Backup:** caixas de texto e seu HTML fazem parte da exportação JSON do mapa. O rascunho independente continua no armazenamento local.
+Uma conexão não significa necessariamente uma relação hierárquica. Ao usar organização automática, revise o resultado e reposicione manualmente elementos cuja interpretação dependa de ligações cruzadas.
 
-**Observação:** o gerador prioriza a contagem de palavras quando preenchida, portanto o número final de frases pode variar. As caixas longas têm rolagem interna.
+## 6. Movimentação, fixação e duplicação
 
-## Versão 9 — Editor
+### O que é e quando utilizar
 
-- O gerador intercala títulos entre os parágrafos em vez de agrupá-los no início. Se houver mais títulos que parágrafos, alguns títulos ainda aparecerão consecutivamente.
-- O botão **Excluir seleção** remove apenas o trecho selecionado no editor, sem apagar o restante do texto.
-- **Integrar** cria ou atualiza a caixa de texto, centraliza-a no Palco e fecha a janela do Editor.
+O Mentalista permite reposicionar nós livremente e manter determinadas caixas fixas. Duplicar nó cria uma cópia independente; duplicar ramificação replica uma caixa e seus descendentes com as conexões internas pertinentes.
 
+### Como utilizar, passo a passo
 
-## Novidades da v10 — Fixar e copiar caixas
+Selecione a caixa, arraste-a pelo Palco e observe a mudança de posição. Para evitar deslocamentos involuntários, utilize o comando de fixação quando disponível. Para repetir uma estrutura, escolha Duplicar nó ou Duplicar ramificação. Revise os títulos e metadados copiados para não confundir original e duplicata.
 
-Todas as caixas (nós, listas e textos integrados) possuem ações no rodapé para copiar, fixar/desafixar e editar. As listas também permitem alternar o formato. Uma caixa fixada não se move ao arrastar, mas continua editável, conectável e selecionável. O estado de fixação é preservado no projeto e no JSON exportado.
+### Cuidados e observações
 
+Duplicar não cria sincronização entre as cópias. Modificar uma caixa duplicada não atualiza automaticamente a original. Ao duplicar conjuntos grandes, verifique a posição e as conexões antes de continuar.
 
-## Atualização v11
-- Botão **Del** no editor: remove somente a seleção de texto, com preservação do intervalo ao acionar o botão.
-- Textos integrados não permitem seleção acidental no Palco; para selecionar/copiar trechos, abra a caixa no Editor.
-- Nós comuns e listas são desenhados acima das caixas de texto grandes, facilitando sua movimentação.
-- Ação redundante **Limpar texto** removida; **Novo** substitui o rascunho mediante confirmação quando houver texto.
+## 7. Listas rápidas e checklists
 
+### O que é e quando utilizar
 
-## Atualização v12 — Editor maximizado e Meus Projetos
+Uma lista é uma caixa com tópicos próprios. Os formatos incluem marcadores, numeração e itens marcáveis. É útil para planejamento, tarefas, roteiros de estudo e decomposição de assuntos.
 
-- Na barra de título do Editor, use **□** para maximizar sobre todo o Palco e **❐** para restaurar. O botão **−** minimiza o Editor, preservando o conteúdo. Um duplo clique na barra de título também alterna o tamanho.
-- Em **Arquivo → Meus Projetos**, uma janela apresenta os projetos salvos neste navegador, com quantidade de caixas e elos. Clique em um projeto para abri-lo.
-- Maximizar ocupa a janela/área de visualização do navegador. Para ocupar a tela inteira do laptop, use o modo de tela cheia do navegador (normalmente F11 no Windows) ou o controle de tela cheia do Mentalista.
-- Os projetos continuam armazenados localmente. Exporte JSON regularmente.
+### Como utilizar, passo a passo
 
+Em Editar → Criar → Nova lista rápida, informe um título, escolha o formato e adicione os tópicos. Use o botão de adição para registrar cada item, edite ou remova entradas e marque tarefas concluídas diretamente na caixa quando o formato permitir. A opção Concluídos limpa itens marcados; use-a com cuidado.
 
-## v13 — Calculadora flutuante
+### Cuidados e observações
 
-O botão ▦ ao lado do zoom abre uma calculadora independente com operações aritméticas, porcentagem, raiz, quadrado, inverso, mudança de sinal, copiar resultado e teclado numérico. A calculadora pode ser arrastada e fica acima do Editor, inclusive maximizado. O tema claro/escuro é herdado automaticamente do Mentalista. O botão ✕ fecha a calculadora. Não é necessário acesso à internet.
+O editor de listas possui limites de quantidade e tamanho. Para conteúdos longos, distribua tópicos em várias listas ou use o Editor flutuante. O ditado depende do reconhecimento de voz do navegador e pode não funcionar offline.
 
+## 8. Editor flutuante e textos formatados
 
-## Mentalista v14 — Aparência e Temas
+### O que é e quando utilizar
 
-Em **Sistema → Configurações**, abra o módulo **Aparência e Temas**. Escolha uma das cinco paletas (Mentalista Original, Menta, Retrô, Safira ou Linho e Lavanda) e o modo Claro ou Escuro. São dez combinações. As cinco cores originais de cada paleta são mantidas nas variáveis CSS `--color-1` a `--color-5`. Os tons de superfície e texto são derivados para contraste e legibilidade.
+O Editor serve para conteúdos mais extensos que o título de um nó. Ele funciona em janela flutuante, pode ser movimentado e maximizado, e oferece formatação como negrito, itálico, fontes, tamanhos e realces.
 
-A escolha é aplicada imediatamente aos menus, Palco, Editor e Calculadora e persistida no navegador. As cores individuais dos nós não são alteradas. O módulo foi preparado para a inclusão de novas categorias de configurações em versões futuras.
+### Como utilizar, passo a passo
 
+Abra Editar → Edição → Editor flutuante ou Ctrl+Shift+E. Digite um título e o conteúdo, aplique formatação ao trecho selecionado e utilize Integrar para criar ou atualizar uma caixa de texto no mapa. Experimente copiar texto formatado e colar em outro editor, observando as limitações de compatibilidade.
 
-## Atualização v15
-- Lista rápida compacta, sem parágrafos tutoriais, com botão X e ações agrupadas no rodapé.
-- Calculadora em botão circular independente à esquerda do Palco, fora dos controles de zoom.
-- Botão de calculadora no início da barra de ferramentas do Editor.
-- Ambos os acessos abrem a mesma calculadora flutuante, com cores derivadas do tema.
+### Cuidados e observações
 
+O Editor possui um rascunho local, mas um texto integrado e o rascunho não são necessariamente a mesma cópia. Antes de descartar o rascunho, confira se o conteúdo desejado foi integrado e exportado.
 
-## Mentalista v16 — Temas e calculadora
+## 9. Lero-lero e extração de informações
 
-Cinco novas paletas (Terracota, Neon, Ferrugem, Café com Avelã e Índigo), cada uma nos modos claro e escuro, somadas às cinco existentes: 20 combinações. Os códigos hexadecimais são preservados. O botão Calculadora do Editor abre a mesma janela flutuante que o botão no Palco, inclusive acima do Editor maximizado.
+### O que é e quando utilizar
 
+O Lero-lero auxilia na produção de texto fictício para testar layouts e volumes de escrita. O Editor também pode identificar padrões como endereços web, telefones e e-mails em conteúdos textuais.
 
-## Mentalista v17 — Ferramentas do Palco
+### Como utilizar, passo a passo
 
-- **Ponteiro (V):** seleciona caixas individualmente. Arrastar uma área vazia desenha um retângulo de seleção.
-- **Mãozinha (H):** arrasta o Palco sem selecionar caixas. Pressione **Espaço** uma vez para alternar entre Ponteiro e Mãozinha. O botão ativo é atualizado imediatamente; soltar a tecla não altera a ferramenta.
-- **Ctrl + clique:** adiciona ou remove caixas da seleção. **Ctrl + A:** seleciona todas as caixas (fora de campos de edição).
-- Arrastar uma caixa selecionada movimenta o grupo; caixas fixadas não se movem.
-- A busca **Ctrl + F** aparece abaixo da barra de ferramentas à esquerda, sem sobreposição.
+Use os controles do Lero-lero para gerar quantidades de palavras, frases, títulos ou parágrafos de teste. Na extração, revise os itens identificados antes de copiar: um padrão reconhecido automaticamente não confirma que o dado esteja correto ou ativo.
 
+### Cuidados e observações
 
-## v18 — controles do Palco
-- Ponteiro e Mãozinha em botões circulares com ícones, agrupados em moldura, seguindo o tema ativo.
-- Busca rápida reposicionada abaixo dos controles superiores.
-- Botão X da Lista rápida ligado ao fechamento do diálogo, sem excluir a lista.
+Não utilize textos fictícios como fontes de pesquisa ou dados factuais. A extração é uma ajuda de edição, não uma ferramenta de validação de contatos.
 
+## 10. Notas externas e anexos de imagem
 
-## Atualização v19
-- Editor: Integrar, Novo e Copiar agora usam apenas ícones, com título e nome acessível.
-- Lista rápida: X e Esc cancelam a criação sem deixar caixa no Palco; Concluir confirma. Ao cancelar a edição de uma lista existente, os dados anteriores são restaurados.
+### O que é e quando utilizar
 
+Notas e imagens são anexos associados a nós. A lâmpada à esquerda indica uma nota em formato de post-it; a câmera, abaixo, indica imagem. Os anexos ficam fora da área principal da caixa, conectados visualmente ao nó.
 
-## Mentalista v21
-- Botão Propriedades redundante removido da barra; Editar continua abrindo a edição dos nós.
-- Splash cinematográfico de 4 segundos com o logotipo SVG e o nome Mentalista, animado via CSS, com respeito a movimento reduzido.
-- Rolagem interna das caixas de texto integradas: roda do mouse sobre a caixa rola o conteúdo; a barra de rolagem também pode ser arrastada. A roda fora das caixas continua controlando o zoom.
+### Como utilizar, passo a passo
 
+Selecione um nó e use os comandos de imagem ou nota. Escolha uma imagem local compatível ou escreva uma nota; depois abra e recolha o anexo pelo ícone correspondente. O aplicativo ajusta imagens para reduzir o tamanho e procura preservar a proporção original.
 
-## Mentalista v23 — Ajuda e informações do projeto
+### Cuidados e observações
 
-O menu Ajuda inclui GitHub (repositório e Licença MIT), Manual (orientações rápidas e link para o README completo), Sobre (descrição do app, versão 23 e link do aplicativo) e Atalhos. As janelas podem ser fechadas sem sair do mapa.
+Arquivos muito grandes podem aumentar o tamanho do projeto e de seus backups. Verifique se as imagens aparecem corretamente após reabrir o projeto e após exportar/importar um JSON de teste.
 
-- Projeto: https://github.com/magpe-stack/Mentalista
-- Manual completo: https://github.com/magpe-stack/Mentalista/blob/main/README.md
-- Aplicativo: https://magpe-stack.github.io/Mentalista/
+## 11. Prioridade, etiquetas e prazos
 
+### O que é e quando utilizar
 
-## Mapa de Ícones e botões (v24)
+Os metadados enriquecem os nós com informações para planejamento. A prioridade pode ser baixa, média, alta ou urgente; etiquetas identificam categorias; prazos indicam datas relevantes.
 
-Acesse **Ajuda → Mapa de Ícones e botões** para consultar as funções dos controles por categoria. A janela possui busca textual. **Regra de manutenção:** sempre que um botão/ícone for adicionado, alterado ou removido, atualizar o catálogo em `index.html` e esta documentação na mesma versão.
+### Como utilizar, passo a passo
 
+Selecione a caixa e abra Editar → Edição → Prioridade, etiquetas e prazo. Escolha a prioridade, informe etiquetas concisas e selecione uma data de prazo. Use padrões consistentes, por exemplo “pesquisa”, “revisão” e “publicação”, para facilitar leitura e organização.
 
-## Novidades v25 — Cores e checklists no Palco
+### Cuidados e observações
 
-- **Círculo cromático:** no menu contextual, ao lado das amostras existentes, permite escolher qualquer cor hexadecimal com o seletor nativo do navegador. A cor fica registrada no mapa e no backup JSON.
-- **Checklists interativos:** em uma caixa Lista configurada como *caixas de marcação*, clique diretamente no quadradinho de cada tópico no Palco para marcar ou desmarcar. Também aceita Enter/Espaço com o quadradinho focado. Cada mudança pode ser desfeita com Ctrl+Z.
-- **Mapa de Ícones e botões:** atualizado com os dois controles.
+O registro de prazo não equivale a uma tarefa agendada no sistema operacional. O aplicativo não possui entrega garantida de notificações com a janela fechada, e a Badging API não foi implementada.
 
+## 12. Modelos prontos
 
-## v26 — Menus hierárquicos
+### O que é e quando utilizar
 
-Os menus Arquivo, Editar, Sistema e Ajuda foram organizados em grupos expansíveis com espaçamento compacto. A busca rápida foi removida do menu Sistema e permanece em Editar. O Mapa de Ícones e botões permanece acessível em Ajuda → Referência de controles.
+Os modelos são pontos de partida e não documentos obrigatórios. Existem estruturas para brainstorming, planejamento de projeto, planejamento de história e estudo ou pesquisa.
 
+### Como utilizar, passo a passo
 
-## v27 — Nomes limpos nos menus
+Abra Arquivo → Projetos → Modelos, selecione o modelo apropriado e confirme a criação. Depois renomeie os nós, adicione ou remova ramos e adapte as relações ao seu objetivo. Para uma narrativa, por exemplo, distribua personagens, conflitos, cenas e revisões em ramos distintos.
 
-Em **Editar → Localizar e visualizar**, o comando aparece como **Buscar nós**, sem indicação de teclas. Os atalhos continuam documentados em **Ajuda → Atalhos**.
+### Cuidados e observações
 
+O modelo gera um projeto independente. Se já houver trabalho em outro mapa, abra-o pela biblioteca; não espere que a seleção de um modelo mescle conteúdos automaticamente.
 
-## Mentalista v28 — Preferências de grade e encaixe
+## 13. Organização automática e ramificações
 
-Em **Sistema → Preferências / Configurações → Palco e Grade**, é possível:
+### O que é e quando utilizar
 
-- Mostrar ou ocultar a grade pontilhada do Palco.
-- Ajustar a intensidade da grade de 0% a 100%.
-- Ativar o encaixe de nós à grade de 30 unidades durante o arraste com o Ponteiro.
-- Restaurar os padrões do Palco (grade visível, intensidade 25%, encaixe desativado).
+O Mentalista oferece organização em árvore horizontal, hierarquia vertical e arranjo radial. O recolhimento de ramificações permite esconder temporariamente descendentes sem apagar conteúdo.
 
-As preferências são armazenadas localmente e aplicadas a todos os projetos no navegador. O encaixe só atua nos nós arrastados, sem reposicionar automaticamente os demais. O Mapa de Ícones e botões inclui os novos controles.
+### Como utilizar, passo a passo
 
+Abra Exibir → Organizar mapa e escolha a disposição. Experimente cada arranjo em um projeto de teste e use Desfazer se o resultado não atender às suas necessidades. Para concentrar a atenção em uma área, recolha um ramo pelo indicador discreto de expansão e abra-o novamente quando necessário.
 
-## Mentalista v29 — Personalização das conexões
+### Cuidados e observações
 
-Em **Sistema → Configurações → Conexões**, escolha o traçado **Curvas**, **Retas** ou **Ortogonais** e a espessura de **1 a 6 px**. As mudanças aparecem imediatamente no Palco e ficam salvas neste navegador, aplicando-se a todos os projetos. O comando **Restaurar padrões das conexões** volta ao traçado curvo de 2 px. A seleção de elos, exclusão de conexões e exportação SVG respeitam a geometria e a espessura selecionadas. O **Ajuda → Mapa de Ícones e botões** inclui os novos controles.
+A organização automática é uma proposta geométrica. Mapas com muitas conexões cruzadas podem exigir ajustes manuais. Recolher não significa excluir: os nós continuam armazenados no projeto.
 
+## 14. Zoom, ponteiro, mãozinha e minimapa
 
-## Versão 30 — Caixas, tipografia e barra superior
+### O que é e quando utilizar
 
-- Em Sistema → Configurações, ajuste a largura padrão dos nós comuns (160–360 px), fonte, tamanho e espaçamento entre letras. As preferências são armazenadas localmente e podem ser restauradas.
-- A barra superior reúne calculadora, Ponteiro, Mãozinha, zoom, ajuste de tela, modo claro/escuro e tela cheia, com botões circulares.
-- O nome do projeto e o indicador de salvamento aparecem discretamente no rodapé direito do Palco.
-- O Mapa de Ícones e botões inclui os novos controles.
+O Ponteiro seleciona e manipula caixas; a Mãozinha move a área de visualização. Zoom altera apenas a escala do Palco. O minimapa mostra a distribuição geral das caixas e facilita a navegação em mapas extensos.
 
+### Como utilizar, passo a passo
 
-### Manutenção v30.1
-- Restaurados os acionadores da calculadora (barra superior e Editor).
-- Ícone da calculadora centralizado no botão circular.
-- Preferências de caixas e tipografia reposicionadas dentro do contêiner de Configurações, sem extrapolar a largura.
-- Cache offline atualizado para `mentalista-v30-1`.
+Em Exibir → Navegação, ative o minimapa, ajuste à tela ou centralize a origem. Use os botões + e − de zoom, a roda do mouse quando aplicável, V para Ponteiro e H para Mãozinha. O espaço alterna as ferramentas fora de campos de texto; a barra superior também oferece botões rápidos.
 
+### Cuidados e observações
 
-### Correção v30.2 — Calculadora flutuante
-A janela da calculadora é posicionada diretamente no documento, acima dos contêineres do Palco, para evitar recortes ou ocultação. Ambos os acionadores (barra superior e Editor) abrem a mesma calculadora; o botão de fechar a oculta.
+Se o mapa parecer vazio, primeiro use Ajustar à tela ou Centralizar origem. É possível que a câmera esteja deslocada ou com zoom muito distante. Tela cheia é diferente de maximizar a janela instalada.
 
+## 15. Busca e substituição
 
-### Correção v30.3 — Calculadora
-O acionamento da calculadora passou a contar com inicialização independente do restante do aplicativo. Os botões do Palco e do Editor acionam a mesma janela flutuante.
+### O que é e quando utilizar
 
+A busca ajuda a localizar nós pelo título, descrição e conteúdo de listas. A substituição modifica ocorrências textuais conforme as regras do comando e pode afetar várias caixas.
 
-### Correção v30.4 — Calculadora flutuante
+### Como utilizar, passo a passo
 
-A calculadora possui módulo independente (`calculator.js`), abertura pelos botões do Palco e Editor, movimentação por arraste do cabeçalho, posição preservada ao fechar e reabrir e teclas funcionais para operações aritméticas. A documentação dos controles em Ajuda → Mapa de Ícones e botões continua aplicável.
+Pressione Ctrl+F ou Exibir → Navegação → Buscar nós, digite o termo e percorra os resultados com as setas e Enter. Antes de substituir, confira a quantidade de ocorrências e o texto exato. Execute a alteração somente após revisar o alcance.
 
+### Cuidados e observações
 
-### Mentalista v31 — Navegação e acessibilidade
+A busca pode ignorar acentos e maiúsculas; a substituição não necessariamente segue as mesmas regras. Textos HTML formatados não são substituídos automaticamente como se fossem texto simples.
 
-Em **Sistema → Configurações → Navegação e acessibilidade**, é possível ajustar a sensibilidade do zoom (25–200%), a sensibilidade do deslocamento pela Mãozinha (25–200%), ampliar os controles principais e reduzir as animações. As preferências são armazenadas no navegador e valem para todos os projetos; o botão **Restaurar padrões de navegação e acessibilidade** retorna a 100% e desativa as duas opções. O **Mapa de Ícones e botões** foi atualizado para documentar os cinco controles. O ajuste automático à tela e o arraste de nós não são afetados pelas sensibilidades de navegação.
+## 16. Aparência e configurações
 
+### O que é e quando utilizar
 
-### v31.1 — Controles discretos e impressão limpa
+O Mentalista oferece temas claro e escuro, personalização de cores e tipografia, configurações de grade, encaixe, conexões e animações. As preferências são armazenadas localmente.
 
-Os botões de ação das caixas (Copiar, Fixar e Editar) são revelados ao passar o mouse ou ao focar a caixa pelo teclado. Em telas de toque, aparecem quando a caixa está selecionada. Na impressão e na exportação SVG, os botões de edição, os pontos de conexão e os divisores decorativos são omitidos, preservando o conteúdo e os elos. **Mapa de Ícones e botões:** as funções dos controles permanecem inalteradas; apenas sua visibilidade foi modificada.
+### Como utilizar, passo a passo
 
+Use Exibir → Aparência para alternar temas e acessar a personalização. Em Sistema → Preferências → Configurações, ajuste recursos do Palco e da interface. Experimente primeiro em um projeto pequeno; confira contraste, legibilidade e tamanho dos controles após mudanças visuais.
 
-## Mentalista v32 — Exportação e restauração completas
+### Cuidados e observações
 
-- **Exportar projeto (JSON)**: gera `mentalista-map` versão 2 com o projeto selecionado e preferências gerais (tema, grade, conexões, tipografia, navegação e acessibilidade).
-- **Importar projeto (JSON)**: aceita versões antigas (`mentalista-map` versão 1) e versão 2. Acrescenta o projeto sem sobrescrever os existentes; se houver preferências no arquivo, pergunta antes de aplicá-las ao navegador.
-- **Backup geral (JSON)**: gera `mentalista-backup` versão 1 com todos os projetos, o projeto ativo, as preferências gerais e o rascunho do Editor.
-- **Restaurar backup geral**: valida o arquivo e solicita confirmação antes de **substituir todos os projetos e configurações locais**. Faça um backup atual antes de restaurar.
+Restaurar configurações padrão altera preferências, não deveria remover projetos. Ainda assim, faça backup antes de qualquer operação de manutenção importante e verifique as confirmações exibidas.
 
-Os arquivos JSON são locais, não dependem de servidor. O backup não inclui o estado temporário de janelas abertas ou a posição da calculadora.
+## 17. Calculadora flutuante
 
+### O que é e quando utilizar
 
-### Correção v32.1 — Textos dentro das caixas
+A calculadora é uma ferramenta auxiliar para cálculos rápidos durante a elaboração do mapa. Ela não precisa substituir a área de trabalho e pode ser aberta enquanto o projeto permanece visível.
 
-Títulos, descrições e itens de listas são ajustados ao espaço disponível usando a largura real do texto SVG, respeitando a tipografia escolhida. Textos extensos são abreviados visualmente com reticências, sem perda de conteúdo no projeto ou na edição.
+### Como utilizar, passo a passo
 
+Abra pelo ícone da calculadora no cabeçalho. Execute as operações disponíveis, copie o resultado e cole-o no Editor, em uma nota ou em uma caixa. Feche a calculadora quando precisar de mais espaço no Palco.
 
-### Mentalista v32.2 — Sistema e segurança
+### Cuidados e observações
 
-Em **Sistema → Configurações → Sistema e segurança**, escolha entre animações normais, reduzidas, desativadas ou conforme o dispositivo. O indicador de salvamento no rodapé pode ser ocultado sem interromper o salvamento automático. Os lembretes de backup podem ser desativados ou configurados para 1, 7, 15 ou 30 dias; são exibidos apenas com o aplicativo aberto, sem notificações externas. O botão **Fazer backup geral agora** exporta projetos e preferências. A data do último backup é registrada localmente após iniciar o download. As preferências de sistema e segurança também fazem parte dos novos arquivos JSON; backups anteriores continuam compatíveis.
+Resultados numéricos dependem da expressão digitada e das regras de precisão do JavaScript. Para cálculos financeiros ou científicos críticos, confira os resultados com uma ferramenta apropriada.
 
+## 18. Arquivo: JSON e operações seguras
 
-### v32.3 — Leitura integral dentro das caixas
+### O que é e quando utilizar
 
-Nós comuns, listas e caixas de texto possuem rolagem interna para leitura sem abrir o editor. Barras de rolagem extremamente discretas surgem ao passar o mouse (ou permanecem sutis em telas sensíveis ao toque). As listas preservam os checkboxes clicáveis no Palco; todo o texto permanece no projeto e no JSON.
+JSON é o formato indicado para preservar a estrutura editável de um projeto. O menu Arquivo → JSON contém Guardar, Atualizar, Abrir, Salvar como, Backup, Restaurar e Histórico. Esses comandos têm consequências diferentes.
 
+### Como utilizar, passo a passo
 
-### v32.4 — Botão de conexão discreto
+Guardar baixa uma cópia do projeto. Atualizar grava no arquivo previamente autorizado para o projeto atual quando o navegador permite. Abrir importa um projeto individual como novo. Salvar como escolhe um novo destino. Backup gera cópia de todos os projetos; Restaurar recupera um backup geral mediante confirmação. Histórico abre as versões locais.
 
-O botão circular **+** de cada nó aparece ao passar o mouse sobre a caixa. Em telas sensíveis ao toque, aparece ao selecionar o nó. Permanece oculto em impressão e exportação SVG; a conexão continua disponível normalmente quando o controle é exibido.
+### Cuidados e observações
 
+Nunca confunda Guardar com Atualizar: download de uma nova cópia não sobrescreve necessariamente o arquivo antigo. Antes de Restaurar, guarde um backup atual. O navegador pode não suportar gravação direta em arquivos externos.
 
-### v32.5 — Correção do arraste de caixas
+## 19. Importação, Markdown, SVG e impressão
 
-O Ponteiro voltou a movimentar nós e listas mesmo quando o arraste começa sobre o texto. A rolagem interna, as caixas de marcação e os botões de conexão permanecem operacionais. Para selecionar texto, use o editor da caixa.
+### O que é e quando utilizar
 
+Além de JSON, o Mentalista importa e exporta Markdown e exporta o mapa em SVG. A impressão prepara uma representação visual para papel ou PDF pelo diálogo do navegador.
 
-### v33 — Organização automática do mapa
+### Como utilizar, passo a passo
 
-Em **Editar → Organizar mapa**, escolha **Em árvore (horizontal)**, **Hierárquico (vertical)** ou **Radial**. A disposição usa as conexões para identificar níveis e componentes. Nós fixados permanecem em suas posições; os outros são distribuídos sem alterar textos, listas, cores ou elos. O comando cria uma única etapa de histórico, permitindo **Ctrl+Z**. A organização radial distribui os nós conectados ao redor da raiz de cada componente. O Mapa de Ícones e botões passa a incluir os três novos comandos de organização.
+Em Arquivo → Outros formatos → Markdown, escolha Importar ou Exportar. Use SVG para obter uma imagem vetorial do mapa e Imprimir para gerar uma saída impressa. Confira o enquadramento e a escala antes de confirmar a impressão; mapas muito largos podem exigir orientação paisagem.
 
+### Cuidados e observações
 
-## v34 — Recolher e expandir ramificações
+Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conversão. Para restauração integral, prefira JSON.
 
-- Passe o mouse sobre um nó que tenha descendentes e clique no pequeno **−** para recolher sua ramificação. O botão muda para **+** para expandi-la novamente. No celular, selecione a caixa.
-- Nós e conexões ficam apenas ocultos no Palco, sem exclusão. O estado `collapsed` é salvo junto com o projeto, inclusive na exportação JSON e backup geral.
-- O comando aceita **Desfazer/Refazer**. O ajuste à tela considera apenas os nós visíveis.
-- Em ciclos e mapas com ligações cruzadas, nós acessíveis por outra ramificação expandida podem permanecer visíveis.
-- Os controles de recolhimento não aparecem na impressão nem no SVG exportado.
+## 20. Compartilhamento nativo
 
+### O que é e quando utilizar
 
-## v34.1 — Indicador de ramificações
+A Web Share API permite encaminhar arquivos e textos ao painel nativo do dispositivo quando suportada. A interface oferece opções de JSON, Markdown, SVG, texto e link público do aplicativo.
 
-O controle de recolher/expandir é um **ponto discreto** no canto superior direito das caixas com descendentes. Quando o ramo está recolhido, exibe uma pequena **seta (›)** dentro do ponto — nunca um símbolo +, reservado para conectar nós. O indicador permanece visível, não aparece em impressões ou SVG, e o comando preserva os dados.
+### Como utilizar, passo a passo
 
+Abra Arquivo → Outros formatos → Compartilhar, escolha o tipo de conteúdo e selecione o aplicativo de destino no painel do sistema. Se o compartilhamento não estiver disponível, utilize a alternativa de download ou cópia oferecida pela interface.
 
-### v34.2 — Contador de ramificações
-O contador de nós ocultos foi reduzido e movido para a faixa superior da caixa, evitando sobreposição ao título. O ponto/seta de recolhimento continua no canto superior direito e os indicadores não são impressos.
+### Cuidados e observações
 
+Compartilhar o link público do Mentalista não publica o mapa que está no seu navegador. Ao compartilhar um JSON, revise se ele contém notas ou imagens privadas antes de enviá-lo.
 
-### v34.3 — Indicador de ramificações sem sobreposição
+## 21. Abertura pelo explorador e salvamento direto
 
-O contador textual de nós ocultos foi retirado do interior da caixa para não interferir no título. A seta discreta permanece no canto superior direito; ao passar o mouse sobre ela, uma dica informa quantos nós estão ocultos. O botão também tem descrição acessível para leitores de tela.
+### O que é e quando utilizar
 
+Em plataformas compatíveis, o manifesto associa extensões JSON e Markdown ao PWA instalado. A File Handling API pode entregar arquivos ao aplicativo; a File System Access API permite abrir e gravar arquivos autorizados pelo usuário.
 
-### v34.4 — Contador mínimo de ramificações
+### Como utilizar, passo a passo
 
-Ao recolher uma ramificação, um número de apenas 7 px aparece acima do ponto/seta no canto superior direito da caixa, indicando quantos nós foram ocultados. Não há texto «ocultos» dentro da caixa. A informação completa permanece disponível na dica de acessibilidade do botão. O indicador é excluído de impressão e exportação SVG.
+Instale o Mentalista e procure a opção Abrir com no explorador do sistema. Confirme a importação quando solicitada. Para gravar diretamente, utilize Atualizar ou Salvar como, conforme a situação. Em navegadores incompatíveis, mantenha o fluxo convencional de importação e download.
 
+### Cuidados e observações
 
-### v34.5 — Contador dentro do indicador
+O comportamento varia entre Windows, Android, Chrome e Edge. A associação não garante abertura por duplo clique em todos os ambientes. O aplicativo não deve substituir um arquivo externo sem o consentimento apropriado.
 
-Quando uma ramificação está recolhida, o círculo no canto superior direito mostra apenas a quantidade de nós ocultos, centralizada e com tamanho de fonte adaptável para um, dois ou mais algarismos. A seta foi removida. A quantidade completa continua acessível pelo título e rótulo do controle. O indicador não é impresso nem exportado para SVG.
+## 22. Área de transferência e imagens PNG
 
+### O que é e quando utilizar
 
-### v34.6 — Contador sutil
+A área de transferência permite copiar texto, conteúdo formatado e conjuntos de caixas. O módulo avançado também tenta copiar e colar imagens PNG anexadas, conforme as permissões do navegador.
 
-O número dentro do círculo de ramificação recolhida usa tipografia fina (peso 400) e dimensões reduzidas, adaptadas à quantidade de algarismos. Continua centralizado e legível, sem ultrapassar as bordas do indicador.
+### Como utilizar, passo a passo
 
+Em Editar → Área de transferência, selecione as caixas e use Copiar caixas; depois escolha Colar caixas para criar novas caixas com identificadores próprios. Para imagens, selecione a caixa correta e use Copiar imagem ou Colar imagem. Em outros aplicativos, o conteúdo estruturado pode ser reduzido a texto.
 
-### v34.7 — Contador legível dentro do círculo
+### Cuidados e observações
 
-O contador usa fonte sem serifa fina, compacta e reduzida, com regras de CSS específicas que prevalecem sobre a tipografia dos nós. O círculo dos nós recolhidos foi ampliado discretamente para acomodar números de dois ou mais algarismos.
+A cópia estruturada é específica da sessão atual. Permissões de leitura e gravação na área de transferência dependem de gesto do usuário, contexto seguro e suporte do navegador. Confira o destino antes de colar.
 
+## 23. Histórico de versões e recuperação
 
-### v34.8 — Indicadores alinhados no rodapé das caixas
+### O que é e quando utilizar
 
-Os indicadores de ramificação recolhida (contador dentro de um círculo) e de nó fixado foram movidos do canto superior direito para a extremidade direita da barra inferior de ações. Os controles de copiar, fixar e editar ficam alinhados à esquerda, com espaçamento mais compacto, evitando sobreposição com os indicadores. O conteúdo e a área de leitura das caixas permanecem livres. Os indicadores continuam ausentes de impressões e SVG exportados.
+O histórico usa IndexedDB e é separado do armazenamento principal de projetos. Há capturas manuais e automáticas; o limite previsto é de 25 versões por projeto, com até 15 automáticas. O mecanismo automático considera períodos de inatividade e espaçamento entre registros.
 
+### Como utilizar, passo a passo
 
-### v34.9 — Correção real dos indicadores
+Abra Arquivo → JSON → Histórico, crie uma versão nomeada antes de uma grande reorganização e consulte as datas e contagens de nós. Para voltar a um estado anterior, escolha Restaurar e confirme. O sistema procura guardar uma versão de proteção do estado atual antes de substituir o mapa.
 
-A posição dos controles foi corrigida no próprio código SVG: os botões de ação permanecem à esquerda da barra inferior, o contador de ramificações fica à direita e a indicação de fixação duplicada no topo foi removida (o botão de fixar já informa seu estado). O título e a área de leitura não recebem indicadores.
+### Cuidados e observações
 
+O histórico é local e pode desaparecer se os dados do site forem limpos. Não confunda histórico com backup externo. Uma versão antiga também pode conter erros ou anexos ausentes; confira o resultado após restaurar.
 
-## Novidades v35 — Duplicação e detalhes
+## 24. Notificações locais e lembretes
 
-Em **Editar → Edição**, selecione uma caixa e escolha **Duplicar nó** para copiar somente aquela caixa, ou **Duplicar ramificação** para copiar a caixa e seus descendentes com suas conexões internas. As cópias recebem IDs próprios, são deslocadas no Palco e não ficam fixadas. As operações podem ser desfeitas com Ctrl+Z.
+### O que é e quando utilizar
 
-O comando **Prioridade, etiquetas e prazo** permite atribuir prioridade (baixa, média, alta ou urgente), até oito etiquetas e uma data. Os metadados são armazenados no nó e preservados nas exportações JSON e backups; podem ser consultados no título acessível da caixa. O Mapa de Ícones e botões inclui os novos comandos.
+A Central de notificações permite cadastrar lembretes com texto, data e hora, testar a permissão e ativar alertas de backup. Não existe servidor de Web Push no Mentalista.
 
+### Como utilizar, passo a passo
 
-## Mentalista v36 — Minimapa e pesquisar/substituir
+Abra Sistema → Notificações → Central de notificações, solicite permissão se desejar avisos do sistema e crie um lembrete de teste para um horário próximo. Ative ou desative alertas conforme sua preferência. Se o navegador não permitir notificações nativas, confira o aviso dentro do aplicativo.
 
-- **Minimapa:** mostra a distribuição dos nós e a região visível do Palco. Clique ou arraste no minimapa para navegar. O botão × oculta o minimapa; o botão circular ▣ o reabre. A preferência de exibição é salva no navegador.
-- **Pesquisar e substituir:** abra **Editar → Buscar nós** (ou Ctrl+F), expanda **Pesquisar e substituir**, digite a expressão pesquisada e o texto substituto. Use **Prévia** para conferir a quantidade de ocorrências e **Substituir ocorrências** para confirmar a operação. A substituição é literal, sensível a maiúsculas e acentos, e altera títulos, descrições e itens de listas. Uma substituição pode ser desfeita com Ctrl+Z. O HTML formatado dos nós de texto não é modificado automaticamente, evitando perda de formatação.
-- O minimapa e seus controles não são incluídos na impressão.
+### Cuidados e observações
 
+Os lembretes são verificados enquanto o aplicativo está aberto ou quando você retorna a ele. Não há garantia de disparo com o PWA completamente fechado. Não utilize esses lembretes como único mecanismo para compromissos críticos.
 
-## Mentalista v37 — Imagens locais e notas recolhíveis
+## 25. Instalação, atalhos e janelas do sistema
 
-Em **Editar → Edição**, selecione uma caixa e use **Imagem local na caixa** para anexar PNG, JPEG ou WebP. A imagem é reduzida no próprio navegador (lado máximo de 960 px), incorporada ao JSON e apresentada na área rolável do nó. Imagens muito grandes são rejeitadas para proteger o armazenamento local. Para remover, abra novamente a opção e escolha **Remover imagem**.
+### O que é e quando utilizar
 
-Use **Nota recolhível** para escrever até 12.000 caracteres de informação complementar. A nota aparece na área rolável da caixa, com cabeçalho **Nota** para expandir ou recolher sem apagar seu conteúdo. O texto e o estado de recolhimento acompanham o projeto e os backups JSON. A alteração pode ser desfeita.
+O Mentalista possui manifesto PWA, ícones próprios, service worker e convite de instalação personalizado em ambientes compatíveis. Os App Shortcuts incluem Novo Projeto, Meus Projetos e Buscar Nós. Em desktop compatível, o Window Controls Overlay aproveita a região superior da janela instalada.
 
-**Atenção:** imagens incorporadas aumentam o tamanho dos arquivos JSON e o espaço utilizado no navegador. Faça backups regulares.
+### Como utilizar, passo a passo
 
+Abra Sistema → Manutenção → Instalar ou utilize o menu do navegador. Depois de instalado, procure os atalhos no menu de contexto do ícone. Em desktop, experimente maximizar e restaurar a janela para verificar o cabeçalho adaptativo.
 
-### v37.1 — Anexos externos: lâmpada e câmera
+### Cuidados e observações
 
-As notas e imagens deixam de ocupar o interior dos nós. Um ícone de lâmpada à esquerda indica uma nota; abaixo dele, uma câmera indica uma imagem. Ao clicar, o respectivo conteúdo aparece num cartão externo ligado ao ícone por uma linha. A nota tem aparência de post-it. Clique novamente para recolher. O estado aberto/fechado é guardado no projeto e no JSON. As caixas mantêm a rolagem e o arraste originais.
+A instalação e a disponibilidade de atalhos variam conforme o navegador. A desinstalação deve ser realizada pelo sistema operacional ou navegador; o botão do aplicativo apresenta instruções, não remove a instalação diretamente.
 
+## 26. Offline, cache e atualização
 
-### v37.2 — Fotografias sem moldura
+### O que é e quando utilizar
 
-A imagem anexa é exibida sem cartão, título ou moldura, com largura de referência de 380 px e altura calculada pela proporção original (por exemplo, 380 × 214 em 16:9 e 380 × 676 em 9:16). A imagem permanece ligada ao ícone da câmera por uma linha e pode ser recolhida clicando novamente no ícone. Fotografias anteriormente salvas têm a proporção identificada ao serem carregadas.
+O service worker armazena recursos essenciais como HTML, CSS, JavaScript, manifesto e ícones. O aplicativo pode abrir offline após a instalação adequada dos recursos. Projetos e histórico são guardados separadamente do cache estático.
 
+### Como utilizar, passo a passo
 
-### v37.3 — Margem da lâmpada
+Abra o Mentalista conectado, aguarde o carregamento e consulte Sistema → Manutenção → Verificar disponibilidade offline. Desative a conexão e teste a abertura em uma nova sessão. Quando houver atualização, use Verificar atualizações e recarregue conforme orientação. Reparar aplicativo tenta recuperar arquivos essenciais.
 
-O ícone da lâmpada foi deslocado 12 px à esquerda para afastá-lo da borda da caixa. A linha de ligação do post-it acompanha o novo posicionamento. A câmera e os demais controles não foram alterados.
+### Cuidados e observações
 
+Estar offline não impede editar projetos locais, mas APIs como compartilhamento, ditado e acesso externo podem exigir suporte adicional. Uma atualização de cache não é um backup dos projetos. Evite limpar dados do site.
 
-### v37.4 — Respiro interno do ícone da lâmpada
+## 27. Armazenamento, integridade e backup
 
-O desenho da lâmpada foi reduzido a 72% em relação ao anterior, permanecendo centralizado, enquanto o círculo externo foi aumentado de raio 13 para 16 unidades SVG. Isso cria margem interna real entre a lâmpada e a borda do botão. O ícone de câmera e as funções dos anexos foram preservados.
+### O que é e quando utilizar
 
+A manutenção consulta espaço usado, solicita persistência de armazenamento quando suportada e verifica estruturas de projetos e backups JSON. Essas verificações são predominantemente de leitura e não representam auditoria criptográfica completa.
 
-### v37.5 — Lâmpada e câmera sem círculos
+### Como utilizar, passo a passo
 
-Os botões externos de nota e imagem não têm mais molduras circulares. A lâmpada e a câmera ficam alinhadas na mesma coluna à esquerda do nó, com distância vertical fixa e área de toque invisível de 30 × 30 unidades. As linhas continuam ligando os ícones aos anexos abertos. O post-it e a fotografia permanecem externos à caixa.
+Em Sistema → Manutenção, consulte Armazenamento, Proteção do armazenamento, Solicitar persistência, Verificar projetos e Verificar backup JSON. Para verificar um backup, selecione o arquivo sem importá-lo e leia o diagnóstico. Guarde cópias em mais de um local físico ou serviço de confiança.
 
+### Cuidados e observações
 
-## v38 — Modelos reutilizáveis e Markdown
+Persistência não impede exclusão voluntária de dados nem perda do aparelho. Verificação estrutural não garante que todos os textos e imagens estejam semanticamente corretos. Faça testes periódicos de importação em um ambiente seguro.
 
-Em **Arquivo → Projetos → Novo a partir de modelo**, escolha Brainstorming, Planejamento de projeto, Planejamento de história ou Estudo e pesquisa. Um projeto novo e independente é criado com nós conectados.
+## 28. Manutenção e reparação
 
-Em **Arquivo → Guardar e restaurar**, use **Exportar Markdown (.md)** para obter uma representação textual hierárquica dos títulos, descrições e listas do mapa. **Importar Markdown (.md)** cria um novo projeto a partir de títulos (`#` a `######`) e tópicos, preservando os projetos existentes. O Markdown é um formato textual: não representa fielmente posições, cores, imagens, anexos ou todas as conexões cruzadas. Para backup completo, continue usando o JSON.
+### O que é e quando utilizar
 
+A central inclui Instalar, Desinstalar, Verificar atualizações, Diagnóstico, Armazenamento, Limpar cache, Reparar aplicativo, Restaurar configurações e ferramentas de resiliência e persistência.
 
-### v38.1 — Correção dos botões de modelos e Markdown
+### Como utilizar, passo a passo
 
-Corrigida uma referência a um botão de busca removido e movidos os comandos de modelos e Markdown para o escopo do gerenciador de projetos. Os comandos **Novo a partir de modelo**, **Exportar Markdown** e **Importar Markdown** agora compartilham as funções de criação, persistência e download do Mentalista. A importação cria um projeto separado; não substitui os existentes.
+Execute Diagnóstico quando houver comportamento inesperado. Use Reparar aplicativo quando faltarem recursos estáticos e houver conexão disponível. Limpar cache exige confirmação e não deveria excluir projetos. Restaure configurações somente quando quiser recuperar preferências padrão.
 
+### Cuidados e observações
 
-## Mentalista v39 — Histórico de versões e restauração de estados
+Não utilize limpeza dos dados do site como primeira medida de solução de problemas. Esse procedimento pode apagar localStorage e IndexedDB, incluindo projetos e histórico. Faça backup antes de intervenções no navegador.
 
-Acesse **Arquivo → Guardar e restaurar → Histórico de versões**. O histórico é individual para cada projeto e fica armazenado no **IndexedDB** do navegador, separadamente dos arquivos JSON. Você pode:
+## 29. Acessibilidade e teclado
 
-- Criar pontos manuais com nomes personalizados.
-- Consultar versões com data, horário, quantidade de nós e conexões.
-- Restaurar uma versão antiga, com confirmação e salvamento obrigatório do estado atual antes da operação.
-- Excluir versões isoladas ou limpar o histórico do projeto.
-- Contar com capturas automáticas após alterações e 90 segundos de inatividade, respeitando intervalo mínimo de dez minutos entre capturas automáticas.
+### O que é e quando utilizar
 
-O histórico mantém até **25 versões por projeto**, das quais no máximo **15 automáticas**. A restauração preserva o projeto atual no histórico, mas substitui o estado corrente do mapa (não os outros projetos). O histórico não é incluído nos backups JSON e poderá desaparecer se os dados do navegador forem apagados. **Continue fazendo backups gerais JSON regularmente.**
+O aplicativo inclui controles identificados, suporte parcial a navegação por teclado, atalhos e opções de redução de animações. Os comandos de edição do Palco são suspensos durante digitação para evitar alterações acidentais.
 
-No **Mapa de Ícones e botões**, o comando Histórico de versões identifica esta função. A restauração é local, não depende de servidores e não cria contas.
+### Como utilizar, passo a passo
 
+Consulte Ajuda → Referência de controles → Atalhos. Use Ctrl+F para buscar, Ctrl+Z para desfazer, Ctrl+Y para refazer, Ctrl+Shift+L para lista, Ctrl+Shift+E para Editor, V para Ponteiro e H para Mãozinha. Use Escape para sair de buscas ou limpar seleções conforme o contexto.
 
-## v39.1 — Sistema → Manutenção
+### Cuidados e observações
 
-- **Instalar:** usa o evento de instalação disponibilizado pelo navegador, quando presente; caso contrário explica como instalar pelo menu do navegador.
-- **Desinstalar:** apresenta instruções, pois o JavaScript não pode desinstalar o PWA diretamente.
-- **Verificar atualizações:** solicita atualização ao service worker registrado.
-- **Diagnóstico:** consulta recursos locais sem modificar dados.
-- **Armazenamento:** mostra estimativas da API Storage e tamanho aproximado dos dados do Mentalista.
-- **Limpar cache:** remove exclusivamente caches pertencentes ao Mentalista, com confirmação. Não exclui intencionalmente localStorage nem IndexedDB.
-- **Reparar aplicativo:** solicita atualização do service worker e baixa novamente arquivos essenciais para um cache temporário, promovido somente após download completo.
-- **Restaurar configurações padrão:** remove apenas chaves de preferências conhecidas, com confirmação; preserva projetos, histórico e rascunhos. Recarrega o aplicativo para aplicar padrões.
+Atalhos podem variar em teclados e sistemas operacionais. O foco em um campo de texto pode impedir a execução de atalhos do Palco. Ajuste o contraste e reduza animações se necessário.
 
-**Atenção:** navegador, sistema operacional e disponibilidade de rede podem limitar algumas operações. Faça backup geral antes de manutenção.
+## 30. Problemas frequentes e soluções
 
+### O que é e quando utilizar
 
-## v40 — Atalhos do aplicativo (App Shortcuts)
+Falhas aparentes podem ter causas diferentes: câmera deslocada, cache incompleto, permissão negada, arquivo incompatível ou dados indisponíveis no perfil atual. Diagnosticar antes de excluir dados reduz o risco de perda.
 
-Quando o Mentalista está instalado como PWA em um navegador/sistema compatível, pressione e segure o ícone (Android) ou abra seu menu de contexto (desktop) para acessar:
+### Como utilizar, passo a passo
 
-- **Novo Projeto:** abre o Mentalista e solicita o nome de um novo projeto. Cancelar não cria nada.
-- **Meus Projetos:** abre diretamente a janela com os projetos salvos neste navegador.
-- **Buscar Nós:** abre a busca no projeto atual, com o campo pronto para digitação.
+Se o mapa sumir, use Ajustar à tela. Se um comando não responder, feche diálogos, confirme a seleção e recarregue. Se o aplicativo não abrir offline, verifique a disponibilidade dos arquivos. Se não conseguir salvar diretamente, use Guardar para baixar JSON. Se a importação falhar, confirme o formato e o tamanho do arquivo.
 
-Os atalhos são declarados em `manifest.webmanifest` (`shortcuts`) e usam URLs relativas ao escopo (`?shortcut=new`, `?shortcut=projects`, `?shortcut=search`), compatíveis com a publicação em subdiretórios do GitHub Pages. `app.js` interpreta o parâmetro **depois** de inicializar os dados locais e o remove da barra de endereço para evitar repetição após atualizar a página. Os atalhos não apagam nem alteram os projetos existentes, exceto quando o usuário confirma a criação de um novo projeto.
+### Cuidados e observações
 
-**Compatibilidade:** a exibição do menu depende do sistema operacional e navegador. Se os atalhos não aparecerem após a atualização, feche e abra o PWA instalado; em alguns sistemas pode ser necessário reinstalar para atualizar o manifesto. Todos os três comandos permanecem acessíveis pelo menu normal do aplicativo.
+Se o navegador solicitar limpar dados, interrompa a operação e faça backup. Em caso de comportamento persistente, registre versão, navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a corrigir bugs.
 
-**Testes recomendados:** instalar/reinstalar em Chrome Android e Edge/Chrome desktop; abrir cada atalho, verificar que chega à tela correta; cancelar Novo Projeto; verificar que o botão Atualizar não repete a ação; testar abertura offline após o cache v40 ser instalado; conferir projetos antigos e backup JSON.
+## 31. Fluxos de trabalho recomendados
 
+### O que é e quando utilizar
 
-## v41 — Window Controls Overlay (desktop)
+O Mentalista pode ser usado para pesquisa, planejamento de histórias, estudo, brainstorming e organização de projetos. A qualidade do mapa depende mais da clareza da estrutura que da quantidade de nós.
 
-A v41 adiciona `display_override: ["window-controls-overlay", "standalone"]` ao manifesto. Em versões compatíveis de Chrome/Edge desktop, **quando o Mentalista estiver instalado e o sistema ativar o modo overlay**, o cabeçalho se ajusta à área segura informada pelo navegador (`titlebar-area-x`, `titlebar-area-y`, `titlebar-area-width` e `titlebar-area-height`). A faixa livre do cabeçalho permite arrastar a janela, enquanto menus, botões e controles permanecem clicáveis. Os botões de minimizar, maximizar e fechar continuam sendo **nativos do sistema**; o Mentalista não os substitui nem desenha botões falsos.
+### Como utilizar, passo a passo
 
-O modo `standalone` continua como alternativa para navegadores sem suporte. A experiência mobile e as funções de mapas não foram alteradas. O suporte efetivo depende do sistema operacional, do navegador e da instalação do PWA.
+Para estudar: crie um mapa de estudo, separe conceitos em ramos, adicione notas e listas e use busca na revisão. Para escrever: parta do modelo de história, organize personagens e conflitos, integre textos do Editor e exporte Markdown para uma visão linear. Para planejar: utilize prioridades, prazos, checklists e versões manuais antes de mudanças extensas.
 
-**Teste no Windows:** publicar a v41; abrir o PWA instalado pelo Edge/Chrome; verificar a barra superior e os botões nativos; testar arrastar pela área vazia, abrir os menus e usar os controles do cabeçalho; redimensionar e maximizar; testar também a página aberta em aba normal e no celular. Caso o modo overlay não seja ativado, a interface permanece no modo standalone normal. Em alguns casos, é necessário reiniciar ou reinstalar o aplicativo para atualizar o manifesto.
+### Cuidados e observações
 
-**Segurança dos dados:** a v41 não modifica os formatos de projetos, históricos, backups ou configurações.
+Evite concentrar toda a documentação em um único mapa gigantesco. Divida assuntos em projetos independentes, faça backups gerais e exporte cópias individuais dos projetos mais importantes.
 
+## 32. Privacidade, limites e boas práticas
 
-## v42 — Compartilhamento nativo (Web Share API)
+### O que é e quando utilizar
 
-Em **Arquivo → Exportar e imprimir → Compartilhar mapa…**, selecione JSON (projeto editável), Markdown (texto estruturado), SVG (imagem vetorial), resumo textual ou link do aplicativo. O Mentalista usa `navigator.share()` quando disponível e `navigator.canShare({files})` para verificar compartilhamento de arquivos. Quando o sistema não aceita o arquivo, a opção **Baixar arquivo** permanece disponível. Para textos e links, a alternativa é **Copiar texto**.
+O Mentalista não exige conta nem servidor para o trabalho local. Os projetos permanecem no armazenamento da origem web, salvo quando você decide exportar ou compartilhar um arquivo. O software não implementa sincronização automática entre dispositivos.
 
-**Privacidade:** o aplicativo não envia automaticamente mapas para servidores. O compartilhamento somente ocorre mediante ação do usuário, que escolhe o destino. Compartilhar o **link** não publica o projeto: o endereço abre o aplicativo, não o mapa local. O JSON inclui o projeto e as preferências exportadas; verifique informações sensíveis antes de compartilhar.
+### Como utilizar, passo a passo
 
-**Compatibilidade:** a Web Share API exige contexto seguro (HTTPS) e suporte do navegador/sistema. Alguns sistemas não aceitam arquivos SVG ou Markdown pelo painel nativo; use o download alternativo. A API não garante envio para todos os aplicativos.
+Mantenha um backup geral após alterações significativas, uma cópia individual de projetos críticos e uma versão manual antes de reorganizações grandes. Verifique os arquivos exportados, preserve seus nomes e datas e não dependa apenas do histórico interno.
 
+### Cuidados e observações
 
-## v45 — Acesso direto a arquivos locais
+Não há Background Sync, Periodic Background Sync, Web Push com servidor ou Badging API. A ausência desses recursos é uma decisão de escopo atual, não um defeito do armazenamento local. Não espere sincronização automática ao trocar de aparelho.
 
-Em **Arquivo**, use **Abrir arquivo local**, **Salvar no arquivo** e **Salvar como**. A abertura por seletor do sistema importa uma **cópia** de um projeto JSON individual, sem substituir projetos. O comando **Salvar como** permite escolher um arquivo local JSON, em navegadores compatíveis com File System Access API. **Salvar no arquivo** exige confirmação para sobrescrever o arquivo autorizado e só reutiliza a associação enquanto o mesmo projeto estiver aberto nesta sessão. Quando a API não está disponível, é oferecido download JSON. Os projetos continuam salvos no navegador, sem depender do arquivo externo. Backups gerais devem ser restaurados pelo comando próprio. O navegador pode solicitar permissões adicionais; cancelar a seleção não altera os projetos.
+## 33. Referência rápida de comandos e suporte
 
+### O que é e quando utilizar
 
-## v46 — Área de transferência avançada
+Ajuda reúne o Manual, Sobre, GitHub, Atalhos e Mapa de Ícones e botões. O Manual completo é um arquivo Markdown no repositório e uma página HTML navegável incluída no pacote para leitura offline.
 
-No menu **Editar → Área de transferência**, use **Copiar caixas** e **Colar caixas** para duplicar caixas selecionadas, incluindo conexões entre elas. O conteúdo estruturado fica disponível nesta sessão do aplicativo, enquanto o texto é enviado à área de transferência do sistema quando autorizado. As caixas coladas recebem novos identificadores e podem ser desfeitas.
+### Como utilizar, passo a passo
 
-**Copiar imagem** suporta imagens PNG anexadas a uma caixa; **Colar imagem** lê PNG da área de transferência para a caixa selecionada, quando o navegador permite. Permissões e suporte variam; não são apagados projetos existentes.
+Use o índice no início deste manual para saltar ao assunto desejado. O mapa de controles do próprio aplicativo permite pesquisar o nome de um botão; o quadro de atalhos resume ações de teclado. Para reportar problemas, consulte o repositório oficial e descreva o comportamento observado.
 
+### Cuidados e observações
 
-## v47 — Resiliência offline
+As telas e recursos dependentes de APIs do sistema precisam ser testados no navegador utilizado. A documentação descreve a implementação presente no código v49 e não certifica que todos os fluxos foram testados em cada dispositivo.
 
-O indicador discreto na tela apresenta a situação declarada da rede e a presença dos arquivos essenciais no cache da versão atual. Em **Sistema → Manutenção → Verificar disponibilidade offline**, é possível conferir a lista de recursos ausentes. **Reparar aplicativo** busca novamente os arquivos essenciais pela rede e os recoloca no cache, sem apagar projetos, anexos, histórico de versões ou preferências. A verificação de arquivos não garante a integridade semântica de projetos; faça backups JSON regularmente. A primeira instalação/atualização precisa de conexão para preencher o cache.
+## Apêndice A — Tabela de atalhos
 
-Em **Editar → Área de transferência**, foi removido o texto explicativo abaixo dos botões para manter o menu compacto. As funções continuam disponíveis no Mapa de Ícones e Botões.
+| Ação | Atalho ou gesto |
+|---|---|
+| Novo nó | Insert |
+| Nó filho | Tab |
+| Nó irmão | Enter |
+| Excluir seleção | Delete ou Backspace |
+| Desfazer | Ctrl+Z |
+| Refazer | Ctrl+Y ou Ctrl+Shift+Z |
+| Buscar nós | Ctrl+F |
+| Selecionar todas as caixas | Ctrl+A |
+| Seleção múltipla | Ctrl+clique |
+| Lista rápida | Ctrl+Shift+L |
+| Editor flutuante | Ctrl+Shift+E |
+| Ponteiro | V |
+| Mãozinha | H |
+| Alternar ferramenta | Espaço, fora de campos de edição |
+| Zoom | Roda do mouse ou botões +/− |
+| Conectar caixas | Arrastar o + de uma caixa até outra |
+| Editar propriedades | Duplo clique na caixa |
+| Fechar busca ou limpar seleção | Escape, conforme contexto |
 
+## Apêndice B — Glossário
 
-## Mentalista v48 — Proteção do armazenamento
+**Palco:** área visual onde o mapa é desenhado. **Nó:** caixa que representa uma ideia ou conteúdo. **Elo:** ligação entre nós. **Ramificação:** conjunto de descendentes relacionados. **Projeto:** mapa independente salvo no navegador. **Backup geral:** arquivo JSON contendo vários projetos. **Versão:** registro histórico local de um projeto. **Service worker:** processo web que gerencia recursos em cache. **Cache API:** armazenamento de arquivos estáticos do aplicativo. **IndexedDB:** banco local usado pelo histórico. **localStorage:** armazenamento local dos projetos e de preferências. **PWA:** aplicativo web instalável. **Markdown:** formato textual estruturado. **SVG:** formato de imagem vetorial. **Web Share API:** compartilhamento com o sistema operacional. **File System Access API:** acesso autorizado a arquivos locais. **File Handling API:** associação de tipos de arquivo ao aplicativo instalado.
 
-Em **Sistema → Manutenção**, os comandos **Proteção do armazenamento** e **Solicitar persistência** consultam `navigator.storage.estimate()`, `persisted()` e `persist()`. A solicitação pode ser recusada pelo navegador; não é garantia contra limpeza manual, remoção do PWA ou falha do dispositivo. **Verificar projetos** examina, sem alterar, a estrutura JSON de projetos locais. **Verificar backup JSON** permite selecionar um backup geral e conferir sua estrutura básica sem importá-lo. A verificação não substitui um teste de restauração nem assegura a integridade semântica de cada projeto. Faça backups gerais regulares em local seguro.
+## Apêndice C — Checklist antes de publicar uma atualização
 
+1. Faça backup geral e exporte um projeto de teste.
+2. Confira se a versão exibida em Ajuda → Sobre corresponde ao pacote publicado.
+3. Teste Novo, Projetos, Renomear, Excluir, Guardar, Abrir e Restaurar em dados de teste.
+4. Teste criação, edição, arraste, conexões, duplicação, listas e desfazer/refazer.
+5. Confira Editor, anexos, Markdown, SVG, compartilhamento e impressão.
+6. Teste o funcionamento offline depois de visitar o aplicativo conectado.
+7. Verifique instalação, atalhos, janelas e APIs opcionais nos sistemas compatíveis.
+8. Verifique a integridade do ZIP e a sintaxe JavaScript antes da publicação.
+9. Preserve uma cópia anterior do pacote e dos backups para eventual recuperação.
 
-## v48.1 — Menu Exibir
+## Apêndice D — Histórico de alterações
 
-O menu **Exibir**, imediatamente à direita de **Editar**, reúne **Visualização** (zoom e tela cheia), **Organizar mapa** (árvore, hierárquico, radial), **Navegação** (busca, minimapa, ajustar e centralizar), **Aparência** (alternar tema claro/escuro e personalização) e **Ferramentas de navegação** (ponteiro e mãozinha).
+O histórico cronológico detalhado das versões anteriores foi preservado em [`HISTORICO-DE-VERSOES.md`](HISTORICO-DE-VERSOES.md). Esse registro é histórico; para nomes de menus e procedimentos atuais, utilize este manual.
 
-Os comandos existentes foram realocados, mantendo os mesmos identificadores e manipuladores de eventos; o menu Sistema continua dedicado às configurações, notificações e manutenção. Nenhuma mudança foi feita no formato dos projetos.
+## Apêndice E — Catálogo dos comandos de menu na versão 49
 
+A relação abaixo foi obtida dos botões e submenus presentes na interface da versão 49. Um mesmo comando pode aparecer em mais de um lugar; algumas ações exigem projeto ou caixa selecionada.
 
-## Mentalista v49 — Consolidação e estabilidade
+### Menu Arquivo
 
-Esta versão consolida as funções das versões v40–v48.1 sem alterar os formatos de dados dos projetos.
+**Projetos:** Novo, Projetos, Modelos, Renomear, Excluir.
 
-### Atualização offline
+**JSON:** Guardar, Atualizar, Abrir, Salvar como, Backup, Restaurar, Histórico, Importar JSON (interno).
 
-A navegação do service worker usa **rede primeiro**, com retorno ao HTML armazenado no cache quando não houver conexão. Os demais arquivos continuam com cache primeiro. Isso evita manter indefinidamente uma página inicial desatualizada enquanto houver internet. A instalação pré-carrega os arquivos essenciais e a ativação remove caches antigos do Mentalista.
+**Outros formatos:** Importar, Exportar, SVG, Compartilhar, Imprimir.
 
-### Checklist de regressão manual
+**Markdown:** Importar, Exportar.
 
-1. Abrir o PWA conectado e desconectado; confirmar que projetos locais continuam disponíveis.
-2. Criar projeto, nó e conexão; recarregar e verificar persistência.
-3. Testar Arquivo → JSON (Guardar, Atualizar, Abrir, Salvar como, Backup e Restaurar) usando arquivos descartáveis.
-4. Testar Arquivo → Outros formatos (Markdown, SVG, Compartilhar e Imprimir).
-5. Testar Editar (desfazer/refazer, notas, imagens, área de transferência).
-6. Testar Exibir (zoom, layouts, minimapa, claro/escuro e tela cheia).
-7. Testar Sistema (notificações, manutenção, persistência e integridade).
-8. Verificar acessibilidade por teclado, menus em telas pequenas e comportamento de diálogos.
-9. Instalar no Chrome Android e no Edge desktop para verificar atalhos e integrações específicas.
-10. Antes de limpar dados do navegador, exportar backup geral JSON e verificar a restauração em ambiente separado.
+### Menu Editar
 
-**Limitações:** a verificação de sintaxe e integridade do pacote não substitui os testes manuais em navegadores reais. A persistência local não substitui backups.
+**Criar:** Novo nó, Nova lista rápida, Nó filho, Nó irmão.
+
+**Conexões:** Conectar/desconectar nós, Desfazer elo selecionado.
+
+**Área de transferência:** Copiar caixas, Colar caixas, Copiar imagem, Colar imagem.
+
+**Edição:** Editor flutuante, Duplicar nó, Duplicar ramificação, Prioridade, etiquetas e prazo, Imagem local na caixa, Nota recolhível, Excluir seleção, Desfazer, Refazer.
+
+### Menu Exibir
+
+**Visualização:** Aumentar zoom, Diminuir zoom, Tela cheia.
+
+**Organizar mapa:** Em árvore (horizontal), Hierárquico (vertical), Radial.
+
+**Navegação:** Buscar nós, Mostrar/ocultar minimapa, Ajustar à tela, Centralizar origem.
+
+**Aparência:** Alternar claro/escuro, Modo claro, Modo escuro, Personalizar aparência….
+
+**Ferramentas de navegação:** Ponteiro, Mãozinha.
+
+### Menu Sistema
+
+**Preferências:** Configurações….
+
+**Notificações:** Central de notificações….
+
+**Manutenção:** Abrir Manutenção….
+
+### Menu Ajuda
+
+**Documentação:** GitHub, Manual, Sobre.
+
+**Referência de controles:** Atalhos, Mapa de Ícones e botões.
+
