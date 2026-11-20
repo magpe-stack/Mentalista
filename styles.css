@@ -502,3 +502,7 @@ body:not(.light) .node[data-color="slate"]{--node-ink:#f2f5ff}
 .node[data-color="slate"] .stage-check-box,
 .node[data-color="slate"] .stage-check-tick{stroke:var(--node-ink)!important}
 body:not(.light) .node[data-color="slate"] .list-line{fill:var(--node-ink)!important}
+
+/* v49.2: comando explícito para atualizar uma caixa integrada */
+#editorUpdate{width:35px;height:34px;display:inline-flex;align-items:center;justify-content:center;padding:6px;font-size:24px;font-weight:700;line-height:1}
+#editorUpdate[hidden],#editorIntegrate[hidden]{display:none!important}
