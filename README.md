@@ -1,12 +1,11 @@
-# Mentalista v49 — Manual completo do software
+# Mentalista — Manual do Usuário
 
-**Edição:** 19 de novembro de 2026  
 **Aplicação:** Mentalista — Estúdio de mapas mentais  
 **Plataforma:** Progressive Web App (PWA), HTML/CSS/JavaScript sem bibliotecas externas obrigatórias  
 **Site:** https://magpe-stack.github.io/Mentalista/  
 **Código-fonte:** https://github.com/magpe-stack/Mentalista  
 
-> **Leia primeiro:** os projetos são guardados principalmente no navegador, e o histórico no IndexedDB. Faça backups JSON regularmente. Instalação, acesso direto a arquivos, notificações e compartilhamento dependem de permissões e compatibilidade. Este manual descreve os recursos presentes no código da versão 49; não substitui testes práticos em cada navegador.
+> **Leia primeiro:** os projetos são guardados principalmente no navegador, e o histórico no IndexedDB. Faça backups JSON regularmente. Instalação, acesso direto a arquivos, notificações e compartilhamento dependem de permissões e compatibilidade. A disponibilidade de recursos que dependem do sistema operacional varia conforme o navegador e as permissões concedidas.
 
 ## Apresentação
 
@@ -14,7 +13,7 @@ O Mentalista é uma ferramenta de organização visual do conhecimento. Seu espa
 
 O programa foi concebido como PWA: pode ser aberto pelo navegador ou instalado como aplicativo em plataformas compatíveis. O trabalho principal não depende de login ou de um serviço de nuvem. O funcionamento offline depende de os arquivos estáticos terem sido armazenados corretamente. Os projetos podem ser exportados para JSON, e outros formatos oferecem maneiras diferentes de visualizar, compartilhar ou imprimir conteúdos.
 
-Este documento apresenta os conceitos, o funcionamento dos menus, os procedimentos mais frequentes, os cuidados com dados e as limitações das APIs do navegador. Não confunda recursos de armazenamento local com sincronização em nuvem, nem notificações locais com Web Push. Ao longo do texto, os exemplos são procedimentos sugeridos; algumas opções podem não aparecer em todos os navegadores.
+Este manual apresenta os conceitos, as funções, os procedimentos operacionais, os cuidados com os dados e a solução de problemas. Não confunda recursos de armazenamento local com sincronização em nuvem, nem notificações locais com Web Push. Ao longo do texto, os exemplos são procedimentos sugeridos; algumas opções podem não aparecer em todos os navegadores.
 
 ## Índice
 
@@ -40,7 +39,7 @@ Este documento apresenta os conceitos, o funcionamento dos menus, os procediment
 20. [Compartilhamento nativo](#compartilhamento-nativo)
 21. [Abertura pelo explorador e salvamento direto](#abertura-pelo-explorador-e-salvamento-direto)
 22. [Área de transferência e imagens PNG](#area-de-transferencia-e-imagens-png)
-23. [Histórico de versões e recuperação](#historico-de-versoes-e-recuperacao)
+23. [Histórico e recuperação](#historico-e-recuperacao)
 24. [Notificações locais e lembretes](#notificacoes-locais-e-lembretes)
 25. [Instalação, atalhos e janelas do sistema](#instalacao-atalhos-e-janelas-do-sistema)
 26. [Offline, cache e atualização](#offline-cache-e-atualizacao)
@@ -50,7 +49,9 @@ Este documento apresenta os conceitos, o funcionamento dos menus, os procediment
 30. [Problemas frequentes e soluções](#problemas-frequentes-e-solucoes)
 31. [Fluxos de trabalho recomendados](#fluxos-de-trabalho-recomendados)
 32. [Privacidade, limites e boas práticas](#privacidade-limites-e-boas-praticas)
-33. [Referência rápida de comandos e suporte](#referencia-rapida-de-comandos-e-suporte)
+33. [Ajuda, referência e suporte](#ajuda-referencia-e-suporte)
+34. [Compatibilidade de dispositivos e tamanho da janela](#compatibilidade-de-dispositivos-e-tamanho-da-janela)
+35. [Conservação dos projetos e responsabilidades do usuário](#conservacao-dos-projetos-e-responsabilidades-do-usuario)
 
 ## 1. Primeiros passos e conceitos
 
@@ -74,7 +75,7 @@ A barra superior contém Arquivo, Editar, Exibir, Sistema e Ajuda. Os comandos s
 
 ### Como utilizar, passo a passo
 
-Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou exclua caixas e abra o Editor. Em Exibir controle zoom, organização, navegação e aparência. Em Sistema configure o aplicativo, consulte notificações e execute manutenção. Em Ajuda abra o manual, a referência de atalhos, o mapa de controles e as informações da versão.
+Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou exclua caixas e abra o Editor. Em Exibir controle zoom, organização, navegação e aparência. Em Sistema configure o aplicativo, consulte notificações e execute manutenção. Em Ajuda abra o manual, a referência de atalhos, o mapa de controles e as informações da registro.
 
 ### Cuidados e observações
 
@@ -106,7 +107,7 @@ Use Insert para um novo nó, Tab para um filho e Enter para um irmão, desde que
 
 ### Cuidados e observações
 
-A exclusão pode remover conexões associadas. Confira a seleção antes de usar Delete. Para recuperar alterações recentes, use Desfazer; para estados antigos ou após fechar o aplicativo, consulte Histórico de versões.
+A exclusão pode remover conexões associadas. Confira a seleção antes de usar Delete. Para recuperar alterações recentes, use Desfazer; para estados antigos ou após fechar o aplicativo, consulte Histórico de alterações.
 
 ## 5. Conexões, elos e relações
 
@@ -158,11 +159,15 @@ O Editor serve para conteúdos mais extensos que o título de um nó. Ele funcio
 
 ### Como utilizar, passo a passo
 
-Abra Editar → Edição → Editor flutuante ou Ctrl+Shift+E. Digite um título e o conteúdo, aplique formatação ao trecho selecionado e utilize Integrar para criar ou atualizar uma caixa de texto no mapa. Experimente copiar texto formatado e colar em outro editor, observando as limitações de compatibilidade.
+**Criar uma caixa de texto:** abra Editar → Edição → Editor flutuante ou pressione Ctrl+Shift+E. Digite o conteúdo, selecione trechos para aplicar a formatação desejada e clique em **Integrar**. O Mentalista cria uma caixa de texto no Palco.
+
+**Editar uma caixa de texto existente:** clique no ícone de edição da própria caixa (ou use o comando de edição correspondente). O Editor abrirá com o conteúdo daquela caixa. Faça as alterações e clique em **Atualizar** para gravá-las **na mesma caixa**, sem criar outra. A caixa mantém sua identidade, posição e conexões.
+
+**Iniciar outro texto:** utilize o comando **Novo rascunho** no Editor para sair da edição da caixa atual e preparar um conteúdo independente. Para criar uma nova caixa, utilize **Integrar**. Experimente copiar texto formatado e colar em outro editor, observando as limitações de compatibilidade.
 
 ### Cuidados e observações
 
-O Editor possui um rascunho local, mas um texto integrado e o rascunho não são necessariamente a mesma cópia. Antes de descartar o rascunho, confira se o conteúdo desejado foi integrado e exportado.
+O Editor possui um rascunho local, mas ele não substitui uma cópia de segurança do projeto. Ao editar uma caixa já existente, use **Atualizar**; ao criar outra, use **Novo rascunho** e **Integrar**. Antes de descartar o rascunho, confirme o resultado no Palco e exporte o projeto quando necessário.
 
 ## 9. Lero-lero e extração de informações
 
@@ -298,7 +303,7 @@ JSON é o formato indicado para preservar a estrutura editável de um projeto. O
 
 ### Como utilizar, passo a passo
 
-Guardar baixa uma cópia do projeto. Atualizar grava no arquivo previamente autorizado para o projeto atual quando o navegador permite. Abrir importa um projeto individual como novo. Salvar como escolhe um novo destino. Backup gera cópia de todos os projetos; Restaurar recupera um backup geral mediante confirmação. Histórico abre as versões locais.
+Guardar baixa uma cópia do projeto. Atualizar grava no arquivo previamente autorizado para o projeto atual quando o navegador permite. Abrir importa um projeto individual como novo. Salvar como escolhe um novo destino. Backup gera cópia de todos os projetos; Restaurar recupera um backup geral mediante confirmação. Histórico abre as estados anteriores.
 
 ### Cuidados e observações
 
@@ -316,7 +321,7 @@ Em Arquivo → Outros formatos → Markdown, escolha Importar ou Exportar. Use S
 
 ### Cuidados e observações
 
-Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conversão. Para restauração integral, prefira JSON.
+Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conregistro. Para restauração integral, prefira JSON.
 
 ## 20. Compartilhamento nativo
 
@@ -360,19 +365,19 @@ Em Editar → Área de transferência, selecione as caixas e use Copiar caixas; 
 
 A cópia estruturada é específica da sessão atual. Permissões de leitura e gravação na área de transferência dependem de gesto do usuário, contexto seguro e suporte do navegador. Confira o destino antes de colar.
 
-## 23. Histórico de versões e recuperação
+## 23. Histórico e recuperação
 
 ### O que é e quando utilizar
 
-O histórico usa IndexedDB e é separado do armazenamento principal de projetos. Há capturas manuais e automáticas; o limite previsto é de 25 versões por projeto, com até 15 automáticas. O mecanismo automático considera períodos de inatividade e espaçamento entre registros.
+O histórico usa IndexedDB e é separado do armazenamento principal de projetos. Há capturas manuais e automáticas; o limite previsto é de 25 registros por projeto, com até 15 automáticas. O mecanismo automático considera períodos de inatividade e espaçamento entre registros.
 
 ### Como utilizar, passo a passo
 
-Abra Arquivo → JSON → Histórico, crie uma versão nomeada antes de uma grande reorganização e consulte as datas e contagens de nós. Para voltar a um estado anterior, escolha Restaurar e confirme. O sistema procura guardar uma versão de proteção do estado atual antes de substituir o mapa.
+Abra Arquivo → JSON → Histórico, crie uma registro nomeada antes de uma grande reorganização e consulte as datas e contagens de nós. Para voltar a um estado anterior, escolha Restaurar e confirme. O sistema procura guardar uma registro de proteção do estado atual antes de substituir o mapa.
 
 ### Cuidados e observações
 
-O histórico é local e pode desaparecer se os dados do site forem limpos. Não confunda histórico com backup externo. Uma versão antiga também pode conter erros ou anexos ausentes; confira o resultado após restaurar.
+O histórico é local e pode desaparecer se os dados do site forem limpos. Não confunda histórico com backup externo. Uma registro antiga também pode conter erros ou anexos ausentes; confira o resultado após restaurar.
 
 ## 24. Notificações locais e lembretes
 
@@ -470,7 +475,7 @@ Se o mapa sumir, use Ajustar à tela. Se um comando não responder, feche diálo
 
 ### Cuidados e observações
 
-Se o navegador solicitar limpar dados, interrompa a operação e faça backup. Em caso de comportamento persistente, registre versão, navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a corrigir bugs.
+Se o navegador solicitar limpar dados, interrompa a operação e faça backup. Em caso de comportamento persistente, registre registro, navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a corrigir bugs.
 
 ## 31. Fluxos de trabalho recomendados
 
@@ -480,7 +485,7 @@ O Mentalista pode ser usado para pesquisa, planejamento de histórias, estudo, b
 
 ### Como utilizar, passo a passo
 
-Para estudar: crie um mapa de estudo, separe conceitos em ramos, adicione notas e listas e use busca na revisão. Para escrever: parta do modelo de história, organize personagens e conflitos, integre textos do Editor e exporte Markdown para uma visão linear. Para planejar: utilize prioridades, prazos, checklists e versões manuais antes de mudanças extensas.
+Para estudar: crie um mapa de estudo, separe conceitos em ramos, adicione notas e listas e use busca na revisão. Para escrever: parta do modelo de história, organize personagens e conflitos, integre textos do Editor e exporte Markdown para uma visão linear. Para planejar: utilize prioridades, prazos, checklists e registros manuais antes de mudanças extensas.
 
 ### Cuidados e observações
 
@@ -494,13 +499,13 @@ O Mentalista não exige conta nem servidor para o trabalho local. Os projetos pe
 
 ### Como utilizar, passo a passo
 
-Mantenha um backup geral após alterações significativas, uma cópia individual de projetos críticos e uma versão manual antes de reorganizações grandes. Verifique os arquivos exportados, preserve seus nomes e datas e não dependa apenas do histórico interno.
+Mantenha um backup geral após alterações significativas, uma cópia individual de projetos críticos e uma registro manual antes de reorganizações grandes. Verifique os arquivos exportados, preserve seus nomes e datas e não dependa apenas do histórico interno.
 
 ### Cuidados e observações
 
 Não há Background Sync, Periodic Background Sync, Web Push com servidor ou Badging API. A ausência desses recursos é uma decisão de escopo atual, não um defeito do armazenamento local. Não espere sincronização automática ao trocar de aparelho.
 
-## 33. Referência rápida de comandos e suporte
+## 33. Ajuda, referência e suporte
 
 ### O que é e quando utilizar
 
@@ -512,7 +517,40 @@ Use o índice no início deste manual para saltar ao assunto desejado. O mapa de
 
 ### Cuidados e observações
 
-As telas e recursos dependentes de APIs do sistema precisam ser testados no navegador utilizado. A documentação descreve a implementação presente no código v49 e não certifica que todos os fluxos foram testados em cada dispositivo.
+As telas e recursos dependentes de APIs do sistema precisam ser testados no navegador utilizado. Recursos vinculados a permissões do sistema ou a APIs opcionais podem não estar disponíveis em todos os navegadores.
+
+## 34. Compatibilidade de dispositivos e tamanho da janela
+
+### Finalidade
+
+O Mentalista foi concebido para edição visual em uma área de trabalho ampla. Em computadores com Windows, macOS ou Linux, a interface permanece disponível mesmo quando a janela do navegador é reduzida. A organização dos controles pode ficar menos confortável em janelas muito pequenas, mas o aplicativo não substitui a interface por um aviso apenas por causa dessas dimensões.
+
+### Comportamento em dispositivos móveis
+
+Em plataformas móveis identificadas pelo navegador, a tela de compatibilidade pode aparecer quando a área útil da página tiver **menos de 625 pixels CSS de largura ou menos de 500 pixels CSS de altura**. A mensagem informa as dimensões mínimas recomendadas. Ao atingir ambas as dimensões, a interface completa fica disponível.
+
+A identificação da plataforma depende das informações fornecidas pelo navegador; alguns tablets podem se apresentar como computadores. O Mentalista não utiliza a presença de tela sensível ao toque como critério único para essa decisão.
+
+### Como proceder
+
+Se a mensagem aparecer em um celular, utilize um computador ou uma tela que ofereça a área necessária. No desktop, maximize ou redimensione a janela conforme sua preferência. Se precisar conferir a área útil, lembre-se de que as medidas da janela externa não são necessariamente iguais aos pixels CSS disponíveis para a página.
+
+## 35. Conservação dos projetos e responsabilidades do usuário
+
+### Onde os dados ficam armazenados
+
+Os projetos são mantidos **localmente no navegador utilizado**, vinculados ao dispositivo, ao perfil do navegador e à origem do aplicativo. Isso **não significa** que os projetos estejam disponíveis automaticamente em outro computador, celular ou navegador. Não há sincronização em nuvem implícita.
+
+### Rotina recomendada de proteção
+
+1. Ao iniciar um trabalho importante, crie um projeto com nome identificável.
+2. Durante a edição, confirme periodicamente se as alterações aparecem no mapa.
+3. Ao terminar uma sessão, utilize **Guardar** para obter um arquivo JSON do projeto.
+4. Periodicamente, utilize **Backup** para conservar uma cópia geral dos projetos.
+5. Guarde os arquivos exportados em local de sua escolha, preferencialmente com uma cópia adicional.
+6. Antes de limpar dados do navegador, trocar de equipamento ou restaurar um backup, verifique se os arquivos exportados estão acessíveis e íntegros.
+
+O salvamento local automático facilita a continuidade do trabalho, mas **não substitui backups externos**.
 
 ## Apêndice A — Tabela de atalhos
 
@@ -539,27 +577,11 @@ As telas e recursos dependentes de APIs do sistema precisam ser testados no nave
 
 ## Apêndice B — Glossário
 
-**Palco:** área visual onde o mapa é desenhado. **Nó:** caixa que representa uma ideia ou conteúdo. **Elo:** ligação entre nós. **Ramificação:** conjunto de descendentes relacionados. **Projeto:** mapa independente salvo no navegador. **Backup geral:** arquivo JSON contendo vários projetos. **Versão:** registro histórico local de um projeto. **Service worker:** processo web que gerencia recursos em cache. **Cache API:** armazenamento de arquivos estáticos do aplicativo. **IndexedDB:** banco local usado pelo histórico. **localStorage:** armazenamento local dos projetos e de preferências. **PWA:** aplicativo web instalável. **Markdown:** formato textual estruturado. **SVG:** formato de imagem vetorial. **Web Share API:** compartilhamento com o sistema operacional. **File System Access API:** acesso autorizado a arquivos locais. **File Handling API:** associação de tipos de arquivo ao aplicativo instalado.
+**Palco:** área visual onde o mapa é desenhado. **Nó:** caixa que representa uma ideia ou conteúdo. **Elo:** ligação entre nós. **Ramificação:** conjunto de descendentes relacionados. **Projeto:** mapa independente salvo no navegador. **Backup geral:** arquivo JSON contendo vários projetos. **Registro histórico:** estado anterior de um projeto mantido localmente. **Service worker:** processo web que gerencia recursos em cache. **Cache API:** armazenamento de arquivos estáticos do aplicativo. **IndexedDB:** banco local usado pelo histórico. **localStorage:** armazenamento local dos projetos e de preferências. **PWA:** aplicativo web instalável. **Markdown:** formato textual estruturado. **SVG:** formato de imagem vetorial. **Web Share API:** compartilhamento com o sistema operacional. **File System Access API:** acesso autorizado a arquivos locais. **File Handling API:** associação de tipos de arquivo ao aplicativo instalado.
 
-## Apêndice C — Checklist antes de publicar uma atualização
+## Apêndice C — Referência dos menus
 
-1. Faça backup geral e exporte um projeto de teste.
-2. Confira se a versão exibida em Ajuda → Sobre corresponde ao pacote publicado.
-3. Teste Novo, Projetos, Renomear, Excluir, Guardar, Abrir e Restaurar em dados de teste.
-4. Teste criação, edição, arraste, conexões, duplicação, listas e desfazer/refazer.
-5. Confira Editor, anexos, Markdown, SVG, compartilhamento e impressão.
-6. Teste o funcionamento offline depois de visitar o aplicativo conectado.
-7. Verifique instalação, atalhos, janelas e APIs opcionais nos sistemas compatíveis.
-8. Verifique a integridade do ZIP e a sintaxe JavaScript antes da publicação.
-9. Preserve uma cópia anterior do pacote e dos backups para eventual recuperação.
-
-## Apêndice D — Histórico de alterações
-
-O histórico cronológico detalhado das versões anteriores foi preservado em [`HISTORICO-DE-VERSOES.md`](HISTORICO-DE-VERSOES.md). Esse registro é histórico; para nomes de menus e procedimentos atuais, utilize este manual.
-
-## Apêndice E — Catálogo dos comandos de menu na versão 49
-
-A relação abaixo foi obtida dos botões e submenus presentes na interface da versão 49. Um mesmo comando pode aparecer em mais de um lugar; algumas ações exigem projeto ou caixa selecionada.
+Os comandos são organizados pelos menus da interface. Um mesmo comando pode aparecer em mais de um local; algumas ações exigem um projeto aberto ou uma caixa selecionada.
 
 ### Menu Arquivo
 
@@ -609,26 +631,3 @@ A relação abaixo foi obtida dos botões e submenus presentes na interface da v
 
 
 
-## Correção v49.1 — contraste dos nós
-
-A alternância claro/escuro agora atualiza a cor do conteúdo das caixas neutras, incluindo títulos, descrições, checklists e textos integrados. Não modifica os dados ou as cores escolhidas dos projetos.
-
-
-## Compatibilidade de tela — v49.3
-
-A interface completa do Mentalista requer uma área útil da janela de pelo menos **625 × 500 pixels CSS**. Se a largura for inferior a 625 px **ou** a altura for inferior a 500 px, o aplicativo apresenta uma tela informativa com a mensagem “Grandes ideias precisam de espaço.” e as dimensões mínimas recomendadas.
-
-A verificação usa media queries CSS, sem depender do modelo do aparelho ou do user agent. Ao redimensionar a janela ou girar o dispositivo, a interface se adapta automaticamente. Enquanto a tela de compatibilidade estiver ativa, os controles do aplicativo são ocultados e não recebem foco. A tela funciona offline por usar apenas recursos locais do próprio PWA.
-
-**Privacidade:** a tela não afirma que projetos são sincronizados ou armazenados em outros dispositivos. Os projetos continuam sendo armazenados localmente pelo navegador, conforme a política geral do Mentalista.
-
-**Observação:** 625 px de largura foi informado como limite utilizável em teste no Chrome; 500 px de altura é o limite adotado para esta implementação.
-
-
-## Compatibilidade de tela — v49.4
-
-A tela informativa de dimensões mínimas **625 × 500 px CSS** aparece apenas em plataformas móveis reconhecidas pelo identificador de navegador (Android, iPhone, iPod e iPad), quando a área útil for menor do que uma dessas dimensões. Em Windows, macOS, Linux e plataformas não identificadas, o aviso não é acionado, mesmo com a janela pequena ou com o DevTools aberto.
-
-A identificação por *user agent* não é infalível: alguns tablets podem anunciar uma plataforma desktop. Em caso de dúvida, a interface é liberada. Não usamos `pointer: coarse`, detecção de mouse ou detecção genérica de tela sensível ao toque.
-
-A versão v49.4 substitui a regra indiscriminada da v49.3; as demais funcionalidades são preservadas.
