@@ -7,6 +7,13 @@
 
 > **Leia primeiro:** os projetos são guardados principalmente no navegador, e o histórico no IndexedDB. Faça backups JSON regularmente. Instalação, acesso direto a arquivos, notificações e compartilhamento dependem de permissões e compatibilidade. A disponibilidade de recursos que dependem do sistema operacional varia conforme o navegador e as permissões concedidas.
 
+<p align="center">
+  <img src="./assets/MentalistaCover.jpg"
+       alt="Mentalista — Capa do Manual"
+       width="100%">
+</p>
+
+
 ## Apresentação
 
 O Mentalista é uma ferramenta de organização visual do conhecimento. Seu espaço de trabalho é um Palco amplo, onde caixas representam ideias e conexões indicam relações. O aplicativo combina mapas mentais, listas, checklists, notas, imagens e textos formatados em projetos locais. É especialmente útil para escritores, estudantes, pesquisadores, profissionais que planejam atividades e qualquer pessoa que precise transformar informações dispersas em uma estrutura compreensível.
