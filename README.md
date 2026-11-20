@@ -612,3 +612,14 @@ A relação abaixo foi obtida dos botões e submenus presentes na interface da v
 ## Correção v49.1 — contraste dos nós
 
 A alternância claro/escuro agora atualiza a cor do conteúdo das caixas neutras, incluindo títulos, descrições, checklists e textos integrados. Não modifica os dados ou as cores escolhidas dos projetos.
+
+
+## Compatibilidade de tela — v49.3
+
+A interface completa do Mentalista requer uma área útil da janela de pelo menos **625 × 500 pixels CSS**. Se a largura for inferior a 625 px **ou** a altura for inferior a 500 px, o aplicativo apresenta uma tela informativa com a mensagem “Grandes ideias precisam de espaço.” e as dimensões mínimas recomendadas.
+
+A verificação usa media queries CSS, sem depender do modelo do aparelho ou do user agent. Ao redimensionar a janela ou girar o dispositivo, a interface se adapta automaticamente. Enquanto a tela de compatibilidade estiver ativa, os controles do aplicativo são ocultados e não recebem foco. A tela funciona offline por usar apenas recursos locais do próprio PWA.
+
+**Privacidade:** a tela não afirma que projetos são sincronizados ou armazenados em outros dispositivos. Os projetos continuam sendo armazenados localmente pelo navegador, conforme a política geral do Mentalista.
+
+**Observação:** 625 px de largura foi informado como limite utilizável em teste no Chrome; 500 px de altura é o limite adotado para esta implementação.
