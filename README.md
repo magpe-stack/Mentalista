@@ -623,3 +623,12 @@ A verificação usa media queries CSS, sem depender do modelo do aparelho ou do 
 **Privacidade:** a tela não afirma que projetos são sincronizados ou armazenados em outros dispositivos. Os projetos continuam sendo armazenados localmente pelo navegador, conforme a política geral do Mentalista.
 
 **Observação:** 625 px de largura foi informado como limite utilizável em teste no Chrome; 500 px de altura é o limite adotado para esta implementação.
+
+
+## Compatibilidade de tela — v49.4
+
+A tela informativa de dimensões mínimas **625 × 500 px CSS** aparece apenas em plataformas móveis reconhecidas pelo identificador de navegador (Android, iPhone, iPod e iPad), quando a área útil for menor do que uma dessas dimensões. Em Windows, macOS, Linux e plataformas não identificadas, o aviso não é acionado, mesmo com a janela pequena ou com o DevTools aberto.
+
+A identificação por *user agent* não é infalível: alguns tablets podem anunciar uma plataforma desktop. Em caso de dúvida, a interface é liberada. Não usamos `pointer: coarse`, detecção de mouse ou detecção genérica de tela sensível ao toque.
+
+A versão v49.4 substitui a regra indiscriminada da v49.3; as demais funcionalidades são preservadas.

@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="#f8f9fb" name="theme-color"/><meta content="Mentalista — mapas mentais offline." name="description"/><link href="assets/logo.svg" rel="icon" type="image/svg+xml"/><link href="manifest.webmanifest" rel="manifest"/><link href="styles.css" rel="stylesheet"/><title>Mentalista — Mapas Mentais</title></head><body class="light"><section id="mobileCompatibility" class="mobile-compatibility" aria-labelledby="mobileCompatibilityTitle" role="region">
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="#f8f9fb" name="theme-color"/><meta content="Mentalista — mapas mentais offline." name="description"/><link href="assets/logo.svg" rel="icon" type="image/svg+xml"/><link href="manifest.webmanifest" rel="manifest"/><script>
+/* v49.4: identificar apenas plataformas móveis conhecidas; em caso de dúvida, liberar o aplicativo. */
+(function () {
+  var ua = navigator.userAgent || '';
+  var mobile = /Android|iPhone|iPod|iPad/i.test(ua);
+  if (mobile) document.documentElement.classList.add('mentalista-mobile-platform');
+}());
+</script><link href="styles.css" rel="stylesheet"/><title>Mentalista — Mapas Mentais</title></head><body class="light"><section id="mobileCompatibility" class="mobile-compatibility" aria-labelledby="mobileCompatibilityTitle" role="region">
   <div class="mobile-compatibility-card">
     <img src="assets/logo.svg" alt="" width="82" height="82" class="mobile-compatibility-logo">
     <h1 id="mobileCompatibilityTitle">Mentalista</h1>
