@@ -53,6 +53,8 @@ Este manual apresenta os conceitos, as funções, os procedimentos operacionais,
 34. [Compatibilidade de dispositivos e tamanho da janela](#compatibilidade-de-dispositivos-e-tamanho-da-janela)
 35. [Conservação dos projetos e responsabilidades do usuário](#conservacao-dos-projetos-e-responsabilidades-do-usuario)
 
+<a id="primeiros-passos-e-conceitos"></a>
+
 ## 1. Primeiros passos e conceitos
 
 ### O que é e quando utilizar
@@ -66,6 +68,8 @@ Abra o Mentalista, escolha Arquivo → Projetos → Novo e dê um nome identific
 ### Cuidados e observações
 
 Evite abrir dois separadores do mesmo navegador para editar simultaneamente o mesmo projeto; alterações concorrentes podem produzir resultados inesperados. Não trate o fechamento do navegador como equivalente a um backup.
+
+<a id="interface-geral-e-menus"></a>
 
 ## 2. Interface geral e menus
 
@@ -81,6 +85,8 @@ Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou 
 
 Se um botão parecer ausente, confira se há uma seleção ativa, se um submenu está recolhido e se o tamanho da tela ocultou ferramentas contextuais. Os menus podem ser fechados clicando fora deles.
 
+<a id="projetos-novo-projetos-modelos-renomear-e-excluir"></a>
+
 ## 3. Projetos: Novo, Projetos, Modelos, Renomear e Excluir
 
 ### O que é e quando utilizar
@@ -94,6 +100,8 @@ Use Novo para iniciar em branco; Projetos para alternar entre mapas; Modelos par
 ### Cuidados e observações
 
 Excluir um projeto é diferente de remover uma caixa. Antes de exclusões importantes, use Guardar ou Backup. Os dados do navegador são específicos do perfil, do domínio e do dispositivo.
+
+<a id="criacao-edicao-e-selecao-de-nos"></a>
 
 ## 4. Criação, edição e seleção de nós
 
@@ -109,6 +117,8 @@ Use Insert para um novo nó, Tab para um filho e Enter para um irmão, desde que
 
 A exclusão pode remover conexões associadas. Confira a seleção antes de usar Delete. Para recuperar alterações recentes, use Desfazer; para estados antigos ou após fechar o aplicativo, consulte Histórico de alterações.
 
+<a id="conexoes-elos-e-relacoes"></a>
+
 ## 5. Conexões, elos e relações
 
 ### O que é e quando utilizar
@@ -122,6 +132,8 @@ Para conectar, arraste a porta “+” de uma caixa até outra. Para selecionar 
 ### Cuidados e observações
 
 Uma conexão não significa necessariamente uma relação hierárquica. Ao usar organização automática, revise o resultado e reposicione manualmente elementos cuja interpretação dependa de ligações cruzadas.
+
+<a id="movimentacao-fixacao-e-duplicacao"></a>
 
 ## 6. Movimentação, fixação e duplicação
 
@@ -137,6 +149,8 @@ Selecione a caixa, arraste-a pelo Palco e observe a mudança de posição. Para 
 
 Duplicar não cria sincronização entre as cópias. Modificar uma caixa duplicada não atualiza automaticamente a original. Ao duplicar conjuntos grandes, verifique a posição e as conexões antes de continuar.
 
+<a id="listas-rapidas-e-checklists"></a>
+
 ## 7. Listas rápidas e checklists
 
 ### O que é e quando utilizar
@@ -150,6 +164,8 @@ Em Editar → Criar → Nova lista rápida, informe um título, escolha o format
 ### Cuidados e observações
 
 O editor de listas possui limites de quantidade e tamanho. Para conteúdos longos, distribua tópicos em várias listas ou use o Editor flutuante. O ditado depende do reconhecimento de voz do navegador e pode não funcionar offline.
+
+<a id="editor-flutuante-e-textos-formatados"></a>
 
 ## 8. Editor flutuante e textos formatados
 
@@ -169,6 +185,8 @@ O Editor serve para conteúdos mais extensos que o título de um nó. Ele funcio
 
 O Editor possui um rascunho local, mas ele não substitui uma cópia de segurança do projeto. Ao editar uma caixa já existente, use **Atualizar**; ao criar outra, use **Novo rascunho** e **Integrar**. Antes de descartar o rascunho, confirme o resultado no Palco e exporte o projeto quando necessário.
 
+<a id="lero-lero-e-extracao-de-informacoes"></a>
+
 ## 9. Lero-lero e extração de informações
 
 ### O que é e quando utilizar
@@ -182,6 +200,8 @@ Use os controles do Lero-lero para gerar quantidades de palavras, frases, títul
 ### Cuidados e observações
 
 Não utilize textos fictícios como fontes de pesquisa ou dados factuais. A extração é uma ajuda de edição, não uma ferramenta de validação de contatos.
+
+<a id="notas-externas-e-anexos-de-imagem"></a>
 
 ## 10. Notas externas e anexos de imagem
 
@@ -197,6 +217,8 @@ Selecione um nó e use os comandos de imagem ou nota. Escolha uma imagem local c
 
 Arquivos muito grandes podem aumentar o tamanho do projeto e de seus backups. Verifique se as imagens aparecem corretamente após reabrir o projeto e após exportar/importar um JSON de teste.
 
+<a id="prioridade-etiquetas-e-prazos"></a>
+
 ## 11. Prioridade, etiquetas e prazos
 
 ### O que é e quando utilizar
@@ -210,6 +232,8 @@ Selecione a caixa e abra Editar → Edição → Prioridade, etiquetas e prazo. 
 ### Cuidados e observações
 
 O registro de prazo não equivale a uma tarefa agendada no sistema operacional. O aplicativo não possui entrega garantida de notificações com a janela fechada, e a Badging API não foi implementada.
+
+<a id="modelos-prontos"></a>
 
 ## 12. Modelos prontos
 
@@ -225,6 +249,8 @@ Abra Arquivo → Projetos → Modelos, selecione o modelo apropriado e confirme 
 
 O modelo gera um projeto independente. Se já houver trabalho em outro mapa, abra-o pela biblioteca; não espere que a seleção de um modelo mescle conteúdos automaticamente.
 
+<a id="organizacao-automatica-e-ramificacoes"></a>
+
 ## 13. Organização automática e ramificações
 
 ### O que é e quando utilizar
@@ -238,6 +264,8 @@ Abra Exibir → Organizar mapa e escolha a disposição. Experimente cada arranj
 ### Cuidados e observações
 
 A organização automática é uma proposta geométrica. Mapas com muitas conexões cruzadas podem exigir ajustes manuais. Recolher não significa excluir: os nós continuam armazenados no projeto.
+
+<a id="zoom-ponteiro-maozinha-e-minimapa"></a>
 
 ## 14. Zoom, ponteiro, mãozinha e minimapa
 
@@ -253,6 +281,8 @@ Em Exibir → Navegação, ative o minimapa, ajuste à tela ou centralize a orig
 
 Se o mapa parecer vazio, primeiro use Ajustar à tela ou Centralizar origem. É possível que a câmera esteja deslocada ou com zoom muito distante. Tela cheia é diferente de maximizar a janela instalada.
 
+<a id="busca-e-substituicao"></a>
+
 ## 15. Busca e substituição
 
 ### O que é e quando utilizar
@@ -266,6 +296,8 @@ Pressione Ctrl+F ou Exibir → Navegação → Buscar nós, digite o termo e per
 ### Cuidados e observações
 
 A busca pode ignorar acentos e maiúsculas; a substituição não necessariamente segue as mesmas regras. Textos HTML formatados não são substituídos automaticamente como se fossem texto simples.
+
+<a id="aparencia-e-configuracoes"></a>
 
 ## 16. Aparência e configurações
 
@@ -281,6 +313,8 @@ Use Exibir → Aparência para alternar temas e acessar a personalização. Em S
 
 Restaurar configurações padrão altera preferências, não deveria remover projetos. Ainda assim, faça backup antes de qualquer operação de manutenção importante e verifique as confirmações exibidas.
 
+<a id="calculadora-flutuante"></a>
+
 ## 17. Calculadora flutuante
 
 ### O que é e quando utilizar
@@ -294,6 +328,8 @@ Abra pelo ícone da calculadora no cabeçalho. Execute as operações disponíve
 ### Cuidados e observações
 
 Resultados numéricos dependem da expressão digitada e das regras de precisão do JavaScript. Para cálculos financeiros ou científicos críticos, confira os resultados com uma ferramenta apropriada.
+
+<a id="arquivo-json-e-operacoes-seguras"></a>
 
 ## 18. Arquivo: JSON e operações seguras
 
@@ -309,6 +345,8 @@ Guardar baixa uma cópia do projeto. Atualizar grava no arquivo previamente auto
 
 Nunca confunda Guardar com Atualizar: download de uma nova cópia não sobrescreve necessariamente o arquivo antigo. Antes de Restaurar, guarde um backup atual. O navegador pode não suportar gravação direta em arquivos externos.
 
+<a id="importacao-markdown-svg-e-impressao"></a>
+
 ## 19. Importação, Markdown, SVG e impressão
 
 ### O que é e quando utilizar
@@ -322,6 +360,8 @@ Em Arquivo → Outros formatos → Markdown, escolha Importar ou Exportar. Use S
 ### Cuidados e observações
 
 Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conregistro. Para restauração integral, prefira JSON.
+
+<a id="compartilhamento-nativo"></a>
 
 ## 20. Compartilhamento nativo
 
@@ -337,6 +377,8 @@ Abra Arquivo → Outros formatos → Compartilhar, escolha o tipo de conteúdo e
 
 Compartilhar o link público do Mentalista não publica o mapa que está no seu navegador. Ao compartilhar um JSON, revise se ele contém notas ou imagens privadas antes de enviá-lo.
 
+<a id="abertura-pelo-explorador-e-salvamento-direto"></a>
+
 ## 21. Abertura pelo explorador e salvamento direto
 
 ### O que é e quando utilizar
@@ -350,6 +392,8 @@ Instale o Mentalista e procure a opção Abrir com no explorador do sistema. Con
 ### Cuidados e observações
 
 O comportamento varia entre Windows, Android, Chrome e Edge. A associação não garante abertura por duplo clique em todos os ambientes. O aplicativo não deve substituir um arquivo externo sem o consentimento apropriado.
+
+<a id="area-de-transferencia-e-imagens-png"></a>
 
 ## 22. Área de transferência e imagens PNG
 
@@ -365,6 +409,8 @@ Em Editar → Área de transferência, selecione as caixas e use Copiar caixas; 
 
 A cópia estruturada é específica da sessão atual. Permissões de leitura e gravação na área de transferência dependem de gesto do usuário, contexto seguro e suporte do navegador. Confira o destino antes de colar.
 
+<a id="historico-e-recuperacao"></a>
+
 ## 23. Histórico e recuperação
 
 ### O que é e quando utilizar
@@ -378,6 +424,8 @@ Abra Arquivo → JSON → Histórico, crie uma registro nomeada antes de uma gra
 ### Cuidados e observações
 
 O histórico é local e pode desaparecer se os dados do site forem limpos. Não confunda histórico com backup externo. Uma registro antiga também pode conter erros ou anexos ausentes; confira o resultado após restaurar.
+
+<a id="notificacoes-locais-e-lembretes"></a>
 
 ## 24. Notificações locais e lembretes
 
@@ -393,6 +441,8 @@ Abra Sistema → Notificações → Central de notificações, solicite permiss�
 
 Os lembretes são verificados enquanto o aplicativo está aberto ou quando você retorna a ele. Não há garantia de disparo com o PWA completamente fechado. Não utilize esses lembretes como único mecanismo para compromissos críticos.
 
+<a id="instalacao-atalhos-e-janelas-do-sistema"></a>
+
 ## 25. Instalação, atalhos e janelas do sistema
 
 ### O que é e quando utilizar
@@ -406,6 +456,8 @@ Abra Sistema → Manutenção → Instalar ou utilize o menu do navegador. Depoi
 ### Cuidados e observações
 
 A instalação e a disponibilidade de atalhos variam conforme o navegador. A desinstalação deve ser realizada pelo sistema operacional ou navegador; o botão do aplicativo apresenta instruções, não remove a instalação diretamente.
+
+<a id="offline-cache-e-atualizacao"></a>
 
 ## 26. Offline, cache e atualização
 
@@ -421,6 +473,8 @@ Abra o Mentalista conectado, aguarde o carregamento e consulte Sistema → Manut
 
 Estar offline não impede editar projetos locais, mas APIs como compartilhamento, ditado e acesso externo podem exigir suporte adicional. Uma atualização de cache não é um backup dos projetos. Evite limpar dados do site.
 
+<a id="armazenamento-integridade-e-backup"></a>
+
 ## 27. Armazenamento, integridade e backup
 
 ### O que é e quando utilizar
@@ -434,6 +488,8 @@ Em Sistema → Manutenção, consulte Armazenamento, Proteção do armazenamento
 ### Cuidados e observações
 
 Persistência não impede exclusão voluntária de dados nem perda do aparelho. Verificação estrutural não garante que todos os textos e imagens estejam semanticamente corretos. Faça testes periódicos de importação em um ambiente seguro.
+
+<a id="manutencao-e-reparacao"></a>
 
 ## 28. Manutenção e reparação
 
@@ -449,6 +505,8 @@ Execute Diagnóstico quando houver comportamento inesperado. Use Reparar aplicat
 
 Não utilize limpeza dos dados do site como primeira medida de solução de problemas. Esse procedimento pode apagar localStorage e IndexedDB, incluindo projetos e histórico. Faça backup antes de intervenções no navegador.
 
+<a id="acessibilidade-e-teclado"></a>
+
 ## 29. Acessibilidade e teclado
 
 ### O que é e quando utilizar
@@ -462,6 +520,8 @@ Consulte Ajuda → Referência de controles → Atalhos. Use Ctrl+F para buscar,
 ### Cuidados e observações
 
 Atalhos podem variar em teclados e sistemas operacionais. O foco em um campo de texto pode impedir a execução de atalhos do Palco. Ajuste o contraste e reduza animações se necessário.
+
+<a id="problemas-frequentes-e-solucoes"></a>
 
 ## 30. Problemas frequentes e soluções
 
@@ -477,6 +537,8 @@ Se o mapa sumir, use Ajustar à tela. Se um comando não responder, feche diálo
 
 Se o navegador solicitar limpar dados, interrompa a operação e faça backup. Em caso de comportamento persistente, registre registro, navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a corrigir bugs.
 
+<a id="fluxos-de-trabalho-recomendados"></a>
+
 ## 31. Fluxos de trabalho recomendados
 
 ### O que é e quando utilizar
@@ -490,6 +552,8 @@ Para estudar: crie um mapa de estudo, separe conceitos em ramos, adicione notas 
 ### Cuidados e observações
 
 Evite concentrar toda a documentação em um único mapa gigantesco. Divida assuntos em projetos independentes, faça backups gerais e exporte cópias individuais dos projetos mais importantes.
+
+<a id="privacidade-limites-e-boas-praticas"></a>
 
 ## 32. Privacidade, limites e boas práticas
 
@@ -505,6 +569,8 @@ Mantenha um backup geral após alterações significativas, uma cópia individua
 
 Não há Background Sync, Periodic Background Sync, Web Push com servidor ou Badging API. A ausência desses recursos é uma decisão de escopo atual, não um defeito do armazenamento local. Não espere sincronização automática ao trocar de aparelho.
 
+<a id="ajuda-referencia-e-suporte"></a>
+
 ## 33. Ajuda, referência e suporte
 
 ### O que é e quando utilizar
@@ -518,6 +584,8 @@ Use o índice no início deste manual para saltar ao assunto desejado. O mapa de
 ### Cuidados e observações
 
 As telas e recursos dependentes de APIs do sistema precisam ser testados no navegador utilizado. Recursos vinculados a permissões do sistema ou a APIs opcionais podem não estar disponíveis em todos os navegadores.
+
+<a id="compatibilidade-de-dispositivos-e-tamanho-da-janela"></a>
 
 ## 34. Compatibilidade de dispositivos e tamanho da janela
 
@@ -534,6 +602,8 @@ A identificação da plataforma depende das informações fornecidas pelo navega
 ### Como proceder
 
 Se a mensagem aparecer em um celular, utilize um computador ou uma tela que ofereça a área necessária. No desktop, maximize ou redimensione a janela conforme sua preferência. Se precisar conferir a área útil, lembre-se de que as medidas da janela externa não são necessariamente iguais aos pixels CSS disponíveis para a página.
+
+<a id="conservacao-dos-projetos-e-responsabilidades-do-usuario"></a>
 
 ## 35. Conservação dos projetos e responsabilidades do usuário
 
