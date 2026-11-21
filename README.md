@@ -7,13 +7,6 @@
 
 > **Leia primeiro:** os projetos são guardados principalmente no navegador, e o histórico no IndexedDB. Faça backups JSON regularmente. Instalação, acesso direto a arquivos, notificações e compartilhamento dependem de permissões e compatibilidade. A disponibilidade de recursos que dependem do sistema operacional varia conforme o navegador e as permissões concedidas.
 
-<p align="center">
-  <img src="./assets/MentalistaCover.jpg"
-       alt="Mentalista — Capa do Manual"
-       width="100%">
-</p>
-
-
 ## Apresentação
 
 O Mentalista é uma ferramenta de organização visual do conhecimento. Seu espaço de trabalho é um Palco amplo, onde caixas representam ideias e conexões indicam relações. O aplicativo combina mapas mentais, listas, checklists, notas, imagens e textos formatados em projetos locais. É especialmente útil para escritores, estudantes, pesquisadores, profissionais que planejam atividades e qualquer pessoa que precise transformar informações dispersas em uma estrutura compreensível.
@@ -708,3 +701,12 @@ Os comandos são organizados pelos menus da interface. Um mesmo comando pode apa
 
 
 
+
+
+## Arquivos JSON — Salvar e Abrir
+
+Em **Arquivo → JSON**, **Salvar** grava todos os projetos em um único arquivo JSON. Na primeira gravação em navegadores compatíveis, escolha a pasta e o nome do arquivo. Nas próximas gravações da mesma sessão, o arquivo autorizado será atualizado. Para escolher outro arquivo, reinicie o aplicativo e utilize Salvar novamente.
+
+**Abrir** seleciona um backup geral JSON e, após validação e confirmação, substitui os projetos locais pelo conteúdo do arquivo. Antes de abrir um arquivo, salve os projetos atuais caso deseje preservá-los.
+
+O acesso direto ao sistema de arquivos depende do navegador e do contexto seguro (HTTPS). Onde a API não estiver disponível, Salvar utiliza download como alternativa, sem promessa de sobrescrita automática.

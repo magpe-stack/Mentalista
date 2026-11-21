@@ -654,6 +654,18 @@ function exportJson(){
  notify('Projeto e configurações exportados');
 }
 // v45: acesso limitado ao projeto ativo para salvar arquivo JSON local.
+// Ponte de backup geral usada pelos comandos JSON Salvar / Abrir.
+window.MentalistaBackupBridge=Object.freeze({
+ snapshot(){
+  if(saveTimer){clearTimeout(saveTimer);persist()}
+  return JSON.stringify({format:BACKUP_FORMAT,version:1,exportedAt:new Date().toISOString(),projects:clone(projects),active,preferences:exportPreferences(),editorDraft:localStorage.getItem('mentalista.editor.v1')||''},null,2)
+ },
+ restoredFile(file){
+  const input=$('backupFileInput');
+  const dt=new DataTransfer();dt.items.add(file);input.files=dt.files;
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+});
 window.MentalistaFileBridge=Object.freeze({
  snapshot(){const p=current();if(!p)throw Error('Nenhum projeto aberto');if(saveTimer){clearTimeout(saveTimer);persist()}return JSON.stringify({format:PROJECT_FORMAT,version:2,exportedAt:new Date().toISOString(),project:clone(p),preferences:exportPreferences()},null,2)},
  projectId(){return current()?.id||null},projectName(){return current()?.name||'Mentalista'},

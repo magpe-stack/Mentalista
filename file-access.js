@@ -1,40 +1,54 @@
-/* Mentalista v45 — File System Access, com alternativa por download. */
+/* JSON geral: salvar todos os projetos em arquivo escolhido e abrir backup geral. */
 (()=>{'use strict';
-const $=id=>document.getElementById(id),bridge=()=>window.MentalistaFileBridge;
-let boundHandle=null,boundProjectId=null;
-const supported=()=>typeof window.showSaveFilePicker==='function';
-const safeName=name=>String(name||'Mentalista').replace(/[\\/:*?"<>|\x00-\x1f]/g,'-').slice(0,100)||'Mentalista';
-function message(text){const status=$('fileHandlingStatus');if(status)status.textContent=text;window.alert(text)}
-function download(content,name){const blob=new Blob([content],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
-async function openFile(){
- if(typeof window.showOpenFilePicker!=='function'){ $('fileInput')?.click();return }
- try{
-  const [handle]=await window.showOpenFilePicker({multiple:false,types:[{description:'Projeto Mentalista (JSON)',accept:{'application/json':['.json']}}]});if(!handle)return;
-  const file=await handle.getFile();if(file.size>35e6)throw Error('Arquivo maior que 35 MB');
-  const data=JSON.parse(await file.text());if(!data||data.format!=='mentalista-map'||!data.project||!Array.isArray(data.project.nodes))throw Error('Este arquivo não é um projeto individual Mentalista compatível.');
-  if(!confirm('Importar "'+file.name+'" como NOVO projeto? Seus projetos existentes serão preservados.'))return;
-  bridge().importFile(file);
-  // Importação cria outro projeto. Não associamos o original à gravação para evitar sobrescrita acidental.
-  boundHandle=null;boundProjectId=null;
- }catch(e){if(e.name!=='AbortError')message('Não foi possível abrir: '+e.message)}
+const $=id=>document.getElementById(id);
+let currentHandle=null, busy=false;
+const types=[{description:'Backup geral Mentalista (JSON)',accept:{'application/json':['.json']}}];
+const bridge=()=>window.MentalistaBackupBridge;
+const status=message=>{const el=$('fileHandlingStatus');if(el)el.textContent=message;};
+function fallbackDownload(content){
+ const url=URL.createObjectURL(new Blob([content],{type:'application/json'}));
+ const a=document.createElement('a');a.href=url;a.download='mentalista-projetos.json';document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
-async function saveAs(){
+async function save(){
+ if(busy)return;busy=true;
  try{
-  const api=bridge(),id=api.projectId();if(!id)throw Error('Abra um projeto antes de salvar.');
-  const content=api.snapshot(),name=safeName(api.projectName())+'.json';
-  if(!supported()){download(content,name);message('Seu navegador não oferece salvamento direto. Download JSON iniciado.');return}
-  const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'Projeto Mentalista (JSON)',accept:{'application/json':['.json']}}]});
+  const content=bridge().snapshot();
+  if(typeof window.showSaveFilePicker!=='function'){
+   fallbackDownload(content);
+   alert('Este navegador não permite escolher e atualizar diretamente um arquivo. O backup foi baixado; para sobrescrevê-lo, escolha o arquivo manualmente no sistema.');
+   status('Backup geral baixado');return;
+  }
+  // Se o usuário já autorizou um arquivo nesta sessão, atualizamos exatamente esse arquivo.
+  const handle=currentHandle||await window.showSaveFilePicker({suggestedName:'mentalista-projetos.json',types});
   if(!handle)return;
-  const writable=await handle.createWritable();try{await writable.write(content);await writable.close()}catch(err){await writable.abort().catch(()=>{});throw err}
-  boundHandle=handle;boundProjectId=id;message('Arquivo salvo: '+handle.name+'. O comando Salvar no arquivo poderá atualizar este arquivo enquanto o mesmo projeto estiver aberto.');
- }catch(e){if(e.name!=='AbortError')message('Falha ao salvar: '+e.message)}
+  const writable=await handle.createWritable();
+  try{await writable.write(content);await writable.close()}
+  catch(err){await writable.abort().catch(()=>{});throw err}
+  currentHandle=handle;
+  status('Todos os projetos salvos em '+handle.name);
+  alert('Todos os projetos foram salvos em: '+handle.name);
+ }catch(err){if(err.name!=='AbortError'){status('Falha ao salvar');alert('Não foi possível salvar: '+err.message)}}
+ finally{busy=false}
 }
-async function saveExisting(){
- const api=bridge();if(!boundHandle||boundProjectId!==api.projectId())return saveAs();
- if(!confirm('Substituir o conteúdo do arquivo "'+boundHandle.name+'" pelo estado atual do projeto?'))return;
- try{const content=api.snapshot();const writable=await boundHandle.createWritable();try{await writable.write(content);await writable.close()}catch(err){await writable.abort().catch(()=>{});throw err}message('Arquivo atualizado: '+boundHandle.name)}catch(e){message('Falha ao atualizar o arquivo: '+e.message)}
+async function open(){
+ if(busy)return;busy=true;
+ try{
+  if(typeof window.showOpenFilePicker!=='function'){$('backupFileInput')?.click();return}
+  const handles=await window.showOpenFilePicker({multiple:false,types});
+  if(!handles?.length)return;
+  const file=await handles[0].getFile();
+  if(file.size>35e6)throw Error('Arquivo maior que 35 MB');
+  const data=JSON.parse(await file.text());
+  if(!data||data.format!=='mentalista-backup'||!Array.isArray(data.projects))throw Error('Selecione um backup geral válido do Mentalista.');
+  // A rotina existente faz validação completa e solicita confirmação ANTES de substituir dados.
+  bridge().restoredFile(file);
+  // Não associar automaticamente o arquivo aberto: evita sobrescrevê-lo com dados ainda não restaurados.
+  currentHandle=null;
+  status('Arquivo selecionado: '+file.name);
+ }catch(err){if(err.name!=='AbortError'){status('Falha ao abrir');alert('Não foi possível abrir: '+err.message)}}
+ finally{busy=false}
 }
-$('fileAccessOpen')?.addEventListener('click',openFile);
-$('fileAccessSave')?.addEventListener('click',saveExisting);
-$('fileAccessSaveAs')?.addEventListener('click',saveAs);
+$('jsonSaveAll')?.addEventListener('click',save);
+$('jsonOpenAll')?.addEventListener('click',open);
 })();
