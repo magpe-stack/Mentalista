@@ -79,7 +79,7 @@ A barra superior contém Arquivo, Editar, Exibir, Sistema e Ajuda. Os comandos s
 
 ### Como utilizar, passo a passo
 
-Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou exclua caixas e abra o Editor. Em Exibir controle zoom, organização, navegação e aparência. Em Sistema configure o aplicativo, consulte notificações e execute manutenção. Em Ajuda abra o manual, a referência de atalhos, o mapa de controles e as informações do aplicativo.
+Em Arquivo administre projetos e arquivos. Em Editar crie, duplique, conecte ou exclua caixas e abra o Editor. Em Exibir controle zoom, organização, navegação e aparência. Em Sistema configure o aplicativo, consulte notificações e execute manutenção. Em Ajuda abra o manual, a referência de atalhos, o mapa de controles e as informações da registro.
 
 ### Cuidados e observações
 
@@ -99,7 +99,7 @@ Use Novo para iniciar em branco; Projetos para alternar entre mapas; Modelos par
 
 ### Cuidados e observações
 
-Excluir um projeto é diferente de remover uma caixa. Antes de exclusões importantes, utilize Arquivo → JSON → Salvar para preservar o conjunto de projetos. Os dados do navegador são específicos do perfil, do domínio e do dispositivo.
+Excluir um projeto é diferente de remover uma caixa. Antes de exclusões importantes, use Guardar ou Backup. Os dados do navegador são específicos do perfil, do domínio e do dispositivo.
 
 <a id="criacao-edicao-e-selecao-de-nos"></a>
 
@@ -231,7 +231,7 @@ Selecione a caixa e abra Editar → Edição → Prioridade, etiquetas e prazo. 
 
 ### Cuidados e observações
 
-O registro de prazo não equivale a uma tarefa agendada no sistema operacional. O aplicativo não possui entrega garantida de notificações com a janela fechada, e não há indicação de pendências pelo ícone do sistema.
+O registro de prazo não equivale a uma tarefa agendada no sistema operacional. O aplicativo não possui entrega garantida de notificações com a janela fechada, e a Badging API não foi implementada.
 
 <a id="modelos-prontos"></a>
 
@@ -295,7 +295,7 @@ Pressione Ctrl+F ou Exibir → Navegação → Buscar nós, digite o termo e per
 
 ### Cuidados e observações
 
-A busca pode ignorar acentos e maiúsculas; a substituição pode seguir regras distintas. Textos HTML formatados não são substituídos automaticamente como se fossem texto simples.
+A busca pode ignorar acentos e maiúsculas; a substituição não necessariamente segue as mesmas regras. Textos HTML formatados não são substituídos automaticamente como se fossem texto simples.
 
 <a id="aparencia-e-configuracoes"></a>
 
@@ -335,17 +335,15 @@ Resultados numéricos dependem da expressão digitada e das regras de precisão 
 
 ### O que é e quando utilizar
 
-O formato JSON preserva as informações necessárias para recuperar os projetos do Mentalista. Em **Arquivo → JSON**, os comandos **Salvar** e **Abrir** concentram as operações de gravação externa e recuperação do conjunto de projetos. O armazenamento automático no navegador continua funcionando durante a edição, mas não substitui o arquivo de segurança.
+JSON é o formato indicado para preservar a estrutura editável de um projeto. O menu Arquivo → JSON contém Guardar, Atualizar, Abrir, Salvar como, Backup, Restaurar e Histórico. Esses comandos têm consequências diferentes.
 
 ### Como utilizar, passo a passo
 
-**Salvar todos os projetos:** abra **Arquivo → JSON → Salvar**. Em navegadores compatíveis, na primeira gravação escolha a pasta e o nome do arquivo no diálogo do sistema. O Mentalista reúne todos os projetos locais em um único JSON. Nas gravações seguintes da mesma sessão, poderá atualizar diretamente o arquivo já autorizado, substituindo seu conteúdo anterior. Para selecionar outro destino, será necessário iniciar uma nova sessão de uso e escolher o arquivo novamente.
-
-**Abrir um arquivo salvo:** selecione **Arquivo → JSON → Abrir**, localize o JSON no explorador e confirme a seleção. O aplicativo verifica a estrutura do arquivo e solicita confirmação antes de substituir o conjunto de projetos locais pelo conteúdo recuperado.
+Guardar baixa uma cópia do projeto. Atualizar grava no arquivo previamente autorizado para o projeto atual quando o navegador permite. Abrir importa um projeto individual como novo. Salvar como escolhe um novo destino. Backup gera cópia de todos os projetos; Restaurar recupera um backup geral mediante confirmação. Histórico abre as estados anteriores.
 
 ### Cuidados e observações
 
-Antes de abrir outro conjunto de projetos, use **Salvar** para preservar o conteúdo atual. Abrir um arquivo geral não significa acrescentar automaticamente seus projetos aos existentes: a operação pode substituí-los. A gravação direta depende de HTTPS, permissões e suporte à File System Access API. Quando indisponível, o navegador pode oferecer um download; nesse caso, não há garantia de sobrescrita do arquivo anterior. Confirme a pasta e a existência do arquivo ao concluir.
+Nunca confunda Guardar com Atualizar: download de uma nova cópia não sobrescreve necessariamente o arquivo antigo. Antes de Restaurar, guarde um backup atual. O navegador pode não suportar gravação direta em arquivos externos.
 
 <a id="importacao-markdown-svg-e-impressao"></a>
 
@@ -361,7 +359,7 @@ Em Arquivo → Outros formatos → Markdown, escolha Importar ou Exportar. Use S
 
 ### Cuidados e observações
 
-Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conversão. Para restauração integral, prefira JSON.
+Markdown descreve hierarquia textual e não é equivalente a um backup completo. Imagens, conexões livres e detalhes visuais podem não sobreviver a essa conregistro. Para restauração integral, prefira JSON.
 
 <a id="compartilhamento-nativo"></a>
 
@@ -385,15 +383,15 @@ Compartilhar o link público do Mentalista não publica o mapa que está no seu 
 
 ### O que é e quando utilizar
 
-Em plataformas compatíveis, o manifesto associa arquivos JSON e Markdown ao PWA instalado. A File Handling API pode encaminhar arquivos ao Mentalista a partir do explorador; a File System Access API permite abrir e gravar arquivos escolhidos pelo usuário. Essas integrações são complementares ao menu **Arquivo → JSON**, que oferece **Salvar** e **Abrir**.
+Em plataformas compatíveis, o manifesto associa extensões JSON e Markdown ao PWA instalado. A File Handling API pode entregar arquivos ao aplicativo; a File System Access API permite abrir e gravar arquivos autorizados pelo usuário.
 
 ### Como utilizar, passo a passo
 
-Para recuperar um conjunto de projetos, use **Arquivo → JSON → Abrir** e selecione o arquivo no explorador. Em sistemas que oferecem **Abrir com**, também pode ser possível encaminhar um arquivo associado ao Mentalista instalado; confira o conteúdo e as confirmações apresentadas. Para salvar o conjunto atual, use **Arquivo → JSON → Salvar**. A primeira gravação poderá solicitar o destino; as seguintes poderão atualizar o mesmo arquivo durante a sessão, quando o navegador conservar a autorização.
+Instale o Mentalista e procure a opção Abrir com no explorador do sistema. Confirme a importação quando solicitada. Para gravar diretamente, utilize Atualizar ou Salvar como, conforme a situação. Em navegadores incompatíveis, mantenha o fluxo convencional de importação e download.
 
 ### Cuidados e observações
 
-O comportamento varia entre sistemas operacionais e navegadores. A associação de arquivos não garante abertura por duplo clique em todos os ambientes. O aplicativo não deve substituir um arquivo externo sem a autorização correspondente. Quando o acesso direto não estiver disponível, utilize o arquivo gerado por download e verifique seu destino.
+O comportamento varia entre Windows, Android, Chrome e Edge. A associação não garante abertura por duplo clique em todos os ambientes. O aplicativo não deve substituir um arquivo externo sem o consentimento apropriado.
 
 <a id="area-de-transferencia-e-imagens-png"></a>
 
@@ -417,15 +415,15 @@ A cópia estruturada é específica da sessão atual. Permissões de leitura e g
 
 ### O que é e quando utilizar
 
-O histórico utiliza IndexedDB e é separado do armazenamento principal de projetos. Há capturas manuais e automáticas; o limite previsto é de 25 registros por projeto, com até 15 automáticas. O mecanismo automático considera períodos de inatividade e espaçamento entre registros. O histórico permite consultar estados anteriores, enquanto o arquivo JSON serve para conservar ou transferir o conjunto de projetos.
+O histórico usa IndexedDB e é separado do armazenamento principal de projetos. Há capturas manuais e automáticas; o limite previsto é de 25 registros por projeto, com até 15 automáticas. O mecanismo automático considera períodos de inatividade e espaçamento entre registros.
 
 ### Como utilizar, passo a passo
 
-Abra o recurso de **Histórico de alterações** disponibilizado pelo aplicativo, crie uma captura nomeada antes de uma grande reorganização e consulte as datas e contagens de nós. Para retornar a um estado anterior, escolha a captura e confirme a restauração. O sistema procura guardar um registro de proteção do estado atual antes de substituir o mapa. Para recuperar projetos de um arquivo externo, utilize **Arquivo → JSON → Abrir**, após salvar o conjunto atual se desejar preservá-lo.
+Abra Arquivo → JSON → Histórico, crie uma registro nomeada antes de uma grande reorganização e consulte as datas e contagens de nós. Para voltar a um estado anterior, escolha Restaurar e confirme. O sistema procura guardar uma registro de proteção do estado atual antes de substituir o mapa.
 
 ### Cuidados e observações
 
-O histórico é local e pode desaparecer se os dados do site forem limpos. Não o confunda com backup externo. Um registro antigo também pode conter erros ou anexos ausentes; confira o resultado após restaurar. O comando **Abrir** do menu JSON carrega um conjunto de projetos e não substitui a consulta ao histórico de alterações de um projeto.
+O histórico é local e pode desaparecer se os dados do site forem limpos. Não confunda histórico com backup externo. Uma registro antiga também pode conter erros ou anexos ausentes; confira o resultado após restaurar.
 
 <a id="notificacoes-locais-e-lembretes"></a>
 
@@ -533,11 +531,11 @@ Falhas aparentes podem ter causas diferentes: câmera deslocada, cache incomplet
 
 ### Como utilizar, passo a passo
 
-Se o mapa sumir, use **Ajustar à tela**. Se um comando não responder, feche diálogos, confirme a seleção e recarregue. Se o aplicativo não abrir offline, verifique a disponibilidade dos arquivos. Se **Salvar** abrir uma janela de escolha, selecione o arquivo e a pasta: o navegador pode estar solicitando autorização para a primeira gravação ou para uma nova sessão. Se o navegador não permitir gravação direta, verifique o arquivo gerado na pasta de downloads. Se **Abrir** falhar, confira se o JSON está íntegro e se corresponde a um conjunto de projetos reconhecido pelo Mentalista.
+Se o mapa sumir, use Ajustar à tela. Se um comando não responder, feche diálogos, confirme a seleção e recarregue. Se o aplicativo não abrir offline, verifique a disponibilidade dos arquivos. Se não conseguir salvar diretamente, use Guardar para baixar JSON. Se a importação falhar, confirme o formato e o tamanho do arquivo.
 
 ### Cuidados e observações
 
-Se o navegador solicitar limpar dados, interrompa a operação e faça antes uma cópia externa. Não exclua os dados do site para tentar corrigir problemas de menu ou cache sem preservar os projetos. Em caso de comportamento persistente, registre navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a diagnosticar falhas.
+Se o navegador solicitar limpar dados, interrompa a operação e faça backup. Em caso de comportamento persistente, registre registro, navegador, sistema operacional, passos para reproduzir e mensagens exibidas; essas informações ajudam a corrigir bugs.
 
 <a id="fluxos-de-trabalho-recomendados"></a>
 
@@ -553,7 +551,7 @@ Para estudar: crie um mapa de estudo, separe conceitos em ramos, adicione notas 
 
 ### Cuidados e observações
 
-Evite concentrar toda a documentação em um único mapa gigantesco. Divida assuntos em projetos independentes, salve regularmente o conjunto de projetos em JSON e mantenha cópias independentes dos arquivos mais importantes.
+Evite concentrar toda a documentação em um único mapa gigantesco. Divida assuntos em projetos independentes, faça backups gerais e exporte cópias individuais dos projetos mais importantes.
 
 <a id="privacidade-limites-e-boas-praticas"></a>
 
@@ -565,11 +563,11 @@ O Mentalista não exige conta nem servidor para o trabalho local. Os projetos pe
 
 ### Como utilizar, passo a passo
 
-Utilize Arquivo → JSON → Salvar após alterações significativas, uma cópia individual de projetos críticos e um registro manual antes de reorganizações grandes. Verifique os arquivos exportados, preserve seus nomes e datas e não dependa apenas do histórico interno.
+Mantenha um backup geral após alterações significativas, uma cópia individual de projetos críticos e uma registro manual antes de reorganizações grandes. Verifique os arquivos exportados, preserve seus nomes e datas e não dependa apenas do histórico interno.
 
 ### Cuidados e observações
 
-O aplicativo não realiza sincronização em segundo plano entre dispositivos, nem oferece Web Push com servidor ou indicação de pendências pelo ícone do sistema. Não espere sincronização automática ao trocar de aparelho.
+Não há Background Sync, Periodic Background Sync, Web Push com servidor ou Badging API. A ausência desses recursos é uma decisão de escopo atual, não um defeito do armazenamento local. Não espere sincronização automática ao trocar de aparelho.
 
 <a id="ajuda-referencia-e-suporte"></a>
 
@@ -617,13 +615,12 @@ Os projetos são mantidos **localmente no navegador utilizado**, vinculados ao d
 
 1. Ao iniciar um trabalho importante, crie um projeto com nome identificável.
 2. Durante a edição, confirme periodicamente se as alterações aparecem no mapa.
-3. Ao terminar uma sessão, utilize **Arquivo → JSON → Salvar** para conservar todos os projetos em um arquivo externo.
-4. Verifique se o arquivo foi gravado na pasta pretendida e se possui conteúdo.
-5. Mantenha uma segunda cópia em outro dispositivo ou local de armazenamento de sua confiança.
-6. Antes de usar **Arquivo → JSON → Abrir**, salve os projetos atuais caso queira preservá-los, pois a abertura poderá substituir o conjunto local.
-7. Antes de limpar dados do navegador, trocar de equipamento ou restaurar projetos, verifique se o arquivo externo está acessível e íntegro.
+3. Ao terminar uma sessão, utilize **Guardar** para obter um arquivo JSON do projeto.
+4. Periodicamente, utilize **Backup** para conservar uma cópia geral dos projetos.
+5. Guarde os arquivos exportados em local de sua escolha, preferencialmente com uma cópia adicional.
+6. Antes de limpar dados do navegador, trocar de equipamento ou restaurar um backup, verifique se os arquivos exportados estão acessíveis e íntegros.
 
-O salvamento local automático facilita a continuidade do trabalho, mas **não substitui cópias externas**.
+O salvamento local automático facilita a continuidade do trabalho, mas **não substitui backups externos**.
 
 ## Apêndice A — Tabela de atalhos
 
@@ -650,7 +647,7 @@ O salvamento local automático facilita a continuidade do trabalho, mas **não s
 
 ## Apêndice B — Glossário
 
-**Palco:** área visual onde o mapa é desenhado. **Nó:** caixa que representa uma ideia ou conteúdo. **Elo:** ligação entre nós. **Ramificação:** conjunto de descendentes relacionados. **Projeto:** mapa independente salvo no navegador. **Arquivo geral de projetos:** arquivo JSON contendo o conjunto de projetos locais. **Registro histórico:** estado anterior de um projeto mantido localmente. **Service worker:** processo web que gerencia recursos em cache. **Cache API:** armazenamento de arquivos estáticos do aplicativo. **IndexedDB:** banco local usado pelo histórico. **localStorage:** armazenamento local dos projetos e de preferências. **PWA:** aplicativo web instalável. **Markdown:** formato textual estruturado. **SVG:** formato de imagem vetorial. **Web Share API:** compartilhamento com o sistema operacional. **File System Access API:** acesso autorizado a arquivos locais. **File Handling API:** associação de tipos de arquivo ao aplicativo instalado.
+**Palco:** área visual onde o mapa é desenhado. **Nó:** caixa que representa uma ideia ou conteúdo. **Elo:** ligação entre nós. **Ramificação:** conjunto de descendentes relacionados. **Projeto:** mapa independente salvo no navegador. **Backup geral:** arquivo JSON contendo vários projetos. **Registro histórico:** estado anterior de um projeto mantido localmente. **Service worker:** processo web que gerencia recursos em cache. **Cache API:** armazenamento de arquivos estáticos do aplicativo. **IndexedDB:** banco local usado pelo histórico. **localStorage:** armazenamento local dos projetos e de preferências. **PWA:** aplicativo web instalável. **Markdown:** formato textual estruturado. **SVG:** formato de imagem vetorial. **Web Share API:** compartilhamento com o sistema operacional. **File System Access API:** acesso autorizado a arquivos locais. **File Handling API:** associação de tipos de arquivo ao aplicativo instalado.
 
 ## Apêndice C — Referência dos menus
 
@@ -660,7 +657,7 @@ Os comandos são organizados pelos menus da interface. Um mesmo comando pode apa
 
 **Projetos:** Novo, Projetos, Modelos, Renomear, Excluir.
 
-**JSON:** Salvar, Abrir.
+**JSON:** Guardar, Atualizar, Abrir, Salvar como, Backup, Restaurar, Histórico, Importar JSON (interno).
 
 **Outros formatos:** Importar, Exportar, SVG, Compartilhar, Imprimir.
 
@@ -701,3 +698,15 @@ Os comandos são organizados pelos menus da interface. Um mesmo comando pode apa
 **Documentação:** GitHub, Manual, Sobre.
 
 **Referência de controles:** Atalhos, Mapa de Ícones e botões.
+
+
+
+
+
+## Arquivos JSON — Salvar e Abrir
+
+Em **Arquivo → JSON**, **Salvar** grava todos os projetos em um único arquivo JSON. Na primeira gravação em navegadores compatíveis, escolha a pasta e o nome do arquivo. Nas próximas gravações da mesma sessão, o arquivo autorizado será atualizado. Para escolher outro arquivo, reinicie o aplicativo e utilize Salvar novamente.
+
+**Abrir** seleciona um backup geral JSON e, após validação e confirmação, substitui os projetos locais pelo conteúdo do arquivo. Antes de abrir um arquivo, salve os projetos atuais caso deseje preservá-los.
+
+O acesso direto ao sistema de arquivos depende do navegador e do contexto seguro (HTTPS). Onde a API não estiver disponível, Salvar utiliza download como alternativa, sem promessa de sobrescrita automática.

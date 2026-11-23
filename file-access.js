@@ -4,10 +4,16 @@ const $=id=>document.getElementById(id);
 let currentHandle=null, busy=false;
 const types=[{description:'Backup geral Mentalista (JSON)',accept:{'application/json':['.json']}}];
 const bridge=()=>window.MentalistaBackupBridge;
+// Data local do dispositivo no nome do arquivo; o conteúdo mantém exportedAt em ISO.
+function datedFileName(){
+ const now=new Date();
+ const date=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+ return 'mentalista-projetos-'+date+'.json';
+}
 const status=message=>{const el=$('fileHandlingStatus');if(el)el.textContent=message;};
 function fallbackDownload(content){
  const url=URL.createObjectURL(new Blob([content],{type:'application/json'}));
- const a=document.createElement('a');a.href=url;a.download='mentalista-projetos.json';document.body.append(a);a.click();a.remove();
+ const a=document.createElement('a');a.href=url;a.download=datedFileName();document.body.append(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
 async function save(){
@@ -20,7 +26,7 @@ async function save(){
    status('Backup geral baixado');return;
   }
   // Se o usuário já autorizou um arquivo nesta sessão, atualizamos exatamente esse arquivo.
-  const handle=currentHandle||await window.showSaveFilePicker({suggestedName:'mentalista-projetos.json',types});
+  const handle=currentHandle||await window.showSaveFilePicker({suggestedName:datedFileName(),types});
   if(!handle)return;
   const writable=await handle.createWritable();
   try{await writable.write(content);await writable.close()}
